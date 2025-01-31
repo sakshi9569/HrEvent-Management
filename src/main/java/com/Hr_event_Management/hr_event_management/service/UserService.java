@@ -1,6 +1,7 @@
 package com.Hr_event_Management.hr_event_management.service;
 
 import com.Hr_event_Management.hr_event_management.dto.AuthResponseDTO;
+import com.Hr_event_Management.hr_event_management.dto.LoginRequestDTO;
 import com.Hr_event_Management.hr_event_management.dto.SignupRequestDTO;
 import com.Hr_event_Management.hr_event_management.model.User;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
@@ -38,7 +39,7 @@ public class UserService {
 
         String hashedPassword = BCrypt.hashpw(signupRequestDTO.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
-//        user.setPassword(signupRequest.getPassword());
+//       user.setPassword(signupRequest.getPassword());
         user.setEmail(signupRequestDTO.getEmail());
         user.setEmpId(signupRequestDTO.getEmpId());
 
@@ -52,4 +53,27 @@ public class UserService {
 
         return new AuthResponseDTO(token);
     }
+
+    public AuthResponseDTO login(LoginRequestDTO loginRequestDTO) {
+        // Find user by email
+        Optional<User> existingUser = userDao.findByEmail(loginRequestDTO.getEmail());
+
+        if (existingUser.isEmpty()) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        User user = existingUser.get();
+
+        // Verify the password
+        if (!BCrypt.checkpw(loginRequestDTO.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        // Generate JWT token
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new AuthResponseDTO(token);
+    }
+
+
 }
