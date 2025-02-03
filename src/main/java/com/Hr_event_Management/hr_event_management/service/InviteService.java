@@ -1,7 +1,9 @@
 package com.Hr_event_Management.hr_event_management.service;
 
+import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
+import com.Hr_event_Management.hr_event_management.dto.InviteActionRequestDTO;
 import com.Hr_event_Management.hr_event_management.dto.InviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.PendingInviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.model.Invite;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +58,44 @@ public class InviteService {
                         "PENDING"                                  // Status is always "PENDING"
                 ))
                 .collect(Collectors.toList());
+    }
+    public String respondToInvite(Long userId, Long eventId, InviteActionRequestDTO inviteActionRequestDTO) {
+
+        // Fetch invite from DB
+        Optional<Invite> inviteOptional = inviteDao.findByEventIdAndUserId(eventId, userId);
+        if (!inviteOptional.isPresent()) {
+            return "Invite not found or invalid user-event combination.";
+        }
+
+        Invite invite = inviteOptional.get();
+
+        // Check if invite is in "PENDING" status
+        if (!invite.getStatus().equals(InvitationStatus.PENDING)) {
+            return "Invite is no longer in a pending state.";
+        }
+
+        // Process the user action
+        switch (inviteActionRequestDTO.getUserAction().toUpperCase()) {
+            case "ACCEPT":
+                invite.setStatus(InvitationStatus.ACCEPTED);
+                break;
+            case "DENY":
+                invite.setStatus(InvitationStatus.REJECTED);
+                break;
+            case "RESCHEDULE":
+                invite.setStatus(InvitationStatus.RESCHEDULED);
+                break;
+            default:
+                return "Invalid action. Allowed actions: 'ACCEPT', 'DENY', 'RESCHEDULE'.";
+        }
+
+        // Set user remarks
+        invite.setRemarks(inviteActionRequestDTO.getUserRemarks());
+
+        // Save updated invite
+        inviteDao.save(invite);
+
+        return "Invite response recorded successfully.";
     }
 }
 

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class InviteDaoImpl implements InviteDao {
@@ -32,6 +33,16 @@ public class InviteDaoImpl implements InviteDao {
         TypedQuery<Invite> query = entityManager.createQuery(jpql, Invite.class);
         query.setParameter("userId", userId);
         return query.getResultList();
+    }
+
+    @Override
+    public Optional<Invite> findByEventIdAndUserId(Long eventId, Long userId) {
+        String jpql = "SELECT i FROM Invite i WHERE i.event.id = :eventId AND i.user.id = :userId";
+        TypedQuery<Invite> query = entityManager.createQuery(jpql, Invite.class);
+        query.setParameter("eventId", eventId);
+        query.setParameter("userId", userId);
+        Invite invite = query.getResultStream().findFirst().orElse(null);
+        return Optional.ofNullable(invite);  // Return the invite wrapped in Optional
     }
 
     // Save invite

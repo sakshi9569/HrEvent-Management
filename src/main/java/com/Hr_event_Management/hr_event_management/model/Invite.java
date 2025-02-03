@@ -38,4 +38,7 @@ public class Invite {
 
     @Column(nullable = false)
     private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
+
+    @Column(nullable = true)
+    private String remarks;
 }

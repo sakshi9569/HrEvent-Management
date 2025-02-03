@@ -1,5 +1,7 @@
 package com.Hr_event_Management.hr_event_management.controller;
 
+import com.Hr_event_Management.hr_event_management.dto.InviteActionRequestDTO;
+import com.Hr_event_Management.hr_event_management.dto.InviteActionResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.InviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.PendingInviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.service.InviteService;
@@ -31,6 +33,21 @@ public class InviteController {
     public ResponseEntity<List<PendingInviteResponseDTO>> getPendingInvites(@PathVariable Long userId) {
         List<PendingInviteResponseDTO> pendingInvites = inviteService.getPendingInvites(userId);
         return ResponseEntity.ok(pendingInvites);
+    }
+
+    @PostMapping("/{userId}/invites/{eventId}/respond")
+    public ResponseEntity<InviteActionResponseDTO> respondToInvite(
+            @PathVariable Long userId,
+            @PathVariable Long eventId,
+            @RequestBody InviteActionRequestDTO inviteActionRequestDTO) {
+
+        String responseMessage = inviteService.respondToInvite(userId, eventId, inviteActionRequestDTO);
+
+        InviteActionResponseDTO responseDTO = new InviteActionResponseDTO(
+                200, responseMessage
+        );
+
+        return ResponseEntity.ok(responseDTO);
     }
 
 }
