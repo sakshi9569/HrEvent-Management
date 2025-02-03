@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface InviteDao {
 
-    List<Invite> findByUserId(Long userId);  // Method to fetch invites for a given user
-
+    List<Invite> findByUserId(Long userId);// Method to fetch invites for a given user
+    List<Invite> findPendingByUserId(Long userId);
     void save(Invite invite);
 }
 

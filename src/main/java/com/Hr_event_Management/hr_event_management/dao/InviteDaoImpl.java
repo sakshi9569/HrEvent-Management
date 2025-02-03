@@ -12,18 +12,23 @@ import java.util.List;
 @Repository
 public class InviteDaoImpl implements InviteDao {
 
-      // Use @PersistenceContext instead of @Autowired for EntityManager
+    // Use @PersistenceContext instead of @Autowired for EntityManager
     @PersistenceContext
     private EntityManager entityManager;
-
-
-
 
 
     // Fetch invites by user ID
     @Override
     public List<Invite> findByUserId(Long userId) {
         String jpql = "SELECT i FROM Invite i WHERE i.user.id = :userId";
+        TypedQuery<Invite> query = entityManager.createQuery(jpql, Invite.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Invite> findPendingByUserId(Long userId) {
+        String jpql = "SELECT i FROM Invite i WHERE i.user.id = :userId AND i.status = 'PENDING'";
         TypedQuery<Invite> query = entityManager.createQuery(jpql, Invite.class);
         query.setParameter("userId", userId);
         return query.getResultList();
