@@ -41,11 +41,11 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EventStatus status; // Enum used here
+    private EventStatus status=EventStatus.CONFIRMED; // Enum used here
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ProposalStatus proposalStatus;
+    private ProposalStatus proposalStatus = ProposalStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)

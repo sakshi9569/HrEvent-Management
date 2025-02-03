@@ -26,7 +26,7 @@ public class User {
     @Column(name = "first_name")
     private String first_name= "xyz";
 
-    @Column(name = "last_namae")
+    @Column(name = "last_name")
     private String last_name= "xyz";
 
     @Column(name = "name")
