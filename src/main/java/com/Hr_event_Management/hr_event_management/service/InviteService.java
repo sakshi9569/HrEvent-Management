@@ -4,6 +4,7 @@ import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
 import com.Hr_event_Management.hr_event_management.dto.InviteActionRequestDTO;
+import com.Hr_event_Management.hr_event_management.dto.InviteHistoryResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.InviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.PendingInviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.model.Invite;
@@ -96,6 +97,21 @@ public class InviteService {
         inviteDao.save(invite);
 
         return "Invite response recorded successfully.";
+    }
+
+    public List<InviteHistoryResponseDTO> getInviteHistory(Long userId) {
+        List<Invite> invites = inviteDao.findHistoryByUserId(userId);
+
+        return invites.stream()
+                .map(invite -> new InviteHistoryResponseDTO(
+                        invite.getEvent().getId().toString(),    // Event ID
+                        invite.getEvent().getAgenda(),          // Event Name
+                        invite.getEvent().getDate().toString(), // Event Date
+                        invite.getEvent().getTime().toString(), // Event Time
+                        invite.getEvent().getLocation(),        // Event Location
+                        invite.getStatus()                      // Enum InviteResponseAction (ACCEPTED, REJECTED)
+                ))
+                .collect(Collectors.toList());
     }
 }
 

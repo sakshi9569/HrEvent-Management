@@ -1,9 +1,6 @@
 package com.Hr_event_Management.hr_event_management.controller;
 
-import com.Hr_event_Management.hr_event_management.dto.InviteActionRequestDTO;
-import com.Hr_event_Management.hr_event_management.dto.InviteActionResponseDTO;
-import com.Hr_event_Management.hr_event_management.dto.InviteResponseDTO;
-import com.Hr_event_Management.hr_event_management.dto.PendingInviteResponseDTO;
+import com.Hr_event_Management.hr_event_management.dto.*;
 import com.Hr_event_Management.hr_event_management.service.InviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +45,12 @@ public class InviteController {
         );
 
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/{userId}/invites/history")
+    public ResponseEntity<List<InviteHistoryResponseDTO>> getInviteHistory(@PathVariable Long userId) {
+        List<InviteHistoryResponseDTO> history = inviteService.getInviteHistory(userId);
+        return ResponseEntity.ok(history);
     }
 
 }

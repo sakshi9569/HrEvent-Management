@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,18 @@ public class InviteDaoImpl implements InviteDao {
         query.setParameter("userId", userId);
         Invite invite = query.getResultStream().findFirst().orElse(null);
         return Optional.ofNullable(invite);  // Return the invite wrapped in Optional
+    }
+
+
+    public List<Invite> findHistoryByUserId(Long userId) {
+        LocalDateTime last24Hours = LocalDateTime.now().minusHours(24);
+
+        String jpql = "SELECT i FROM Invite i WHERE i.user.id = :userId AND i.updatedAt >= :last24Hours";
+        TypedQuery<Invite> query = entityManager.createQuery(jpql, Invite.class);
+        query.setParameter("userId", userId);
+        query.setParameter("last24Hours", java.sql.Timestamp.valueOf(last24Hours));
+
+        return query.getResultList();
     }
 
     // Save invite
