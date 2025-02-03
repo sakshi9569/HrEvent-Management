@@ -7,5 +7,6 @@ public enum EventStatus {
     ACTIVE,     // Event is scheduled and active
     CANCELED,   // Event has been canceled
     COMPLETED,
+    SCHEDULED,
     CONFIRMED;// Event details have been updated
 }

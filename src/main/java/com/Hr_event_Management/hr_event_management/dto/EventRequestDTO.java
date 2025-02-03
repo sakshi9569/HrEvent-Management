@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
@@ -16,8 +15,6 @@ public class EventRequestDTO {
     private Timestamp time;
     private Timestamp date;
     private String location;
-    private EventStatus status;
-    private Long createdById;  // Instead of User entity, just store the user ID
-    private List<Long> inviteUserIds; // List of user IDs to be invited
+    private String status;
+    private Long createdById; // ID of the user who is creating the event
 }
-

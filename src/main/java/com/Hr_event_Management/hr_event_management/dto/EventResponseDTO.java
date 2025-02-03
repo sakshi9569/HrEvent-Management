@@ -1,22 +1,102 @@
 package com.Hr_event_Management.hr_event_management.dto;
 
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Timestamp;
 
-@Getter
-@Setter
 public class EventResponseDTO {
-    private Long eventId;           // Event ID
-    private String firstName;       // Event's first name (or any relevant detail)
-    private String lastName;        // Event's last name (or any relevant detail)
-    private String agenda;          // Event agenda
-    private Timestamp time;         // Event time
-    private Timestamp date;         // Event date
-    private String location;        // Event location
-    private EventStatus status;     // Event status
-    private Long createdById;       // The ID of the creator (admin)
-    private String message;         // Message indicating success or failure (e.g. "Event created successfully")
+
+    private Long eventId;  // Make sure this field exists
+    private String firstName;
+    private String lastName;
+    private String agenda;
+//    private String time;
+    private Timestamp time;
+    private Timestamp date;
+    private String location;
+    private String status;  // If you're using EventStatus enum
+    private Long createdById;
+    private String message;
+
+    // Getter and setter for eventId
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+    // Other getters and setters for other fields
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(String agenda) {
+        this.agenda = agenda;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public  String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Long getCreatedById() {
+        return createdById;
+    }
+
+    public void setCreatedById(Long createdById) {
+        this.createdById = createdById;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

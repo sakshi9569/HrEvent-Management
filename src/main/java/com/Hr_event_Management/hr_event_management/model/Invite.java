@@ -1,5 +1,6 @@
 package com.Hr_event_Management.hr_event_management.model;
 
+import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.AllArgsConstructor;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
-import com.Hr_event_Management.hr_event_management.Enums.InviteStatus; // Import InviteStatus Enum
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -30,11 +31,11 @@ public class Invite {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private InviteStatus status; // Enum used here
+    private InvitationStatus status; // Enum used here
 
     @Column(nullable = false)
-    private Timestamp createdAt;
+    private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
     @Column(nullable = false)
-    private Timestamp updatedAt;
+    private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
 }

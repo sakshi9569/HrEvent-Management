@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus; // Import EventStatus Enum
 import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
@@ -30,6 +31,10 @@ public class Event {
     @Column(nullable = false)
     private String agenda;
 
+    public String getEventName() {
+        return this.agenda;  // Return agenda as the event's name
+    }
+
     @Column(nullable = false)
     private Timestamp time;
 
@@ -40,7 +45,8 @@ public class Event {
     private String location;
 
     @Enumerated(EnumType.STRING)
-    private EventStatus status;// Enum used here
+    @Column(nullable = false)
+    private EventStatus status;  // Enum field for status
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -51,10 +57,10 @@ public class Event {
     private User createdBy;
 
     @Column(nullable = false)
-    private Timestamp createdAt;
+    private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
     @Column(nullable = false)
-    private Timestamp updatedAt;
+    private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Invite> invites;

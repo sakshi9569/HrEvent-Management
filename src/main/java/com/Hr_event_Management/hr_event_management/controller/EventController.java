@@ -7,24 +7,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/user")  // The URL path for user event creation
+@RequestMapping("/user/event")  // The URL path for user event creation
 public class EventController {
 
+    private final EventService eventService;
+
     @Autowired
-    private EventService eventService;
-
-    // Create Event API (Admin/User)
-    @PostMapping("/event")
-    public ResponseEntity<EventResponseDTO> createEvent(@RequestBody EventRequestDTO eventRequestDTO) {
-        // Call EventService to create an event
-        EventResponseDTO response = eventService.createEvent(eventRequestDTO);
-
-        // Return response with status 200 (OK)
-        return ResponseEntity.ok(response);
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
     }
+
+    // Create Event with Invites
+    @PostMapping("/create")
+    public EventResponseDTO createEventWithInvites(@RequestBody EventRequestDTO eventRequestDTO,
+                                                   @RequestParam List<Long> invitedUserIds) {
+        return eventService.createEventWithInvites(eventRequestDTO, invitedUserIds);
+    }
+
     // Modify event (cancel, update, or reschedule)
-    @PutMapping("/event/{eventId}/modify")
+    @PutMapping("/{eventId}/modify")
     public ResponseEntity<ModifyEventResponseDTO> modifyEvent(
             @PathVariable Long eventId,
             @RequestBody ModifyEventRequestDTO modifyEventRequest) {
