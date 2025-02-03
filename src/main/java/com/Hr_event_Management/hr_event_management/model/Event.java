@@ -40,8 +40,7 @@ public class Event {
     private String location;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EventStatus status=EventStatus.CONFIRMED; // Enum used here
+    private EventStatus status;// Enum used here
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

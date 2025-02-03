@@ -32,7 +32,7 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public Optional<Event> findById(UUID eventId) {
+    public Optional<Event> findById(Long eventId) {
         return Optional.ofNullable(entityManager.find(Event.class, eventId));
     }
 

@@ -7,12 +7,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModifyEventRequestDTO {
-    private Long eventId; // ID of the event to be modified
-    private String empId; // Employee ID of the admin
-    private String role;  // Role of the user (should be "ADMIN")
-    private String action; // "cancel", "update", "reschedule"
+    private Long eventId; // Change this to Long to match Event entity
+    private String empId;
+    private String role;
+    private String action;
     private String eventName;
-    private String eventDate; // Required for update or reschedule
-    private String eventTime; // Required for update or reschedule
-    private String eventLocation; // Required for update or reschedule
+    private String eventDate;
+    private String eventTime;
+    private String eventLocation;
 }
+
+

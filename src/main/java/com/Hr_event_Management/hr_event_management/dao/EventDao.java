@@ -6,12 +6,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EventDao {
-
     Event save(Event event);  // Save a new event
 
-    Optional<Event> findById(UUID eventId);  // Find event by ID
+    Optional<Event> findById(Long eventId);  // Find event by UUID
 
     List<Event> findAll();  // Get all events
 
-    void deleteById(UUID eventId);  // Delete an event by ID
+    void deleteById(UUID eventId);  // Delete an event by UUID
 }
