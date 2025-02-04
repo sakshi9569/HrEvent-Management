@@ -1,4 +1,4 @@
-package com.Hr_event_Management.hr_event_management.service;
+package com.Hr_event_Management.hr_event_management.service.impl;
 
 import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
@@ -8,7 +8,6 @@ import com.Hr_event_Management.hr_event_management.dto.InviteHistoryResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.InviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.PendingInviteResponseDTO;
 import com.Hr_event_Management.hr_event_management.model.Invite;
-import com.Hr_event_Management.hr_event_management.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

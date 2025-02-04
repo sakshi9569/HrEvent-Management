@@ -1,8 +1,8 @@
-package com.Hr_event_Management.hr_event_management.dao;
+package com.Hr_event_Management.hr_event_management.dao.impl;
 
+import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.model.Invite;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

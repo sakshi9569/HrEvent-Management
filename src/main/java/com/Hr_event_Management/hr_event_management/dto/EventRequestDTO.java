@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -15,6 +16,6 @@ public class EventRequestDTO {
     private Timestamp time;
     private Timestamp date;
     private String location;
-    private String status;
+    private String status; // create a enum for all status
     private Long createdById; // ID of the user who is creating the event
 }

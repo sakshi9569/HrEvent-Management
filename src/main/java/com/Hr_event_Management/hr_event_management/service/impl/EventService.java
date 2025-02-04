@@ -1,4 +1,4 @@
-package com.Hr_event_Management.hr_event_management.service;
+package com.Hr_event_Management.hr_event_management.service.impl;
 
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.dao.EventDao;
@@ -12,7 +12,6 @@ import com.Hr_event_Management.hr_event_management.model.User;
 import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.Enums.Role;
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus;
-import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,8 @@ import java.util.Optional;
 
 @Service
 public class EventService {
+
+    final static String CANCEL_ACTION = "cancel";
 
     private final EventDao eventDao;
     private final InviteDao inviteDao;
@@ -46,6 +47,7 @@ public class EventService {
 
         User creator = creatorUser.get();
 
+        // TODO - check conflicts of event
         // Create and populate the Event entity
         Event event = new Event();
         event.setFirstName(eventRequestDTO.getFirstName());
@@ -71,6 +73,7 @@ public class EventService {
         event = eventDao.save(event);  // Persist the event and capture the saved entity
 
         // Create invites for each user in the invitedUserIds list
+        //TODO - use streaming
         for (Long userId : invitedUserIds) {
             Optional<User> invitedUserOpt = userDao.findById(userId);
             if (invitedUserOpt.isPresent()) {
@@ -127,9 +130,10 @@ public class EventService {
 
         Event event = eventOptional.get();
 
+        //TODO - make variable in the class
         // Perform the action (cancel, update, or reschedule)
         switch (modifyEventRequestDTO.getAction().toLowerCase()) {
-            case "cancel":
+            case CANCEL_ACTION:
                 event.setStatus(EventStatus.CANCELED);
                 break;
             case "update":

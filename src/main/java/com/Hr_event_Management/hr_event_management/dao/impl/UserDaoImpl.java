@@ -1,5 +1,6 @@
-package com.Hr_event_Management.hr_event_management.dao;
+package com.Hr_event_Management.hr_event_management.dao.impl;
 
+import com.Hr_event_Management.hr_event_management.dao.UserDao;
 import com.Hr_event_Management.hr_event_management.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

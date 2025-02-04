@@ -1,8 +1,8 @@
-package com.Hr_event_Management.hr_event_management.controller;
+package com.Hr_event_Management.hr_event_management.controller.AdminController;
 
 import com.Hr_event_Management.hr_event_management.dto.*;
 import com.Hr_event_Management.hr_event_management.dto.EventResponseDTO;
-import com.Hr_event_Management.hr_event_management.service.EventService;
+import com.Hr_event_Management.hr_event_management.service.impl.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user/event")  // The URL path for user event creation
+//TODO - rename as admin
 public class EventController {
 
     private final EventService eventService;
@@ -40,11 +41,15 @@ public class EventController {
         ModifyEventResponseDTO response = new ModifyEventResponseDTO();
         response.setMessage(result);
 
+
         if (result.contains("success")) {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+
+    //TODO - create list of events api
 
 }

@@ -2,19 +2,19 @@ package com.Hr_event_Management.hr_event_management.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyEventRequestDTO {
-    private Long eventId; // Change this to Long to match Event entity
-    private String empId; //TODO rename to updatedBy
-    private String role;
-    private String action;
+public class EventProposalRequestDTO {
+
     private String eventName;
     private String eventDate;
     private String eventTime;
     private String eventLocation;
+    private String agenda;
+    private Long createdById;// List of invitee IDs for the proposed event
 }
-
-

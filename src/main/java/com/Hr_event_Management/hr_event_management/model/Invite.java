@@ -41,4 +41,5 @@ public class Invite {
 
     @Column(nullable = true)
     private String remarks;
+
 }
