@@ -17,25 +17,11 @@ public class EventProposalController {
     @PostMapping("/{userId}/events/propose")
     public ResponseEntity<EventProposalResponseDTO> proposeEvent(
             @PathVariable Long userId,
-            @RequestParam String eventName,
-            @RequestParam String eventDate,
-            @RequestParam String eventTime,
-            @RequestParam String eventLocation,
-            @RequestParam String agenda) {
-
-        // Construct DTO with request params
-        EventProposalRequestDTO eventProposalRequestDTO = new EventProposalRequestDTO(
-                eventName,
-                eventDate,  // Ensure eventDate is parsed correctly
-                eventTime,
-                eventLocation,
-                agenda,
-                userId  // Ensure createdById is set
-        );
-
-        // Pass only the DTO to the service (no inviteeIds)
+            @RequestBody EventProposalRequestDTO eventProposalRequestDTO) {
         EventProposalResponseDTO response = eventProposalService.proposeEvent(eventProposalRequestDTO);
 
         return ResponseEntity.ok(response);
     }
+
+
 }

@@ -139,12 +139,12 @@ public class EventService {
                 event.setStatus(EventStatus.CANCELED);
                 break;
             case "update":
-                if(modifyEventRequestDTO.getEventName() != null){
-                    event.setFirstName(modifyEventRequestDTO.getEventName());
-                }
+//                if(modifyEventRequestDTO.getEventName() != null){
+//                    event.setFirstName(modifyEventRequestDTO.getEventName());
+//                }
                 event.setAgenda(modifyEventRequestDTO.getEventName());
-                event.setTime(Timestamp.valueOf(modifyEventRequestDTO.getEventTime() + ":00"));
-                event.setDate(Timestamp.valueOf(modifyEventRequestDTO.getEventDate() + " 00:00:00"));
+                event.setTime(Timestamp.valueOf(modifyEventRequestDTO.getEventTime().toLocalDateTime()));
+                event.setDate(Timestamp.valueOf(modifyEventRequestDTO.getEventDate().toLocalDateTime()));
                 event.setLocation(modifyEventRequestDTO.getEventLocation());
                 break;
             case "reschedule":

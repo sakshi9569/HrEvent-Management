@@ -10,8 +10,6 @@ import com.Hr_event_Management.hr_event_management.service.UserService;
 import com.Hr_event_Management.hr_event_management.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -47,6 +45,9 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         String hashedPassword = BCrypt.hashpw(signupRequest.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
+        user.setFirstname(signupRequest.getFirstname());
+        user.setLastname(signupRequest.getLastname());
+        user.setTeam(signupRequest.getTeam());
         user.setEmail(signupRequest.getEmail());
         user.setEmpId(signupRequest.getEmpId());
 
@@ -84,5 +85,4 @@ public class UserServiceImpl implements UserService {
 
         return new AuthResponseDTO(token);
     }
-
 }

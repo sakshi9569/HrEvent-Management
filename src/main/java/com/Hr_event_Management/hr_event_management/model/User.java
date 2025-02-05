@@ -22,15 +22,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(nullable = false)
+    private String firstname;
 
-    @Column(name = "first_name")
-    private String first_name= "xyz";
-
-    @Column(name = "last_name")
-    private String last_name= "xyz";
-
-    @Column(name = "name")
-    private String name =first_name+last_name;
+    @Column(nullable = false)
+    private String lastname;
 
     @Column(unique = true, nullable = false)
     private String empId;
@@ -42,7 +38,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String team = "ABC";
+    private String team ;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -16,5 +16,6 @@ public class EventProposalRequestDTO {
     private String eventTime;
     private String eventLocation;
     private String agenda;
-    private Long createdById;// List of invitee IDs for the proposed event
+    private Long createdById;
+
 }

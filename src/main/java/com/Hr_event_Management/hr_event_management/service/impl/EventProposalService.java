@@ -30,6 +30,7 @@ public class EventProposalService {
         // Fetch the user who is proposing the event (creator)
         Optional<User> creatorUserOpt = userDao.findById(eventProposalRequestDTO.getCreatedById());
         if (creatorUserOpt.isEmpty()) {
+
             throw new RuntimeException("Creator not found");
         }
         User creator = creatorUserOpt.get();
@@ -41,11 +42,11 @@ public class EventProposalService {
         // Convert String eventDate to LocalDateTime (adjust format if needed)
         String eventDate = eventProposalRequestDTO.getEventDate();
         proposedEvent.setEventDate(eventDate);  // Directly set the String value
-
         proposedEvent.setEventTime(eventProposalRequestDTO.getEventTime());
         proposedEvent.setEventLocation(eventProposalRequestDTO.getEventLocation());
         proposedEvent.setAgenda(eventProposalRequestDTO.getAgenda());
         proposedEvent.setUser(creator);  // User who proposed the event
+        proposedEvent.setCreatedBy(creator);
         proposedEvent.setProposalStatus(ProposalStatus.PENDING);  // Set status to PENDING by default
 
         proposedEvent = eventProposalDao.save(proposedEvent);  // Save the proposed event to the database

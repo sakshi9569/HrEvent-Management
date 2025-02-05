@@ -30,7 +30,7 @@ public class AdminEventProposalController {
             @PathVariable Long proposalId,
             @RequestBody AdminEventActionRequestDTO adminEventActionRequestDTO) {
 
-        // Process the action on the proposed event
+
         AdminEventActionResponseDTO responseDTO = adminEventProposalService.takeAction(proposalId, adminEventActionRequestDTO);
 
         return ResponseEntity.ok(responseDTO);

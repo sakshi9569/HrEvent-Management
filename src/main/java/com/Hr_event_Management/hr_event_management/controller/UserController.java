@@ -19,17 +19,12 @@ public class UserController {
     // SignUp API (Using DTO - SignupRequest)
     @PostMapping(USER_SIGN_UP)
     public AuthResponseDTO signUp(@RequestBody SignupRequest signupRequest) {
-        // Call signUp method with the DTO data and save the user
-       // User savedUser = userService.signUp(signupRequest);
-
-        return  userService.signUp(signupRequest);// Return saved user as response
+        return  userService.signUp(signupRequest);
     }
 
     @PostMapping("/login")
     public AuthResponseDTO signUp(@RequestBody LoginRequestDTO LoginRequest) {
-        // Call signUp method with the DTO data and save the user
-        // User savedUser = userService.signUp(signupRequest);
 
-        return  userService.login(LoginRequest);// Return saved user as response
+        return  userService.login(LoginRequest);
     }
 }
