@@ -112,5 +112,22 @@ public class InviteService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public List<InviteResponseDTO> getConflictingInvites(Long userId) {
+        List<Invite> conflictingInvites = inviteDao.findConflictingInvites(userId);
+
+        // Convert Invite entities to InviteResponseDTO
+        return conflictingInvites.stream()
+                .map(invite -> new InviteResponseDTO(
+                        invite.getEvent().getId().toString(),
+                        invite.getEvent().getEventName(),
+                        invite.getEvent().getDate().toString(),
+                        invite.getEvent().getTime().toString(),
+                        invite.getEvent().getLocation()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
 }
 

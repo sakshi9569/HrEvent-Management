@@ -53,4 +53,10 @@ public class InviteController {
         return ResponseEntity.ok(history);
     }
 
+    @GetMapping("/{userId}/invites/conflicts")
+    public ResponseEntity<List<InviteResponseDTO>> getConflictingInvites(@PathVariable Long userId) {
+        List<InviteResponseDTO> conflicts = inviteService.getConflictingInvites(userId);
+        return ResponseEntity.ok(conflicts);
+    }
+
 }

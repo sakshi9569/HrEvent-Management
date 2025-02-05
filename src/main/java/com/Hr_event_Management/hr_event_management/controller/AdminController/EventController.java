@@ -17,8 +17,7 @@ public class EventController {
     private final EventService eventService;
 
     @Autowired
-    public EventController(EventService eventService) {
-        this.eventService = eventService;
+    public EventController(EventService eventService) {this.eventService = eventService;
     }
 
     // Create Event with Invites
@@ -28,7 +27,7 @@ public class EventController {
         return eventService.createEventWithInvites(eventRequestDTO, invitedUserIds);
     }
 
-    // Modify event (cancel, update, or reschedule)
+
     @PutMapping("/{eventId}/modify")
     public ResponseEntity<ModifyEventResponseDTO> modifyEvent(
             @PathVariable Long eventId,
@@ -36,12 +35,9 @@ public class EventController {
 
         // Call the service layer to modify the event
         String result = eventService.modifyEvent(eventId, modifyEventRequest);
-
         // Return the response with the result
         ModifyEventResponseDTO response = new ModifyEventResponseDTO();
         response.setMessage(result);
-
-
         if (result.contains("success")) {
             return ResponseEntity.ok(response);
         } else {
@@ -49,7 +45,11 @@ public class EventController {
         }
     }
 
+    @PostMapping("/{eventId}/add-invitees")
+    public ResponseEntity<String> addInvitees(@PathVariable Long eventId, @RequestBody List<InviteRequestDTO> inviteRequestDTOs) {
+        String response = eventService.addInvitees(eventId, inviteRequestDTOs);
+        return ResponseEntity.ok(response);
+    }
 
-    //TODO - create list of events api
 
 }

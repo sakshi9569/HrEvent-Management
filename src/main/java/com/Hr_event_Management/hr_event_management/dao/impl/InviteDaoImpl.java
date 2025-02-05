@@ -59,6 +59,16 @@ public class InviteDaoImpl implements InviteDao {
         return query.getResultList();
     }
 
+    public List<Invite> findConflictingInvites(Long userId) {
+        String query = "SELECT i FROM Invite i WHERE i.user.userId = :userId " +
+                "AND EXISTS (SELECT 1 FROM Invite i2 WHERE i2.user.userId = :userId " +
+                "AND i2.event.date = i.event.date AND i2.event.time = i.event.time AND i2.id <> i.id)";
+
+        return entityManager.createQuery(query, Invite.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
     // Save invite
     @Override
     @Transactional

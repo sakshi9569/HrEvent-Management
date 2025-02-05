@@ -42,11 +42,5 @@ public class EventDaoImpl implements EventDao {
         return entityManager.createQuery("SELECT e FROM Event e", Event.class).getResultList();
     }
 
-    @Override
-    public void deleteById(UUID eventId) {
-        Event event = entityManager.find(Event.class, eventId);
-        if (event != null) {
-            entityManager.remove(event);
-        }
-    }
+
 }

@@ -5,6 +5,7 @@ import com.Hr_event_Management.hr_event_management.dao.EventDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
 import com.Hr_event_Management.hr_event_management.dto.EventRequestDTO;
 import com.Hr_event_Management.hr_event_management.dto.EventResponseDTO;
+import com.Hr_event_Management.hr_event_management.dto.InviteRequestDTO;
 import com.Hr_event_Management.hr_event_management.dto.ModifyEventRequestDTO;
 import com.Hr_event_Management.hr_event_management.model.Event;
 import com.Hr_event_Management.hr_event_management.model.Invite;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -137,6 +139,9 @@ public class EventService {
                 event.setStatus(EventStatus.CANCELED);
                 break;
             case "update":
+                if(modifyEventRequestDTO.getEventName() != null){
+                    event.setFirstName(modifyEventRequestDTO.getEventName());
+                }
                 event.setAgenda(modifyEventRequestDTO.getEventName());
                 event.setTime(Timestamp.valueOf(modifyEventRequestDTO.getEventTime() + ":00"));
                 event.setDate(Timestamp.valueOf(modifyEventRequestDTO.getEventDate() + " 00:00:00"));
@@ -148,12 +153,37 @@ public class EventService {
                 break;
             default:
                 return "Invalid action! Use 'cancel', 'update', or 'reschedule'.";
-        }
-
-        // Update the event
+        }// Update the event
         event.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         eventDao.save(event);
-
         return "Event modified successfully!";
+    }
+
+    @Transactional
+    public String addInvitees(Long eventId, List<InviteRequestDTO> inviteRequestDTOs) {
+        Optional<Event> eventOptional = eventDao.findById(eventId);
+
+        if (eventOptional.isEmpty()) {
+            return "Event not found.";
+        }
+
+        Event event = eventOptional.get();
+
+        List<Invite> newInvites = inviteRequestDTOs.stream().map(dto -> {
+            Optional<User> userOptional = userDao.findById(dto.getUserId());
+            if (userOptional.isEmpty()) {
+                throw new RuntimeException("User with ID " + dto.getUserId() + " not found.");
+            }
+
+            User user = userOptional.get();
+            Invite invite = new Invite();
+            invite.setEvent(event);
+            invite.setUser(user);
+            invite.setStatus(InvitationStatus.PENDING);
+            return invite;
+        }).collect(Collectors.toList());
+
+        newInvites.forEach(inviteDao::save);
+        return "Invitees added successfully.";
     }
 }

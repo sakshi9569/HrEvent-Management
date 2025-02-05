@@ -12,5 +12,4 @@ public interface EventDao {
 
     List<Event> findAll();  // Get all events
 
-    void deleteById(UUID eventId);  // Delete an event by UUID
 }

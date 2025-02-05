@@ -8,9 +8,10 @@ public interface InviteDao {
 
     List<Invite> findByUserId(Long userId);// Method to fetch invites for a given user
     List<Invite> findPendingByUserId(Long userId);
-    // Method to fetch invite by eventId and userId (used for accepting/rejecting/rescheduling)
     Optional<Invite> findByEventIdAndUserId(Long eventId, Long userId);
     List<Invite> findHistoryByUserId(Long userId);
+
+    List<Invite> findConflictingInvites(Long userId);
 
     void save(Invite invite);
 }
