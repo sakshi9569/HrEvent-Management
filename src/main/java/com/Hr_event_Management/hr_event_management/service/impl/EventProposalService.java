@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Service
@@ -56,7 +57,7 @@ public class EventProposalService {
         eventProposalResponseDTO.setEventId(proposedEvent.getId());
         eventProposalResponseDTO.setEventName(proposedEvent.getEventName());
         eventProposalResponseDTO.setEventDate(proposedEvent.getEventDate());
-        eventProposalResponseDTO.setEventTime(proposedEvent.getEventTime());
+        eventProposalResponseDTO.setEventTime(String.valueOf(proposedEvent.getEventTime()));
         eventProposalResponseDTO.setEventLocation(proposedEvent.getEventLocation());
         eventProposalResponseDTO.setAgenda(proposedEvent.getAgenda());
         eventProposalResponseDTO.setProposalStatus(proposedEvent.getProposalStatus().name());

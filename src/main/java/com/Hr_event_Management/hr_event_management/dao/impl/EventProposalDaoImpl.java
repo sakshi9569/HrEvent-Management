@@ -5,6 +5,7 @@ import com.Hr_event_Management.hr_event_management.model.ProposedEvent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +27,11 @@ public class EventProposalDaoImpl implements EventProposalDao {
         }
     }
 
+    @Override
+    public ProposedEvent getById(Long id) {
+        return entityManager.find(ProposedEvent.class, id);
+
+    }
     // Find all proposed events for a given user by userId
     @Override
     public List<ProposedEvent> findByUserId(Long userId) {
@@ -33,6 +39,14 @@ public class EventProposalDaoImpl implements EventProposalDao {
         TypedQuery<ProposedEvent> query = entityManager.createQuery(queryStr, ProposedEvent.class);
         query.setParameter("userId", userId);
         return query.getResultList();
+    }
+    @Transactional
+    @Override
+    public void deleteById(Long id) {
+        ProposedEvent proposedEvent = entityManager.find(ProposedEvent.class, id);
+        if (proposedEvent != null) {
+            entityManager.remove(proposedEvent);
+        }
     }
 
 }

@@ -32,7 +32,7 @@ public class ProposedEvent {
     private String eventDate ;
 
     @Column(nullable = false)
-    private String eventTime;
+    private Timestamp eventTime;
 
     @Column(nullable = false)
     private String eventLocation;
