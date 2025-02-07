@@ -10,42 +10,56 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
+
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret.key}")
-    private String secretKey;
+    private static final String SECRET_KEY = "YourSuperSecretKeyWithAtLeast256BitsLength!";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
+    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    // Method to generate a JWT token
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
-
-    // Generate JWT token with necessary fields (email, empId)
-    public String generateToken(String email) {
-        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    public String generateToken(String username) {
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 24 hours
-                .signWith(key)
+                .setSubject(username)  // The user info (usually username or user id)
+                .setIssuedAt(new Date())  // Token creation time
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // Token expiration time
+                .signWith(key,SignatureAlgorithm.HS256)  // Signing the token with the secret key
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+    // Method to extract username (subject) from the JWT token
+    public static String extractUsername(String token) {
+        return extractClaims(token).getSubject();
     }
 
-    private <T> T extractClaim(String token, ClaimsResolver<T> claimsResolver) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(getSigningKey())
+    // Method to extract expiration date from the JWT token
+    public static Date extractExpiration(String token) {
+        return extractClaims(token).getExpiration();
+    }
+
+    // Extracting the claims (payload) from the token
+    private static Claims extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claimsResolver.resolve(claims);
     }
 
-    @FunctionalInterface
-    public interface ClaimsResolver<T> {
-        T resolve(Claims claims);
+    // Check if the token has expired
+    private static boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    // Validate the JWT token
+    public static boolean validateToken(String token, String username) {
+        return (username.equals(extractUsername(token)) && !isTokenExpired(token));
     }
 }
+

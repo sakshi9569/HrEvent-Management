@@ -7,8 +7,6 @@ import com.Hr_event_Management.hr_event_management.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import static com.Hr_event_Management.hr_event_management.config.ApiPathConstants.UserApiPathConstant.USER_SIGN_UP;
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -17,14 +15,14 @@ public class UserController {
     private UserServiceImpl userService;
 
     // SignUp API (Using DTO - SignupRequest)
-    @PostMapping(USER_SIGN_UP)
+    @PostMapping("/signup")
     public AuthResponseDTO signUp(@RequestBody SignupRequest signupRequest) {
-        return  userService.signUp(signupRequest);
+        return userService.signUp(signupRequest);
     }
 
+    // Login API
     @PostMapping("/login")
-    public AuthResponseDTO signUp(@RequestBody LoginRequestDTO LoginRequest) {
-
-        return  userService.login(LoginRequest);
+    public AuthResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+        return userService.login(loginRequest);
     }
 }
