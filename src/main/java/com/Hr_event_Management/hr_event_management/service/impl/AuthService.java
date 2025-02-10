@@ -44,12 +44,11 @@ public class AuthService {
 
         // Save the user to the database
         userDao.save(user);
+        userDao.save(user);
+        Optional<User> userFromDb = userDao.findByEmail(signupRequestDTO.getEmail());
+        String token=jwtUtil.generateToken(signupRequestDTO.getEmail());
 
-        // Generate JWT token after successful registration
-        String token = jwtUtil.generateToken(signupRequestDTO.getEmail());
-
-        // Return the response with the token
-        return new AuthResponseDTO(token);
+        return new AuthResponseDTO(token, userFromDb.get().getUserId());
     }
 
 }

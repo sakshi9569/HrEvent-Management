@@ -22,9 +22,8 @@ public class EventController {
 
     // Create Event with Invites
     @PostMapping("/create")
-    public EventResponseDTO createEventWithInvites(@RequestBody EventRequestDTO eventRequestDTO,
-                                                   @RequestParam List<Long> invitedUserIds) {
-        return eventService.createEventWithInvites(eventRequestDTO, invitedUserIds);
+    public EventResponseDTO createEventWithInvites(@RequestBody EventRequestDTO eventRequestDTO) {
+        return eventService.createEventWithInvites(eventRequestDTO, eventRequestDTO.getInvitedUserIds());
     }
 
 
@@ -50,6 +49,4 @@ public class EventController {
         String response = eventService.addInvitees(eventId, inviteRequestDTOs);
         return ResponseEntity.ok(response);
     }
-
-
 }

@@ -61,5 +61,8 @@ public class JwtUtil {
     public static boolean validateToken(String token, String username) {
         return (username.equals(extractUsername(token)) && !isTokenExpired(token));
     }
+    public static boolean validateToken(String token){
+        return (!isTokenExpired(token));
+    }
 }
 

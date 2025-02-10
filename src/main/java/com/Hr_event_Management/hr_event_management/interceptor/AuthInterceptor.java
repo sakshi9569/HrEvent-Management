@@ -1,40 +1,56 @@
 package com.Hr_event_Management.hr_event_management.interceptor;
+import com.Hr_event_Management.hr_event_management.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
-    // Pre-handle method to check authentication before proceeding to controller
+    private final JwtUtil jwtTokenProvider;
+
+    public AuthInterceptor(JwtUtil jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String authToken = request.getHeader("Authorization");
+        if (request.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS.name())) {
+            return true;
+        }
 
-        if (authToken == null || !authToken.startsWith("Bearer ")) {
+        String requestURI = request.getRequestURI();
+
+        if (requestURI.contains("/api/auth/login") ||
+                requestURI.contains("/api/auth/register") ||
+                requestURI.contains("/api/auth/verify") ||
+                requestURI.contains("/api/auth/resend-otp") ||
+                requestURI.contains("/error")) {
+            return true;
+        }
+
+        // Extract token from request header
+        String token = request.getHeader("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: No token provided");
+            response.getWriter().write("Unauthorized: Missing or invalid token");
             return false;
         }
 
-        // Example of JWT token validation
-        String token = authToken.substring(7);  // Removing "Bearer " prefix
-        if (!validateToken(token)) {
+        // Remove "Bearer " prefix
+        token = token.substring(7);
+
+        // Validate the token
+        if (!jwtTokenProvider.validateToken(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized: Invalid token");
             return false;
         }
 
+        // Optionally, store the authenticated user's email in the request for further processing
+
         return true;
     }
-
-    private boolean validateToken(String token) {
-
-        return true; // Return true if valid, false otherwise
-    }
-
 }

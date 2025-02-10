@@ -1,0 +1,27 @@
+2025-02-09 13:05:57 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'logging.level.com.yourpackage' to org.springframework.boot.logging.LogLevel:
+
+    Property: logging.level.com.yourpackage
+    Value: "DEBUG   # Change 'yourpackage' to your main package name"
+    Origin: class path resource [application.properties] - 17:31
+    Reason: failed to convert java.lang.String to org.springframework.boot.logging.LogLevel (caused by java.lang.IllegalArgumentException: No enum constant org.springframework.boot.logging.LogLevel.DEBUG   # Change 'yourpackage' to your main package name)
+
+Action:
+
+Update your application's configuration. The following values are valid:
+
+    DEBUG
+    ERROR
+    FATAL
+    INFO
+    OFF
+    TRACE
+    WARN
+

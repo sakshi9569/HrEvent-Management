@@ -53,10 +53,11 @@ public class UserServiceImpl implements UserService {
 
         // Save the user to the database
         userDao.save(user);
+        Optional<User> userFromDb = userDao.findByEmail(signupRequest.getEmail());
         log.info("user successfully saved");
         String token=jwtUtil.generateToken(signupRequest.getEmail());
 
-        return new AuthResponseDTO(token);
+        return new AuthResponseDTO(token, userFromDb.get().getUserId());
     }
 
     private void validateRequest(SignupRequest signupRequestDTO) {
@@ -82,7 +83,8 @@ public class UserServiceImpl implements UserService {
 
         // Generate JWT token
         String token = jwtUtil.generateToken(user.getEmail());
-
-        return new AuthResponseDTO(token);
+        userDao.save(user);
+        Optional<User> userFromDb = userDao.findByEmail(loginRequestDTO.getEmail());
+        return new AuthResponseDTO(token, userFromDb.get().getUserId());
     }
 }
