@@ -36,6 +36,7 @@ const Login = () => {
             setToken(response.token);
             setUserId(response.id);
             localStorage.setItem("JWT_TOKEN", JSON.stringify(response.token));
+            localStorage.setItem("id",response.id);
             toast.success("Login Successful!");
             reset();
             
@@ -95,7 +96,7 @@ const Login = () => {
                 Don't have an account? 
                 <Link
                     className='font-semibold underline hover:text-black'
-                    to="/register">
+                    to="/">
                         <span className='text-btnColor'> SignUp</span>
                 </Link>
             </p>
