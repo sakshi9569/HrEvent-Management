@@ -12,7 +12,7 @@ const AdminDashboard = () => {
   const [proposedEvents, setProposedEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Single modal for all actions
-  const [modalType, setModalType] = useState(null); // Type of modal: "create", "modify", or "view"
+  const [modalType, setModalType] = useState(null); // Type of modal: "create", "modify", or "addInvitees"
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventData, setEventData] = useState({
     firstName: "",
@@ -25,6 +25,7 @@ const AdminDashboard = () => {
     createdById: id,
     invitedUserIds: "",
   });
+  const [invitees, setInvitees] = useState(""); // State for invitees input
 
   // Fetch proposed events when the active section changes
   useEffect(() => {
@@ -117,11 +118,60 @@ const AdminDashboard = () => {
     }
   };
 
-  // Open modal for create, modify, or view
+  // Handle adding invitees to an event
+  const handleAddInvitees = async (e) => {
+    e.preventDefault();
+
+    if (!selectedEvent) return;
+
+    const inviteesList = invitees
+      .split(",")
+      .map((userId) => ({ userId: parseInt(userId.trim(), 10) }))
+      .filter((invitee) => !isNaN(invitee.userId)); // Filter out invalid user IDs
+
+    try {
+      await api.post(`/user/event/${selectedEvent.eventId}/add-invitees`, inviteesList, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Invitees added successfully");
+      setIsModalOpen(false); // Close the modal
+      setInvitees(""); // Reset invitees input
+      handleFetchAllEvents(); // Refresh the events list
+    } catch (error) {
+      toast.error(error.response ? error.response.data : "An error occurred");
+    }
+  };
+  const handleSuccess = async (e, eventId) => {
+    e.preventDefault();
+    const action = e.target.name; // "ACCEPTED" or "REJECTED"
+  
+    try {
+      await api.post(
+        `/user/proposal/${eventId}/action`,
+        {
+          action: action,
+          remark: "ok", // You can customize the remark if needed
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      toast.success(`Proposal ${action.toLowerCase()} successfully`);
+      // Refresh the proposed events list
+      const response = await api.get(`/user/proposedEvents/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setProposedEvents(response.data);
+    } catch (error) {
+      toast.error(error.response ? error.response.data : "An error occurred");
+    }
+  };
+
+  // Open modal for create, modify, or add invitees
   const openModal = (type, event = null) => {
     setModalType(type);
     setIsModalOpen(true);
-    if (type === "modify" && event) {
+    if (event) {
       setSelectedEvent(event);
     }
   };
@@ -131,6 +181,7 @@ const AdminDashboard = () => {
     setIsModalOpen(false);
     setModalType(null);
     setSelectedEvent(null);
+    setInvitees(""); // Reset invitees input
   };
 
   return (
@@ -173,7 +224,14 @@ const AdminDashboard = () => {
             {proposedEvents.map((event) => (
               <div key={event.id} className="p-4 bg-white shadow-md mb-4 rounded-lg">
                 <p><strong>{event.eventName}</strong></p>
-                <p>{event.eventDateTime}</p>
+                <p>{event.eventDate}</p>
+                <p>{event.eventTime}</p>
+                <p>{event.eventLocation}</p>
+                <p>{event.agenda}</p>
+                <p>{event.proposalStatus}</p>
+                <p>{event.createdById}</p>
+                <button className="mt-2 bg-yellow-500 text-white py-1 px-3 rounded" onClick={(e) => handleSuccess(e, event.eventId)} name="ACCEPTED">ACCEPTED</button>
+                <button className="mt-2 bg-yellow-500 text-white py-1 px-3 rounded" onClick={(e) => handleSuccess(e, event.eventId)} name="REJECTED">REJECTED</button>
               </div>
             ))}
           </div>
@@ -197,6 +255,12 @@ const AdminDashboard = () => {
                 >
                   Modify Event
                 </button>
+                <button
+                  onClick={() => openModal("addInvitees", event)}
+                  className="mt-2 bg-purple-500 text-white py-1 px-3 rounded"
+                >
+                  Add Invitees
+                </button>
               </div>
             ))}
           </div>
@@ -211,10 +275,20 @@ const AdminDashboard = () => {
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
       >
         <h2 className="text-xl font-bold mb-4">
-          {modalType === "create" ? "Create Event" : "Modify Event"}
+          {modalType === "create"
+            ? "Create Event"
+            : modalType === "modify"
+            ? "Modify Event"
+            : "Add Invitees"}
         </h2>
         <form
-          onSubmit={modalType === "create" ? handleCreateEvent : handleModifyEvent}
+          onSubmit={
+            modalType === "create"
+              ? handleCreateEvent
+              : modalType === "modify"
+              ? handleModifyEvent
+              : handleAddInvitees
+          }
           className="flex flex-col gap-3"
         >
           {modalType === "create" && (
@@ -266,8 +340,25 @@ const AdminDashboard = () => {
               />
             </>
           )}
+          {modalType === "addInvitees" && (
+            <>
+              <input
+                type="text"
+                name="invitees"
+                placeholder="Invitee User IDs (comma-separated)"
+                value={invitees}
+                onChange={(e) => setInvitees(e.target.value)}
+                required
+                className="border p-2 rounded"
+              />
+            </>
+          )}
           <button type="submit" className="bg-blue-500 text-white py-2 rounded">
-            {modalType === "create" ? "Create Event" : "Modify Event"}
+            {modalType === "create"
+              ? "Create Event"
+              : modalType === "modify"
+              ? "Modify Event"
+              : "Add Invitees"}
           </button>
         </form>
         <button onClick={closeModal} className="mt-4 text-red-500">Cancel</button>
