@@ -3,6 +3,7 @@ import api from "../api/api";
 import Modal from "react-modal";
 import { useStoreContext } from "../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 
 Modal.setAppElement("#root");
 
@@ -11,8 +12,8 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [proposedEvents, setProposedEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Single modal for all actions
-  const [modalType, setModalType] = useState(null); // Type of modal: "create", "modify", or "addInvitees"
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null); // "create", "modify", or "addInvitees"
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventData, setEventData] = useState({
     firstName: "",
@@ -25,12 +26,14 @@ const AdminDashboard = () => {
     createdById: id,
     invitedUserIds: "",
   });
-  const [invitees, setInvitees] = useState(""); // State for invitees input
+  const [invitees, setInvitees] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Fetch proposed events when the active section changes
+  // Fetch proposed events
   useEffect(() => {
     if (activeSection === "Proposed Events") {
       const fetchProposedEvents = async () => {
+        setLoading(true);
         try {
           const response = await api.get(`/user/proposedEvents/all`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -38,6 +41,8 @@ const AdminDashboard = () => {
           setProposedEvents(response.data);
         } catch (error) {
           toast.error(error.response ? error.response.data : "An error occurred");
+        } finally {
+          setLoading(false);
         }
       };
       fetchProposedEvents();
@@ -59,8 +64,8 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Event created successfully");
-      setIsModalOpen(false); // Close the modal
-      setEventData({ // Reset form data
+      setIsModalOpen(false);
+      setEventData({
         firstName: "",
         lastName: "",
         agenda: "",
@@ -78,21 +83,23 @@ const AdminDashboard = () => {
 
   // Fetch all events
   const handleFetchAllEvents = async () => {
+    setLoading(true);
     try {
       const response = await api.get("/user/event/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllEvents(response.data);
-      setActiveSection("All Events"); // Set active section to display all events
+      setActiveSection("All Events");
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Handle modifying an event
   const handleModifyEvent = async (e) => {
     e.preventDefault();
-
     if (!selectedEvent) return;
 
     const updatedEvent = {
@@ -111,8 +118,8 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Event modified successfully");
-      setIsModalOpen(false); // Close the modal
-      handleFetchAllEvents(); // Refresh the events list
+      setIsModalOpen(false);
+      handleFetchAllEvents();
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
@@ -121,43 +128,38 @@ const AdminDashboard = () => {
   // Handle adding invitees to an event
   const handleAddInvitees = async (e) => {
     e.preventDefault();
-
     if (!selectedEvent) return;
 
     const inviteesList = invitees
       .split(",")
       .map((userId) => ({ userId: parseInt(userId.trim(), 10) }))
-      .filter((invitee) => !isNaN(invitee.userId)); // Filter out invalid user IDs
+      .filter((invitee) => !isNaN(invitee.userId));
 
     try {
       await api.post(`/user/event/${selectedEvent.eventId}/add-invitees`, inviteesList, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Invitees added successfully");
-      setIsModalOpen(false); // Close the modal
-      setInvitees(""); // Reset invitees input
-      handleFetchAllEvents(); // Refresh the events list
+      setIsModalOpen(false);
+      setInvitees("");
+      handleFetchAllEvents();
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
   };
+
+  // Handle proposal actions (ACCEPTED or REJECTED)
   const handleSuccess = async (e, eventId) => {
     e.preventDefault();
-    const action = e.target.name; // "ACCEPTED" or "REJECTED"
-  
+    const action = e.target.name;
+
     try {
       await api.post(
         `/user/proposal/${eventId}/action`,
-        {
-          action: action,
-          remark: "ok", // You can customize the remark if needed
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { action, remark: "ok" },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(`Proposal ${action.toLowerCase()} successfully`);
-      // Refresh the proposed events list
       const response = await api.get(`/user/proposedEvents/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -171,9 +173,7 @@ const AdminDashboard = () => {
   const openModal = (type, event = null) => {
     setModalType(type);
     setIsModalOpen(true);
-    if (event) {
-      setSelectedEvent(event);
-    }
+    if (event) setSelectedEvent(event);
   };
 
   // Close modal and reset state
@@ -181,100 +181,140 @@ const AdminDashboard = () => {
     setIsModalOpen(false);
     setModalType(null);
     setSelectedEvent(null);
-    setInvitees(""); // Reset invitees input
+    setInvitees("");
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-1/4 bg-gray-800 text-white flex flex-col items-center py-8">
-        <h2 className="text-xl font-bold mb-6">Admin Dashboard</h2>
-
-        {/* Create Event Button */}
+      <motion.div
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white flex flex-col items-center py-8 shadow-lg"
+      >
+        <h2 className="text-2xl font-bold mb-8">Admin Dashboard</h2>
         <button
-          className="w-3/4 py-2 mb-4 bg-blue-500 hover:bg-blue-600 rounded-lg"
+          className="w-4/5 py-3 mb-4 bg-blue-500 hover:bg-blue-600 rounded-lg transition-all duration-300"
           onClick={() => openModal("create")}
         >
           Create Event
         </button>
-
-        {/* Fetch All Events Button */}
         <button
-          className="w-3/4 py-2 mb-4 bg-green-500 hover:bg-green-600 rounded-lg"
+          className="w-4/5 py-3 mb-4 bg-green-500 hover:bg-green-600 rounded-lg transition-all duration-300"
           onClick={handleFetchAllEvents}
         >
           Fetch All Events
         </button>
-
-        {/* Proposed Events Button */}
         <button
-          className="w-3/4 py-2 mb-4 bg-gray-700 hover:bg-gray-600 rounded-lg"
+          className="w-4/5 py-3 mb-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all duration-300"
           onClick={() => setActiveSection("Proposed Events")}
         >
           Proposed Events
         </button>
-      </div>
+      </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 bg-gray-100 overflow-auto">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex-1 p-8 overflow-auto"
+      >
         {/* Proposed Events Section */}
         {activeSection === "Proposed Events" && (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Proposed Events</h2>
-            {proposedEvents.map((event) => (
-              <div key={event.id} className="p-4 bg-white shadow-md mb-4 rounded-lg">
-                <p><strong>{event.eventName}</strong></p>
-                <p>{event.eventDate}</p>
-                <p>{event.eventTime}</p>
-                <p>{event.eventLocation}</p>
-                <p>{event.agenda}</p>
-                <p>{event.proposalStatus}</p>
-                <p>{event.createdById}</p>
-                <button className="mt-2 bg-yellow-500 text-white py-1 px-3 rounded" onClick={(e) => handleSuccess(e, event.eventId)} name="ACCEPTED">ACCEPTED</button>
-                <button className="mt-2 bg-yellow-500 text-white py-1 px-3 rounded" onClick={(e) => handleSuccess(e, event.eventId)} name="REJECTED">REJECTED</button>
+            <h2 className="text-3xl font-bold mb-6 text-gray-800">Proposed Events</h2>
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
-            ))}
+            ) : (
+              <div className="space-y-4">
+                {proposedEvents.map((event) => (
+                  <div
+                    key={event.eventId}
+                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                  >
+                    <h3 className="text-xl font-bold text-blue-600">{event.eventName}</h3>
+                    <p className="text-gray-600 mt-2">Date: {event.eventDate}</p>
+                    <p className="text-gray-600">Time: {event.eventTime}</p>
+                    <p className="text-gray-600">Location: {event.eventLocation}</p>
+                    <p className="text-gray-600">Agenda: {event.agenda}</p>
+                    <p className="text-gray-600">Status: {event.proposalStatus}</p>
+                    <div className="mt-4 space-x-2">
+                      <button
+                        className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
+                        onClick={(e) => handleSuccess(e, event.eventId)}
+                        name="ACCEPTED"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
+                        onClick={(e) => handleSuccess(e, event.eventId)}
+                        name="REJECTED"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* All Events Section */}
         {activeSection === "All Events" && (
           <div>
-            <h2 className="text-2xl font-bold mb-4">All Events</h2>
-            {allEvents.map((event, index) => (
-              <div key={event.id || index} className="p-4 bg-white shadow-md mb-4 rounded-lg">
-                <p><strong>Event ID:</strong> {event.eventId}</p>
-                <p><strong>Event Name:</strong> {event.agenda}</p>
-                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-                <p><strong>Time:</strong> {new Date(event.time).toLocaleTimeString()}</p>
-                <p><strong>Location:</strong> {event.location}</p>
-                <p><strong>Status:</strong> {event.status}</p>
-                <button
-                  onClick={() => openModal("modify", event)}
-                  className="mt-2 bg-yellow-500 text-white py-1 px-3 rounded"
-                >
-                  Modify Event
-                </button>
-                <button
-                  onClick={() => openModal("addInvitees", event)}
-                  className="mt-2 bg-purple-500 text-white py-1 px-3 rounded"
-                >
-                  Add Invitees
-                </button>
+            <h2 className="text-3xl font-bold mb-6 text-gray-800">All Events</h2>
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
-            ))}
+            ) : (
+              <div className="space-y-4">
+                {allEvents.map((event) => (
+                  <div
+                    key={event.eventId}
+                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                  >
+                    <h3 className="text-xl font-bold text-blue-600">{event.agenda}</h3>
+                    <p className="text-gray-600 mt-2">Date: {new Date(event.date).toLocaleDateString()}</p>
+                    <p className="text-gray-600">Time: {new Date(event.time).toLocaleTimeString()}</p>
+                    <p className="text-gray-600">Location: {event.location}</p>
+                    <p className="text-gray-600">Status: {event.status}</p>
+                    <div className="mt-4 space-x-2">
+                      <button
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
+                        onClick={() => openModal("modify", event)}
+                      >
+                        Modify
+                      </button>
+                      <button
+                        className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
+                        onClick={() => openModal("addInvitees", event)}
+                      >
+                        Add Invitees
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
-      </div>
+      </motion.div>
 
-      {/* Single Modal for All Actions */}
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-20"
+        className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto mt-20"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
       >
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-2xl font-bold mb-6">
           {modalType === "create"
             ? "Create Event"
             : modalType === "modify"
@@ -289,71 +329,114 @@ const AdminDashboard = () => {
               ? handleModifyEvent
               : handleAddInvitees
           }
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-4"
         >
           {modalType === "create" && (
             <>
-              <input type="text" name="firstName" placeholder="First Name" onChange={(e) => setEventData({ ...eventData, firstName: e.target.value })} required className="border p-2 rounded" />
-              <input type="text" name="lastName" placeholder="Last Name" onChange={(e) => setEventData({ ...eventData, lastName: e.target.value })} required className="border p-2 rounded" />
-              <input type="text" name="agenda" placeholder="Agenda" onChange={(e) => setEventData({ ...eventData, agenda: e.target.value })} required className="border p-2 rounded" />
-              <input type="datetime-local" name="time" onChange={(e) => setEventData({ ...eventData, time: e.target.value })} required className="border p-2 rounded" />
-              <input type="date" name="date" onChange={(e) => setEventData({ ...eventData, date: e.target.value })} required className="border p-2 rounded" />
-              <input type="text" name="location" placeholder="Location" onChange={(e) => setEventData({ ...eventData, location: e.target.value })} required className="border p-2 rounded" />
-              <input type="text" name="invitedUserIds" placeholder="Invited User IDs (comma-separated)" onChange={(e) => setEventData({ ...eventData, invitedUserIds: e.target.value })} required className="border p-2 rounded" />
+              <input
+                type="text"
+                placeholder="First Name"
+                value={eventData.firstName}
+                onChange={(e) => setEventData({ ...eventData, firstName: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                value={eventData.lastName}
+                onChange={(e) => setEventData({ ...eventData, lastName: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Agenda"
+                value={eventData.agenda}
+                onChange={(e) => setEventData({ ...eventData, agenda: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="datetime-local"
+                value={eventData.time}
+                onChange={(e) => setEventData({ ...eventData, time: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="date"
+                value={eventData.date}
+                onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Location"
+                value={eventData.location}
+                onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Invited User IDs (comma-separated)"
+                value={eventData.invitedUserIds}
+                onChange={(e) => setEventData({ ...eventData, invitedUserIds: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
             </>
           )}
           {modalType === "modify" && selectedEvent && (
             <>
               <input
                 type="text"
-                name="agenda"
                 placeholder="Agenda"
-                value={selectedEvent.agenda || ""}
+                value={selectedEvent.agenda}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, agenda: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
-                className="border p-2 rounded"
               />
               <input
                 type="datetime-local"
-                name="time"
                 value={selectedEvent.time ? new Date(selectedEvent.time).toISOString().slice(0, 16) : ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, time: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
-                className="border p-2 rounded"
               />
               <input
                 type="date"
-                name="date"
                 value={selectedEvent.date ? new Date(selectedEvent.date).toISOString().slice(0, 10) : ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, date: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
-                className="border p-2 rounded"
               />
               <input
                 type="text"
-                name="location"
                 placeholder="Location"
-                value={selectedEvent.location || ""}
+                value={selectedEvent.location}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, location: e.target.value })}
+                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
-                className="border p-2 rounded"
               />
             </>
           )}
           {modalType === "addInvitees" && (
-            <>
-              <input
-                type="text"
-                name="invitees"
-                placeholder="Invitee User IDs (comma-separated)"
-                value={invitees}
-                onChange={(e) => setInvitees(e.target.value)}
-                required
-                className="border p-2 rounded"
-              />
-            </>
+            <input
+              type="text"
+              placeholder="Invitee User IDs (comma-separated)"
+              value={invitees}
+              onChange={(e) => setInvitees(e.target.value)}
+              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           )}
-          <button type="submit" className="bg-blue-500 text-white py-2 rounded">
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg transition-all duration-300"
+          >
             {modalType === "create"
               ? "Create Event"
               : modalType === "modify"
@@ -361,7 +444,12 @@ const AdminDashboard = () => {
               : "Add Invitees"}
           </button>
         </form>
-        <button onClick={closeModal} className="mt-4 text-red-500">Cancel</button>
+        <button
+          onClick={closeModal}
+          className="mt-4 text-red-500 hover:text-red-600 transition-all duration-300"
+        >
+          Cancel
+        </button>
       </Modal>
     </div>
   );
