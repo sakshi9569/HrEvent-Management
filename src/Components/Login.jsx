@@ -1,10 +1,17 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import TextField from './TextField';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import toast from 'react-hot-toast';
 import { useStoreContext } from '../contextApi/ContextApi';
+import {
+    Container,
+    Box,
+    Typography,
+    TextField,
+    Button,
+    CircularProgress
+} from '@mui/material';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -15,10 +22,9 @@ const Login = () => {
         register,
         handleSubmit,
         reset,
-        formState: {errors}
+        formState: { errors }
     } = useForm({
         defaultValues: {
-            username: "",
             email: "",
             password: "",
         },
@@ -28,81 +34,100 @@ const Login = () => {
     const loginHandler = async (data) => {
         setLoader(true);
         try {
-            const { data: response } = await api.post(
-                "/user/login",
-                data
-            );
-            console.log(response.token);
+            const { data: response } = await api.post("/user/login", data);
             setToken(response.token);
             setUserId(response.id);
             localStorage.setItem("JWT_TOKEN", JSON.stringify(response.token));
-            localStorage.setItem("id",response.id);
+            localStorage.setItem("id", response.id);
             toast.success("Login Successful!");
             reset();
-            
-            navigate("/admindashboard");
+            navigate("/dashboard");
         } catch (error) {
             console.log(error);
-            toast.error("Login Failed!")
+            toast.error("Login Failed!");
         } finally {
             setLoader(false);
         }
     };
 
-  return (
-    <div
-        className='min-h-[calc(100vh-64px)] flex justify-center items-center'>
-        <form onSubmit={handleSubmit(loginHandler)}
-            className="sm:w-[450px] w-[360px]  shadow-custom py-8 sm:px-8 px-4 rounded-md">
-            <h1 className="text-center font-serif text-btnColor font-bold lg:text-3xl text-2xl">
-                Login Here
-            </h1>
+    return (
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    minHeight: "100vh",
+                    justifyContent: "center"
+                }}
+            >
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit(loginHandler)}
+                    sx={{
+                        width: "100%",
+                        padding: 4,
+                        boxShadow: 3,
+                        borderRadius: 2,
+                        bgcolor: "background.paper"
+                    }}
+                >
+                    <Typography
+                        variant="h4"
+                        align="center"
+                        sx={{ fontWeight: "bold", color: "primary.main" }}
+                    >
+                        Login Here
+                    </Typography>
 
-            <hr className='mt-2 mb-5 text-black'/>
+                    <Box sx={{ mt: 3 }}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            {...register("email", { required: "Email is required" })}
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
+                            sx={{ mb: 2 }}
+                        />
 
-            <div className="flex flex-col gap-3">
-                <TextField
-                    label="Email"
-                    required
-                    id="email"
-                    type="email"
-                    message="*Email is required"
-                    placeholder="Type your Email"
-                    register={register}
-                    errors={errors}
-                />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            {...register("password", { required: "Password is required", minLength: 6 })}
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
+                            sx={{ mb: 2 }}
+                        />
+                    </Box>
 
-                <TextField
-                    label="Password"
-                    required
-                    id="password"
-                    type="password"
-                    message="*Password is required"
-                    placeholder="Type your password"
-                    register={register}
-                    min={6}
-                    errors={errors}
-                />
-            </div>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        disabled={loader}
+                        sx={{
+                            py: 1.5,
+                            fontWeight: "bold",
+                            bgcolor: "primary.main",
+                            "&:hover": { bgcolor: "primary.dark" }
+                        }}
+                    >
+                        {loader ? <CircularProgress size={24} color="inherit" /> : "Login"}
+                    </Button>
 
-            <button
-                disabled={loader}
-                type='submit'
-                className='bg-customRed font-semibold text-white  bg-custom-gradient w-full py-2 hover:text-slate-400 transition-colors duration-100 rounded-sm my-3'>
-                {loader ? "Loading..." : "Login"}
-            </button>
+                    <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                        Don't have an account?{" "}
+                        <Link to="/" style={{ textDecoration: "none", color: "#1976d2", fontWeight: "bold" }}>
+                            Sign Up
+                        </Link>
+                    </Typography>
+                </Box>
+            </Box>
+        </Container>
+    );
+};
 
-            <p className='text-center text-sm text-slate-700 mt-6'>
-                Don't have an account? 
-                <Link
-                    className='font-semibold underline hover:text-black'
-                    to="/">
-                        <span className='text-btnColor'> SignUp</span>
-                </Link>
-            </p>
-        </form>
-    </div>
-  )
-}
-
-export default Login
+export default Login;

@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import TextField from './TextField';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import toast from 'react-hot-toast';
+import {
+    Container,
+    Box,
+    Typography,
+    TextField,
+    Button,
+    CircularProgress,
+    Paper,
+    Stack
+} from '@mui/material';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -29,119 +38,131 @@ const RegisterPage = () => {
     const registerHandler = async (data) => {
         setLoader(true);
         try {
-            const { data: response } = await api.post(
-                "/user/signup",
-                data
-            );
+            const { data: response } = await api.post("/user/signup", data);
             reset();
             navigate("/login");
-            toast.success("Registeration Successful!")
+            toast.success("Registration Successful!");
         } catch (error) {
             console.log(error);
-            toast.error("Registeration Failed!")
+            toast.error("Registration Failed!");
         } finally {
             setLoader(false);
         }
     };
 
     return (
-        <div
-            className='min-h-[calc(100vh-64px)] flex justify-center items-center'>
-            <form onSubmit={handleSubmit(registerHandler)}
-                className="sm:w-[450px] w-[360px]  shadow-custom py-8 sm:px-8 px-4 rounded-md">
-                <h1 className="text-center font-serif text-btnColor font-bold lg:text-3xl text-2xl">
-                    Register Here
-                </h1>
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    minHeight: "100vh",
+                    justifyContent: "center"
+                }}
+            >
+                <Paper
+                    component="form"
+                    onSubmit={handleSubmit(registerHandler)}
+                    elevation={5}
+                    sx={{
+                        width: "100%",
+                        padding: 4,
+                        borderRadius: 3,
+                        bgcolor: "background.paper"
+                    }}
+                >
+                    <Typography
+                        variant="h4"
+                        align="center"
+                        sx={{ fontWeight: "bold", color: "primary.main" }}
+                    >
+                        Register Here
+                    </Typography>
 
-                <hr className='mt-2 mb-5 text-black' />
+                    <Stack spacing={2} sx={{ mt: 3 }}>
+                        <TextField
+                            fullWidth
+                            label="First Name"
+                            type="text"
+                            {...register("firstname", { required: "First Name is required" })}
+                            error={!!errors.firstname}
+                            helperText={errors.firstname?.message}
+                        />
 
-                <div className="flex flex-col gap-3">
-                    <TextField
-                        label="First Name"
-                        required
-                        id="firstname"
-                        type="text"
-                        message="*First Name is required"
-                        placeholder="Type your First Name"
-                        register={register}
-                        errors={errors}
-                    />
+                        <TextField
+                            fullWidth
+                            label="Last Name"
+                            type="text"
+                            {...register("lastname", { required: "Last Name is required" })}
+                            error={!!errors.lastname}
+                            helperText={errors.lastname?.message}
+                        />
 
-                    <TextField
-                        label="Last Name"
-                        required
-                        id="lastname"
-                        type="text"
-                        message="*Last Name is required"
-                        placeholder="Type your last name"
-                        register={register}
-                        errors={errors}
-                    />
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            {...register("email", { required: "Email is required" })}
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
+                        />
 
-                    <TextField
-                        label="Email"
-                        required
-                        id="email"
-                        type="email"
-                        message="*Email is required"
-                        placeholder="Type your email."
-                        register={register}
-                        errors={errors}
-                    />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            {...register("password", { required: "Password is required", minLength: 6 })}
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
+                        />
 
-                    <TextField
-                        label="Password"
-                        required
-                        id="password"
-                        type="password"
-                        message="*Password is required"
-                        placeholder="Type your password"
-                        register={register}
-                        errors={errors}
-                    />
+                        <TextField
+                            fullWidth
+                            label="Emp ID"
+                            type="text"
+                            {...register("empId", { required: "Emp ID is required" })}
+                            error={!!errors.empId}
+                            helperText={errors.empId?.message}
+                        />
 
-                    <TextField
-                        label="EmpId"
-                        required
-                        id="empId"
-                        type="text"
-                        message="*EmpId is required"
-                        placeholder="Type your EmpId"
-                        register={register}
-                        errors={errors}
-                    />
+                        <TextField
+                            fullWidth
+                            label="Team"
+                            type="text"
+                            {...register("team", { required: "Team is required" })}
+                            error={!!errors.team}
+                            helperText={errors.team?.message}
+                        />
+                    </Stack>
 
-                    <TextField
-                        label="Team"
-                        required
-                        id="team"
-                        type="text"
-                        message="*Team is required"
-                        placeholder="Type your team"
-                        register={register}
-                        errors={errors}
-                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        disabled={loader}
+                        sx={{
+                            mt: 3,
+                            py: 1.5,
+                            fontWeight: "bold",
+                            display: "flex",
+                            justifyContent: "center"
+                        }}
+                    >
+                        {loader ? <CircularProgress size={24} color="inherit" /> : "Register"}
+                    </Button>
 
-                </div>
+                    <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                        Already have an account?{" "}
+                        <Link to="/login" style={{ textDecoration: "none", color: "#1976d2", fontWeight: "bold" }}>
+                            Login
+                        </Link>
+                    </Typography>
+                </Paper>
+            </Box>
+        </Container>
+    );
+};
 
-                <button
-                    disabled={loader}
-                    type='submit'
-                    className='bg-customRed font-semibold text-white  bg-custom-gradient w-full py-2 hover:text-slate-400 transition-colors duration-100 rounded-sm my-3'>
-                    {loader ? "Loading..." : "Register"}
-                </button>
-
-                <p className='text-center text-sm text-slate-700 mt-6'>
-                    Already have an account?
-                    <Link
-                        className='font-semibold underline hover:text-black'
-                        to="/login">
-                        <span className='text-btnColor'> Login</span>
-                    </Link>
-                </p>
-            </form>
-        </div>
-    )
-}
-
-export default RegisterPage
+export default RegisterPage;

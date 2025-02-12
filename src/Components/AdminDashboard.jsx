@@ -4,6 +4,32 @@ import Modal from "react-modal";
 import { useStoreContext } from "../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  TextField,
+  Card,
+  CardContent,
+  CircularProgress,
+  IconButton,
+  Box,
+  Grid,
+} from "@mui/material";
+import {
+  Event as EventIcon,
+  Add as AddIcon,
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Edit as EditIcon,
+  People as PeopleIcon,
+} from "@mui/icons-material";
 
 Modal.setAppElement("#root");
 
@@ -185,127 +211,154 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white flex flex-col items-center py-8 shadow-lg"
-      >
-        <h2 className="text-2xl font-bold mb-8">Admin Dashboard</h2>
-        <button
-          className="w-4/5 py-3 mb-4 bg-blue-500 hover:bg-blue-600 rounded-lg transition-all duration-300"
-          onClick={() => openModal("create")}
-        >
-          Create Event
-        </button>
-        <button
-          className="w-4/5 py-3 mb-4 bg-green-500 hover:bg-green-600 rounded-lg transition-all duration-300"
-          onClick={handleFetchAllEvents}
-        >
-          Fetch All Events
-        </button>
-        <button
-          className="w-4/5 py-3 mb-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all duration-300"
-          onClick={() => setActiveSection("Proposed Events")}
-        >
-          Proposed Events
-        </button>
-      </motion.div>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
 
-      {/* Main Content */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="flex-1 p-8 overflow-auto"
-      >
-        {/* Proposed Events Section */}
-        {activeSection === "Proposed Events" && (
-          <div>
-            <h2 className="text-3xl font-bold mb-6 text-gray-800">Proposed Events</h2>
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {proposedEvents.map((event) => (
-                  <div
-                    key={event.eventId}
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                  >
-                    <h3 className="text-xl font-bold text-blue-600">{event.eventName}</h3>
-                    <p className="text-gray-600 mt-2">Date: {event.eventDate}</p>
-                    <p className="text-gray-600">Time: {event.eventTime}</p>
-                    <p className="text-gray-600">Location: {event.eventLocation}</p>
-                    <p className="text-gray-600">Agenda: {event.agenda}</p>
-                    <p className="text-gray-600">Status: {event.proposalStatus}</p>
-                    <div className="mt-4 space-x-2">
-                      <button
-                        className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
-                        onClick={(e) => handleSuccess(e, event.eventId)}
-                        name="ACCEPTED"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
-                        onClick={(e) => handleSuccess(e, event.eventId)}
-                        name="REJECTED"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+      {/* Sidebar and Main Content */}
+      <Box sx={{ display: "flex", flexGrow: 8, mt: 8 }}>
+        {/* Sidebar */}
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: 240,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: 240,
+              boxSizing: "border-box",
+              bgcolor: "primary.main",
+              color: "white",
+              top: 65.5, // Adjust this value to match the height of your AppBar
+            },
+          }}
+        >
+          <Box sx={{ overflow: "auto" }}>
+            <List>
+              <ListItem>
+                <ListItemText primary="Admin Dashboard" />
+              </ListItem>
+              <ListItem button onClick={() => openModal("create")}>
+                <ListItemIcon>
+                  <AddIcon sx={{ color: "white" }} />
+                </ListItemIcon>
+                <ListItemText primary="Create Event" />
+              </ListItem>
+              <ListItem button onClick={handleFetchAllEvents}>
+                <ListItemIcon>
+                  <EventIcon sx={{ color: "white" }} />
+                </ListItemIcon>
+                <ListItemText primary="Fetch All Events" />
+              </ListItem>
+              <ListItem button onClick={() => setActiveSection("Proposed Events")}>
+                <ListItemIcon>
+                  <PeopleIcon sx={{ color: "white" }} />
+                </ListItemIcon>
+                <ListItemText primary="Proposed Events" />
+              </ListItem>
+            </List>
+          </Box>
+        </Drawer>
 
-        {/* All Events Section */}
-        {activeSection === "All Events" && (
-          <div>
-            <h2 className="text-3xl font-bold mb-6 text-gray-800">All Events</h2>
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {allEvents.map((event) => (
-                  <div
-                    key={event.eventId}
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                  >
-                    <h3 className="text-xl font-bold text-blue-600">{event.agenda}</h3>
-                    <p className="text-gray-600 mt-2">Date: {new Date(event.date).toLocaleDateString()}</p>
-                    <p className="text-gray-600">Time: {new Date(event.time).toLocaleTimeString()}</p>
-                    <p className="text-gray-600">Location: {event.location}</p>
-                    <p className="text-gray-600">Status: {event.status}</p>
-                    <div className="mt-4 space-x-2">
-                      <button
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
-                        onClick={() => openModal("modify", event)}
-                      >
-                        Modify
-                      </button>
-                      <button
-                        className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-all duration-300"
-                        onClick={() => openModal("addInvitees", event)}
-                      >
-                        Add Invitees
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </motion.div>
+        {/* Main Content */}
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          {activeSection === "Proposed Events" && (
+            <Box>
+              <Typography variant="h4" gutterBottom>
+                Proposed Events
+              </Typography>
+              {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <Grid container spacing={3}>
+                  {proposedEvents.map((event) => (
+                    <Grid item xs={12} sm={6} md={4} key={event.eventId}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">{event.eventName}</Typography>
+                          <Typography>Date: {event.eventDate}</Typography>
+                          <Typography>Time: {event.eventTime}</Typography>
+                          <Typography>Location: {event.eventLocation}</Typography>
+                          <Typography>Agenda: {event.agenda}</Typography>
+                          <Typography>Status: {event.proposalStatus}</Typography>
+                          <Box mt={2}>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              startIcon={<CheckIcon />}
+                              onClick={(e) => handleSuccess(e, event.eventId)}
+                              name="ACCEPTED"
+                              sx={{ mr: 1 }}
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              startIcon={<CloseIcon />}
+                              onClick={(e) => handleSuccess(e, event.eventId)}
+                              name="REJECTED"
+                            >
+                              Reject
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Box>
+          )}
+
+          {activeSection === "All Events" && (
+            <Box>
+              <Typography variant="h4" gutterBottom>
+                All Events
+              </Typography>
+              {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <Grid container spacing={3}>
+                  {allEvents.map((event) => (
+                    <Grid item xs={12} sm={6} md={4} key={event.eventId}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">{event.agenda}</Typography>
+                          <Typography>Date: {new Date(event.date).toLocaleDateString()}</Typography>
+                          <Typography>Time: {new Date(event.time).toLocaleTimeString()}</Typography>
+                          <Typography>Location: {event.location}</Typography>
+                          <Typography>Status: {event.status}</Typography>
+                          <Box mt={2}>
+                            <Button
+                              variant="contained"
+                              color="warning"
+                              startIcon={<EditIcon />}
+                              onClick={() => openModal("modify", event)}
+                              sx={{ mr: 1 }}
+                            >
+                              Modify
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              startIcon={<PeopleIcon />}
+                              onClick={() => openModal("addInvitees", event)}
+                            >
+                              Add Invitees
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Box>
+          )}
+        </Box>
+      </Box>
 
       {/* Modal */}
       <Modal
@@ -314,144 +367,121 @@ const AdminDashboard = () => {
         className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto mt-20"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
       >
-        <h2 className="text-2xl font-bold mb-6">
+        <Typography variant="h5" gutterBottom>
           {modalType === "create"
             ? "Create Event"
             : modalType === "modify"
             ? "Modify Event"
             : "Add Invitees"}
-        </h2>
-        <form
-          onSubmit={
-            modalType === "create"
-              ? handleCreateEvent
-              : modalType === "modify"
-              ? handleModifyEvent
-              : handleAddInvitees
-          }
-          className="flex flex-col gap-4"
-        >
+        </Typography>
+        <Box component="form" onSubmit={modalType === "create" ? handleCreateEvent : modalType === "modify" ? handleModifyEvent : handleAddInvitees} sx={{ mt: 2 }}>
           {modalType === "create" && (
             <>
-              <input
-                type="text"
-                placeholder="First Name"
+              <TextField
+                fullWidth
+                label="First Name"
                 value={eventData.firstName}
                 onChange={(e) => setEventData({ ...eventData, firstName: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
-                type="text"
-                placeholder="Last Name"
+              <TextField
+                fullWidth
+                label="Last Name"
                 value={eventData.lastName}
                 onChange={(e) => setEventData({ ...eventData, lastName: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
-                type="text"
-                placeholder="Agenda"
+              <TextField
+                fullWidth
+                label="Agenda"
                 value={eventData.agenda}
                 onChange={(e) => setEventData({ ...eventData, agenda: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
+              <TextField
+                fullWidth
                 type="datetime-local"
                 value={eventData.time}
                 onChange={(e) => setEventData({ ...eventData, time: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
+              <TextField
+                fullWidth
                 type="date"
                 value={eventData.date}
                 onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
-                type="text"
-                placeholder="Location"
+              <TextField
+                fullWidth
+                label="Location"
                 value={eventData.location}
                 onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
-                type="text"
-                placeholder="Invited User IDs (comma-separated)"
+              <TextField
+                fullWidth
+                label="Invited User IDs (comma-separated)"
                 value={eventData.invitedUserIds}
                 onChange={(e) => setEventData({ ...eventData, invitedUserIds: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
             </>
           )}
           {modalType === "modify" && selectedEvent && (
             <>
-              <input
-                type="text"
-                placeholder="Agenda"
+              <TextField
+                fullWidth
+                label="Agenda"
                 value={selectedEvent.agenda}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, agenda: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
+              <TextField
+                fullWidth
                 type="datetime-local"
                 value={selectedEvent.time ? new Date(selectedEvent.time).toISOString().slice(0, 16) : ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, time: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
+              <TextField
+                fullWidth
                 type="date"
                 value={selectedEvent.date ? new Date(selectedEvent.date).toISOString().slice(0, 10) : ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, date: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
-              <input
-                type="text"
-                placeholder="Location"
+              <TextField
+                fullWidth
+                label="Location"
                 value={selectedEvent.location}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, location: e.target.value })}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                sx={{ mb: 2 }}
               />
             </>
           )}
           {modalType === "addInvitees" && (
-            <input
-              type="text"
-              placeholder="Invitee User IDs (comma-separated)"
+            <TextField
+              fullWidth
+              label="Invitee User IDs (comma-separated)"
               value={invitees}
               onChange={(e) => setInvitees(e.target.value)}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+              sx={{ mb: 2 }}
             />
           )}
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg transition-all duration-300"
-          >
+          <Button type="submit" variant="contained" color="primary" fullWidth>
             {modalType === "create"
               ? "Create Event"
               : modalType === "modify"
               ? "Modify Event"
               : "Add Invitees"}
-          </button>
-        </form>
-        <button
-          onClick={closeModal}
-          className="mt-4 text-red-500 hover:text-red-600 transition-all duration-300"
-        >
-          Cancel
-        </button>
+          </Button>
+          <Button onClick={closeModal} color="error" fullWidth sx={{ mt: 1 }}>
+            Cancel
+          </Button>
+        </Box>
       </Modal>
-    </div>
+    </Box>
   );
 };
 

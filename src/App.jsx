@@ -13,6 +13,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <Navbar/>
       <Toaster position='bottom-center'/>
       <Routes>
         <Route path="/" element={<Signup />} />
@@ -20,7 +21,6 @@ function App() {
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/admindashboard" element={<AdminDashboard/>}></Route>
       </Routes>
-      <Footer />
       </BrowserRouter>
     </>
   )
