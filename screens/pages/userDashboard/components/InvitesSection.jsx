@@ -10,7 +10,6 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { blue, grey } from "@mui/material/colors";
 
 const InvitesSection = ({
   subSection,
@@ -20,17 +19,30 @@ const InvitesSection = ({
   loading,
 }) => {
   return (
-    <Container>
-      <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4 }}>
+    <Container className="p-6">
+      <Typography
+        variant="h4"
+        className="font-bold mb-8"
+        sx={{ color: "#5C7285",
+          margin: "0.2", 
+
+         }}
+      >
         Invites
       </Typography>
-      <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+
+      <Box className="flex gap-2 mb-8">
         <Button
           variant="contained"
+          className="px-6 py-2 rounded-lg"
           sx={{
             backgroundColor:
-              subSection === "All Invites" ? blue[600] : grey[200],
-            color: subSection === "All Invites" ? "white" : grey[800],
+              subSection === "All Invites" ? "#5C7285" : "#E2E0C8",
+            color: subSection === "All Invites" ? "white" : "#5C7285",
+            "&:hover": {
+              backgroundColor: "#818C78",
+              color: "white",
+            },
           }}
           onClick={() => setSubSection("All Invites")}
         >
@@ -38,10 +50,15 @@ const InvitesSection = ({
         </Button>
         <Button
           variant="contained"
+          className="px-6 py-2 rounded-lg"
           sx={{
             backgroundColor:
-              subSection === "Pending Invites" ? blue[600] : grey[200],
-            color: subSection === "Pending Invites" ? "white" : grey[800],
+              subSection === "Pending Invites" ? "#5C7285" : "#E2E0C8",
+            color: subSection === "Pending Invites" ? "white" : "#5C7285",
+            "&:hover": {
+              backgroundColor: "#818C78",
+              color: "white",
+            },
           }}
           onClick={() => setSubSection("Pending Invites")}
         >
@@ -49,39 +66,51 @@ const InvitesSection = ({
         </Button>
       </Box>
 
+      {/* Loading State */}
       {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: 160,
-          }}
-        >
-          <CircularProgress />
+        <Box className="flex justify-center items-center h-40">
+          <CircularProgress sx={{ color: "#5C7285" }} />
         </Box>
       ) : (
         <>
+          {/* All Invites Section */}
           {subSection === "All Invites" && (
-            <List>
+            <List className="space-y-4">
               {invites.map((invite) => (
-                <Paper key={invite.eventId} sx={{ mb: 2, p: 3, boxShadow: 3 }}>
-                  <ListItem>
+                <Paper
+                  key={invite.eventId}
+                  className="p-6 shadow-lg"
+                  sx={{ backgroundColor: "#E2E0C8" }}
+                >
+                  <ListItem className="p-0">
                     <ListItemText
                       primary={
-                        <Typography variant="h6" color={blue[600]}>
+                        <Typography
+                          variant="h6"
+                          className="font-bold"
+                          sx={{ color: "#5C7285" }}
+                        >
                           {invite.eventName}
                         </Typography>
                       }
                       secondary={
                         <>
-                          <Typography variant="body2" color={grey[600]}>
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600"
+                          >
                             Date: {invite.eventDate}
                           </Typography>
-                          <Typography variant="body2" color={grey[600]}>
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600"
+                          >
                             Time: {invite.eventTime}
                           </Typography>
-                          <Typography variant="body2" color={grey[600]}>
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600"
+                          >
                             Location: {invite.eventLocation}
                           </Typography>
                         </>
@@ -93,26 +122,44 @@ const InvitesSection = ({
             </List>
           )}
 
+          {/* Pending Invites Section */}
           {subSection === "Pending Invites" && (
-            <List>
+            <List className="space-y-4">
               {pendingInvites.map((invite) => (
-                <Paper key={invite.eventId} sx={{ mb: 2, p: 3, boxShadow: 3 }}>
-                  <ListItem>
+                <Paper
+                  key={invite.eventId}
+                  className="p-6 shadow-lg"
+                  sx={{ backgroundColor: "#E2E0C8" }}
+                >
+                  <ListItem className="p-0">
                     <ListItemText
                       primary={
-                        <Typography variant="h6" color={blue[600]}>
+                        <Typography
+                          variant="h6"
+                          className="font-bold"
+                          sx={{ color: "#5C7285" }}
+                        >
                           {invite.eventName}
                         </Typography>
                       }
                       secondary={
                         <>
-                          <Typography variant="body2" color={grey[600]}>
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600"
+                          >
                             Date: {invite.eventDate}
                           </Typography>
-                          <Typography variant="body2" color={grey[600]}>
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600"
+                          >
                             Time: {invite.eventTime}
                           </Typography>
-                          <Typography variant="body2" color={grey[600]}>
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600"
+                          >
                             Location: {invite.eventLocation}
                           </Typography>
                         </>

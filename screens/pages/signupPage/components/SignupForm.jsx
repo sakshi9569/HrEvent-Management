@@ -7,8 +7,9 @@ import {
     CircularProgress,
     Paper,
     Stack,
-    Link
 } from '@mui/material';
+import { Link } from 'react-router-dom'; 
+
 
 const SignupForm = ({ onSubmit, loader, errors, register }) => {
     return (
@@ -20,13 +21,13 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                 width: "100%",
                 padding: 4,
                 borderRadius: 3,
-                bgcolor: "background.paper"
+                bgcolor: "#E2E0C8"
             }}
         >
             <Typography
                 variant="h4"
                 align="center"
-                sx={{ fontWeight: "bold", color: "primary.main" }}
+                sx={{ fontWeight: "bold", color: "#5C7285" }}
             >
                 Register Here
             </Typography>
@@ -39,6 +40,7 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                     {...register("firstname", { required: "First Name is required" })}
                     error={!!errors.firstname}
                     helperText={errors.firstname?.message}
+                    sx={{ bgcolor: "#A7B49E", borderRadius: 1 }}
                 />
 
                 <TextField
@@ -48,6 +50,7 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                     {...register("lastname", { required: "Last Name is required" })}
                     error={!!errors.lastname}
                     helperText={errors.lastname?.message}
+                    sx={{ bgcolor: "#A7B49E", borderRadius: 1 }}
                 />
 
                 <TextField
@@ -57,6 +60,7 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                     {...register("email", { required: "Email is required" })}
                     error={!!errors.email}
                     helperText={errors.email?.message}
+                    sx={{ bgcolor: "#A7B49E", borderRadius: 1 }}
                 />
 
                 <TextField
@@ -66,6 +70,7 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                     {...register("password", { required: "Password is required", minLength: 6 })}
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    sx={{ bgcolor: "#A7B49E", borderRadius: 1 }}
                 />
 
                 <TextField
@@ -75,6 +80,7 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                     {...register("empId", { required: "Emp ID is required" })}
                     error={!!errors.empId}
                     helperText={errors.empId?.message}
+                    sx={{ bgcolor: "#A7B49E", borderRadius: 1 }}
                 />
 
                 <TextField
@@ -84,6 +90,7 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                     {...register("team", { required: "Team is required" })}
                     error={!!errors.team}
                     helperText={errors.team?.message}
+                    sx={{ bgcolor: "#A7B49E", borderRadius: 1 }}
                 />
             </Stack>
 
@@ -91,22 +98,22 @@ const SignupForm = ({ onSubmit, loader, errors, register }) => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="primary"
                 disabled={loader}
                 sx={{
                     mt: 3,
                     py: 1.5,
                     fontWeight: "bold",
-                    display: "flex",
-                    justifyContent: "center"
+                    bgcolor: "#5C7285",
+                    color: "white",
+                    '&:hover': { bgcolor: "#818C78" }
                 }}
             >
                 {loader ? <CircularProgress size={24} color="inherit" /> : "Register"}
             </Button>
 
-            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+            <Typography variant="body2" align="center" sx={{ mt: 3, color: "#5C7285" }}>
                 Already have an account?{" "}
-                <Link to="/login" style={{ textDecoration: "none", color: "#1976d2", fontWeight: "bold" }}>
+                <Link to="/" style={{ textDecoration: "none", color: "#5C7285", fontWeight: "bold" }}>
                     Login
                 </Link>
             </Typography>

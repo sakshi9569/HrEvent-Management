@@ -5,8 +5,10 @@ import api from "../../../../api/api";
 import AdminSidebar from "../components/AdminSidebar";
 import EventCard from "../components/EventCard";
 import ProposedEventCard from "../components/ProposedEventCard";
+import AdminNavbar from "../components/AdminNavbar"
 import EventForm from "../components/EventForm";
 import { Box, Typography, Grid, CircularProgress, Modal } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const AdminDashboardContainer = () => {
   const { id, token } = useStoreContext();
@@ -29,6 +31,8 @@ const AdminDashboardContainer = () => {
   });
   const [invitees, setInvitees] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
 
   // Fetch proposed events
   useEffect(() => {
@@ -50,6 +54,8 @@ const AdminDashboardContainer = () => {
     }
   }, [activeSection, token]);
 
+
+  
   // Handle creating a new event
   const handleCreateEvent = async (e) => {
     e.preventDefault();
@@ -98,6 +104,11 @@ const AdminDashboardContainer = () => {
     }
   };
 
+  const handleLogout = async (e) => {
+    localStorage.removeItem("JWT_TOKEN");
+    localStorage.removeItem("id");
+    navigate("/");
+    };
   // Handle modifying an event
   const handleModifyEvent = async (e) => {
     e.preventDefault();
@@ -185,9 +196,18 @@ const AdminDashboardContainer = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    
+    <Box sx={{ display: "flex", flexDirection: "column" }} >
       {/* Sidebar and Main Content */}
-      <Box sx={{ display: "flex", flexGrow: 8, mt: 8 }}>
+      {/* Navbar */}
+      <AdminNavbar handleLogout={handleLogout} />
+
+      {/* Main Layout */}
+      
+
+      {/* Footer */}
+
+      <Box sx={{ display: "flex", flexGrow: 8, height: '100%' }}>
         {/* Sidebar */}
         <AdminSidebar openModal={openModal} handleFetchAllEvents={handleFetchAllEvents} setActiveSection={setActiveSection} />
 

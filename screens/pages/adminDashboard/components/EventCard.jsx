@@ -4,45 +4,66 @@ import { Edit as EditIcon, People as PeopleIcon } from "@mui/icons-material";
 
 const EventCard = ({ event, openModal }) => {
   return (
-    <Card sx={{ bgcolor: "cyan.50", boxShadow: 3, borderRadius: 2 }}>
+    <Card
+      sx={{
+        bgcolor: "#E2E0C8", // Background color
+        boxShadow: 3,
+        borderRadius: 2,
+        transition: "transform 0.2s, box-shadow 0.2s",
+        "&:hover": {
+          transform: "scale(1.02)",
+          boxShadow: 6,
+        },
+      }}
+    >
       <CardContent>
-        <Typography variant="h6" sx={{ color: "cyan.800", fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          sx={{ color: "#5C7285", fontWeight: "bold" }}
+        >
           {event.agenda}
         </Typography>
-        <Typography sx={{ color: "cyan.700", mt: 1 }}>
+
+        {/* Event Details */}
+        <Typography sx={{ color: "#5C7285", mt: 1 }}>
           Date: {new Date(event.date).toLocaleDateString()}
         </Typography>
-        <Typography sx={{ color: "cyan.700" }}>
+        <Typography sx={{ color: "#5C7285" }}>
           Time: {new Date(event.time).toLocaleTimeString()}
         </Typography>
-        <Typography sx={{ color: "cyan.700" }}>
+        <Typography sx={{ color: "#5C7285" }}>
           Location: {event.location}
         </Typography>
-        <Typography sx={{ color: "cyan.700" }}>
+        <Typography sx={{ color: "#5C7285" }}>
           Status: {event.status}
         </Typography>
+
+        {/* Action Buttons */}
         <Box mt={2}>
+          {/* Modify Button */}
           <Button
             variant="contained"
             startIcon={<EditIcon />}
             onClick={() => openModal("modify", event)}
             sx={{
               mr: 1,
-              bgcolor: "cyan",
-              color: "white",
-              "&:hover": { bgcolor: "cyan.900" },
+              bgcolor: "#5C7285", // Button background color
+              color: "#E2E0C8", // Button text color
+              "&:hover": { bgcolor: "#818C78" }, // Hover background color
             }}
           >
             Modify
           </Button>
+
+          {/* Add Invitees Button */}
           <Button
             variant="contained"
             startIcon={<PeopleIcon />}
             onClick={() => openModal("addInvitees", event)}
             sx={{
-              bgcolor: "cyan",
-              color: "white",
-              "&:hover": { bgcolor: "cyan.50" },
+              bgcolor: "#A7B49E", // Button background color
+              color: "#5C7285", // Button text color
+              "&:hover": { bgcolor: "#818C78", color: "#E2E0C8" }, // Hover styles
             }}
           >
             Add Invitees

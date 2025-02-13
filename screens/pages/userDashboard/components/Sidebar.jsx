@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Paper, Typography } from "@mui/material";
-import { blue } from "@mui/material/colors";
 
 const Sidebar = ({ activeSection, setActiveSection, setSubSection }) => {
   return (
@@ -8,13 +7,13 @@ const Sidebar = ({ activeSection, setActiveSection, setSubSection }) => {
       sx={{
         width: 256,
         height: "100vh",
-        backgroundColor: blue[800],
-        color: "white",
+        backgroundColor: "#5C7285",
+        color: "#E2E0C8",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: 3,
-        boxShadow: 3,
+        padding: 10,
+        boxShadow: 8,
       }}
     >
       <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4 }}>
@@ -25,9 +24,9 @@ const Sidebar = ({ activeSection, setActiveSection, setSubSection }) => {
         variant="contained"
         sx={{
           mb: 2,
-          backgroundColor: activeSection === "Invites" ? blue[700] : blue[500],
+          backgroundColor: activeSection === "Invites" ? "#818C78" : "#A7B49E",
           "&:hover": {
-            backgroundColor: blue[600],
+            backgroundColor: "#E2E0C8",
           },
         }}
         onClick={() => {
@@ -43,9 +42,9 @@ const Sidebar = ({ activeSection, setActiveSection, setSubSection }) => {
         sx={{
           mb: 2,
           backgroundColor:
-            activeSection === "Proposed Events" ? blue[700] : blue[500],
+            activeSection === "Proposed Events" ? "#818C78" : "#A7B49E",
           "&:hover": {
-            backgroundColor: blue[600],
+            backgroundColor: "#E2E0C8",
           },
         }}
         onClick={() => {

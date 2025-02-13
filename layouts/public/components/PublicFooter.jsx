@@ -1,10 +1,9 @@
-
 import React from "react";
 
 const PublicFooter = () => {
   return (
     <footer>
-      <p>&copy;</p>
+      <p></p>
     </footer>
   );
 };

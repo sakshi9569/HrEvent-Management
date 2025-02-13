@@ -32,7 +32,7 @@ const SignupContainer = () => {
         try {
             const { data: response } = await api.post("/user/signup", data);
             reset();
-            navigate("/");
+            navigate("/login");
             toast.success("Registration Successful!");
         } catch (error) {
             console.log(error);

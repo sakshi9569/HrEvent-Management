@@ -4,8 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../../../api/api';
 import toast from 'react-hot-toast';
 import { useStoreContext } from '../../../../contextApi/ContextApi';
-import LoginForm from '../components/LoginForm';
+
 import { Container, Box } from '@mui/material';
+import LoginForm from '../components/LoginForm';
 
 const LoginContainer = () => {
     const navigate = useNavigate();
@@ -33,9 +34,20 @@ const LoginContainer = () => {
             setUserId(response.id);
             localStorage.setItem("JWT_TOKEN", JSON.stringify(response.token));
             localStorage.setItem("id", response.id);
+            localStorage.setItem("role",response.role);
+            
             toast.success("Login Successful!");
             reset();
             navigate("/admindashboard");
+            if(response.role === "ADMIN"){
+                navigate("/admindashboard");
+            }
+            else if(response.role === "USER"){
+                navigate("/dashboard");
+            }
+            else{
+                navigate("/");
+            }
         } catch (error) {
             console.log(error);
             toast.error("Login Failed!");
