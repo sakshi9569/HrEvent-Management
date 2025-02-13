@@ -12,8 +12,10 @@ const Sidebar = ({ activeSection, setActiveSection, setSubSection }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: 10,
+        padding: 8,
         boxShadow: 8,
+        position: "fixed",
+        top: 64, 
       }}
     >
       <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4 }}>

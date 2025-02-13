@@ -1,10 +1,10 @@
 import React from "react";
-import { List, ListItem, ListItemIcon, ListItemText, Box } from "@mui/material";
+import { Button, Typography, Paper } from "@mui/material";
 import { Add as AddIcon, Event as EventIcon, People as PeopleIcon } from "@mui/icons-material";
 
 const AdminSidebar = ({ openModal, handleFetchAllEvents, setActiveSection }) => {
   return (
-    <Box
+    <Paper
       sx={{
         width: 256,
         height: "100vh",
@@ -13,66 +13,68 @@ const AdminSidebar = ({ openModal, handleFetchAllEvents, setActiveSection }) => 
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: 10,
+        padding: 8,
         boxShadow: 8,
+        position: "fixed",
+        top: 64, 
       }}
     >
-      <List className="position: fixed">
-        <ListItem>
-          <ListItemText
-            primary="Admin Dashboard"
-            sx={{ color: "#E2E0C8", fontWeight: "bold" }}
-          />
-        </ListItem>
+      <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4 }}>
+        Admin Dashboard
+      </Typography>
 
-        {/* Create Event Button */}
-        <ListItem
-          button
-          onClick={() => openModal("create")}
-          sx={{
-            backgroundColor: "#A7B49E",
-            mb: 2,
-            "&:hover": { backgroundColor: "#E2E0C8" },
-          }}
-        >
-          <ListItemIcon>
-            <AddIcon sx={{ color: "#5C7285" }} />
-          </ListItemIcon>
-          <ListItemText primary="Create Event" sx={{ color: "#5C7285" }} />
-        </ListItem>
+      {/* Create Event Button */}
+      <Button
+        fullWidth
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={() => openModal("create")}
+        sx={{
+          mb: 2,
+          backgroundColor: "#818C78",
+          color: "#A7B49E",
+          "&:hover": {
+            backgroundColor: "#E2E0C8",
+          },
+        }}
+      >
+        Create Event
+      </Button>
 
-        {/* Fetch All Events Button */}
-        <ListItem
-          button
-          onClick={handleFetchAllEvents}
-          sx={{
-            backgroundColor: "#A7B49E",
-            mb: 2,
-            "&:hover": { backgroundColor: "#E2E0C8" },
-          }}
-        >
-          <ListItemIcon>
-            <EventIcon sx={{ color: "#5C7285" }} />
-          </ListItemIcon>
-          <ListItemText primary="Fetch All Events" sx={{ color: "#5C7285" }} />
-        </ListItem>
-
-        {/* Proposed Events Button */}
-        <ListItem
-          button
-          onClick={() => setActiveSection("Proposed Events")}
-          sx={{
-            backgroundColor: "#A7B49E",
-            "&:hover": { backgroundColor: "#E2E0C8" },
-          }}
-        >
-          <ListItemIcon>
-            <PeopleIcon sx={{ color: "#5C7285" }} />
-          </ListItemIcon>
-          <ListItemText primary="Proposed Events" sx={{ color: "#5C7285" }} />
-        </ListItem>
-      </List>
-    </Box>
+      {/* Fetch All Events Button */}
+      <Button
+        fullWidth
+        variant="contained"
+        startIcon={<EventIcon />}
+        onClick={handleFetchAllEvents}
+        sx={{
+          mb: 2,
+          backgroundColor: "#818C78",
+          color: "#A7B49E",
+          "&:hover": {
+            backgroundColor: "#E2E0C8",
+          },
+        }}
+      >
+        Fetch All Events
+      </Button>
+      <Button
+        fullWidth
+        variant="contained"
+        startIcon={<PeopleIcon />}
+        onClick={() => setActiveSection("Proposed Events")}
+        sx={{
+          mb: 2,
+          backgroundColor: "#818C78",
+          color: "#A7B49E",
+          "&:hover": {
+            backgroundColor: "#E2E0C8",
+          },
+        }}
+      >
+        Proposed Events
+      </Button>
+    </Paper>
   );
 };
 

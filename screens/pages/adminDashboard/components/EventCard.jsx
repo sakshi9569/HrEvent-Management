@@ -6,7 +6,7 @@ const EventCard = ({ event, openModal }) => {
   return (
     <Card
       sx={{
-        bgcolor: "#E2E0C8", // Background color
+        bgcolor: "#E2E0C8", 
         boxShadow: 3,
         borderRadius: 2,
         transition: "transform 0.2s, box-shadow 0.2s",
@@ -23,7 +23,6 @@ const EventCard = ({ event, openModal }) => {
         >
           {event.agenda}
         </Typography>
-
         {/* Event Details */}
         <Typography sx={{ color: "#5C7285", mt: 1 }}>
           Date: {new Date(event.date).toLocaleDateString()}
@@ -47,9 +46,9 @@ const EventCard = ({ event, openModal }) => {
             onClick={() => openModal("modify", event)}
             sx={{
               mr: 1,
-              bgcolor: "#5C7285", // Button background color
-              color: "#E2E0C8", // Button text color
-              "&:hover": { bgcolor: "#818C78" }, // Hover background color
+              bgcolor: "#5C7285", 
+              color: "#E2E0C8", 
+              "&:hover": { bgcolor: "#818C78" }, 
             }}
           >
             Modify

@@ -212,10 +212,20 @@ const AdminDashboardContainer = () => {
         <AdminSidebar openModal={openModal} handleFetchAllEvents={handleFetchAllEvents} setActiveSection={setActiveSection} />
 
         {/* Main Content */}
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box component="main" 
+        sx={{
+          flex: 1,
+          overflow: "auto",
+          padding: 20,
+          marginTop: -14,
+          marginLeft: 30, 
+        }}
+        >
           {activeSection === "Proposed Events" && (
             <Box>
-              <Typography variant="h4" gutterBottom>
+              <Typography variant="h4" gutterBottom
+               sx={{ color: "#5C7285", fontWeight: "bold" }}
+              >
                 Proposed Events
               </Typography>
               {loading ? (
@@ -236,7 +246,9 @@ const AdminDashboardContainer = () => {
 
           {activeSection === "All Events" && (
             <Box>
-              <Typography variant="h4" gutterBottom>
+              <Typography variant="h4" gutterBottom
+              sx={{ color: "#5C7285", fontWeight: "bold" }}
+              >
                 All Events
               </Typography>
               {loading ? (

@@ -1,11 +1,11 @@
 import React from "react";
 import {
+  Box,
   Button,
   CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
+  Container,
+  Card,
+  CardContent,
   Typography,
 } from "@mui/material";
 import ProposeEventForm from "./ProposeEventForm";
@@ -18,81 +18,127 @@ const ProposedEventsSection = ({
   handleProposeEvent,
 }) => {
   return (
-    <div className="container mx-auto p-6">
-      <Typography variant="h4" className="font-bold mb-6 text-[#5C7285]">
-        Proposed Events
-      </Typography>
-      <div className="flex gap-4 mb-6">
-        <Button
-          variant="contained"
-          className={`px-4 py-2 rounded-lg shadow-md transition-colors ${
-            subSection === "All Proposed Events"
-              ? "bg-[#5C7285] text-white"
-              : "bg-[#E2E0C8] text-[#818C78]"
-          }`}
-          onClick={() => setSubSection("All Proposed Events")}
+    <Container
+      sx={{
+        width: "50vw", // Adjust width as needed
+        height: "100vh", // Full height
+        display: "flex",
+        flexDirection: "column",
+        paddingY: 4,
+        maxWidth: "none", // Remove max-width restriction
+      }}
+    >
+      {/* Header Section */}
+      <Box
+        sx={{
+          bgcolor: "#E2E0C8",
+          boxShadow: 3,
+          borderRadius: 2,
+          padding: 2,
+          transition: "transform 0.2s, box-shadow 0.2s",
+          "&:hover": {
+            transform: "scale(1.02)",
+            boxShadow: 6,
+          },
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{ color: "#5C7285", fontWeight: "bold", marginBottom: 2 }}
         >
-          All Proposed Events
-        </Button>
-        <Button
-          variant="contained"
-          className={`px-4 py-2 rounded-lg shadow-md transition-colors ${
-            subSection === "Propose Event"
-              ? "bg-[#5C7285] text-white"
-              : "bg-[#E2E0C8] text-[#818C78]"
-          }`}
-          onClick={() => setSubSection("Propose Event")}
-        >
-          Propose Event
-        </Button>
-      </div>
+          Proposed Events
+        </Typography>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <CircularProgress />
-        </div>
-      ) : (
-        <>
-          {subSection === "All Proposed Events" && (
-            <List>
-              {proposedEvents.map((event) => (
-                <Paper
+        <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor:
+                subSection === "All Proposed Events" ? "#5C7285" : "#E2E0C8",
+              color: subSection === "All Proposed Events" ? "white" : "#5C7285",
+              "&:hover": { backgroundColor: "#818C78", color: "white" },
+            }}
+            onClick={() => setSubSection("All Proposed Events")}
+          >
+            All Proposed Events
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor:
+                subSection === "Propose Event" ? "#5C7285" : "#E2E0C8",
+              color: subSection === "Propose Event" ? "white" : "#5C7285",
+              "&:hover": { backgroundColor: "#818C78", color: "white" },
+            }}
+            onClick={() => setSubSection("Propose Event")}
+          >
+            Propose Event
+          </Button>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          marginTop: 2,
+          paddingBottom: 2,
+          width: "100%",
+        }}
+      >
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CircularProgress sx={{ color: "#5C7285" }} />
+          </Box>
+        ) : (
+          <>
+            {subSection === "All Proposed Events" &&
+              proposedEvents.map((event) => (
+                <Card
                   key={event.eventId}
-                  className="mb-4 p-4 shadow-lg bg-[#A7B49E] text-white rounded-lg"
+                  sx={{
+                    bgcolor: "#E2E0C8",
+                    boxShadow: 3,
+                    borderRadius: 2,
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.02)",
+                      boxShadow: 6,
+                    },
+                    marginBottom: 2,
+                    width: "100%", 
+                  }}
                 >
-                  <ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography variant="h6" className="text-[#E2E0C8]">
-                          {event.eventName}
-                        </Typography>
-                      }
-                      secondary={
-                        <>
-                          <Typography variant="body2" className="text-[#E2E0C8]">
-                            Date: {event.eventDate}
-                          </Typography>
-                          <Typography variant="body2" className="text-[#E2E0C8]">
-                            Time: {event.eventTime}
-                          </Typography>
-                          <Typography variant="body2" className="text-[#E2E0C8]">
-                            Location: {event.eventLocation}
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </ListItem>
-                </Paper>
+                  <CardContent>
+                    <Typography variant="h6" sx={{ color: "#5C7285", fontWeight: "bold" }}>
+                      {event.eventName}
+                    </Typography>
+                    <Typography sx={{ color: "#5C7285", mt: 1 }}>
+                      Date: {event.eventDate}
+                    </Typography>
+                    <Typography sx={{ color: "#5C7285" }}>
+                      Time: {event.eventTime}
+                    </Typography>
+                    <Typography sx={{ color: "#5C7285" }}>
+                      Location: {event.eventLocation}
+                    </Typography>
+                  </CardContent>
+                </Card>
               ))}
-            </List>
-          )}
 
-          {subSection === "Propose Event" && (
-            <ProposeEventForm handleProposeEvent={handleProposeEvent} />
-          )}
-        </>
-      )}
-    </div>
+            {subSection === "Propose Event" && (
+              <ProposeEventForm handleProposeEvent={handleProposeEvent} />
+            )}
+          </>
+        )}
+      </Box>
+    </Container>
   );
 };
 

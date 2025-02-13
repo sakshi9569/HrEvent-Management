@@ -40,7 +40,7 @@ const PublicHeader = () => {
         PeopleSync
         </Typography>
         <ButtonBox>
-          <CustomButton href="/">Login</CustomButton>
+          <CustomButton  href="/">Login</CustomButton>
         </ButtonBox>
         <ButtonBox>
           <CustomButton href="/signup">Signup</CustomButton>

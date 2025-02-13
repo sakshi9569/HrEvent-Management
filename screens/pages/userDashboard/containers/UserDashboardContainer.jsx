@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material"; // Import the Box component
+import { Box } from "@mui/material";
 import api from "../../../../api/api";
 import { useStoreContext } from "../../../../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
 import Sidebar from "../components/Sidebar";
 import InvitesSection from "../components/InvitesSection";
 import ProposedEventsSection from "../components/ProposedEventsSection";
+import UserNavbar from "../components/UserNavbar";
 
 const UserDashboardContainer = () => {
-  const { id, token } = useStoreContext();
+  const { id, token, logout } = useStoreContext();
   const [activeSection, setActiveSection] = useState(null);
   const [subSection, setSubSection] = useState(null);
   const [invites, setInvites] = useState([]);
@@ -98,14 +99,29 @@ const UserDashboardContainer = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("JWT_TOKEN");
+    localStorage.removeItem("id");
+    navigate("/");
+  };
+
   return (
     <Box sx={{ display: "flex", height: "100vh", backgroundColor: "grey.50" }}>
+      <UserNavbar handleLogout={handleLogout} />
       <Sidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         setSubSection={setSubSection}
       />
-      <Box sx={{ flex: 1, overflow: "auto", padding: 24 }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: "auto",
+          padding: 30,
+          marginTop: -25,
+          marginLeft: 30, 
+        }}
+      >
         {activeSection === "Invites" && (
           <InvitesSection
             subSection={subSection}
