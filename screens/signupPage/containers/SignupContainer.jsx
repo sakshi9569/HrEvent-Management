@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../../api/api';
+import api from '../../../api/api';
 import toast from 'react-hot-toast';
 import { Container, Box } from '@mui/material';
 import SignupForm from '../components/SignupForm';

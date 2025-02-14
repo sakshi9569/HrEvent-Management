@@ -8,6 +8,8 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
+import api from "../../../api/api";
+import { toast } from "react-hot-toast";
 
 const InvitesSection = ({
   subSection,
@@ -15,16 +17,38 @@ const InvitesSection = ({
   invites,
   pendingInvites,
   loading,
+  userId, 
 }) => {
+  const handleRespondToInvite = async (eventId, action, remarks = "") => {
+    try {
+      const response = await api.post(
+        `/user/${userId}/invites/${eventId}/respond`,
+        {
+          userAction: action,
+          userRemarks: remarks,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("JWT_TOKEN")}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response ? error.response.data : "An error occurred");
+    }
+  };
+
   return (
     <Container
       sx={{
-        width: "50vw", 
-        height: "100vh", 
+        width: "50vw",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         paddingY: 4,
-        maxWidth: "none", 
+        maxWidth: "none",
       }}
     >
       {/* Header Section */}
@@ -129,6 +153,34 @@ const InvitesSection = ({
                     <Typography sx={{ color: "#5C7285" }}>
                       Location: {invite.eventLocation}
                     </Typography>
+                    <Typography sx={{ color: "#5C7285" }}>
+                      Status: {invite.status}
+                    </Typography>
+                    {subSection === "Pending Invites" && (
+                      <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#5C7285", color: "white" }}
+                          onClick={() => handleRespondToInvite(invite.eventId, "ACCEPT")}
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#5C7285", color: "white" }}
+                          onClick={() => handleRespondToInvite(invite.eventId, "DENY")}
+                        >
+                          Deny
+                        </Button>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#5C7285", color: "white" }}
+                          onClick={() => handleRespondToInvite(invite.eventId, "RESCHEDULE")}
+                        >
+                          Reschedule
+                        </Button>
+                      </Box>
+                    )}
                   </CardContent>
                 </Card>
               )

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
-import api from "../../../../api/api";
-import { useStoreContext } from "../../../../contextApi/ContextApi";
+import api from "../../../api/api";
+import { useStoreContext } from "../../../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
 import Sidebar from "../components/Sidebar";
 import InvitesSection from "../components/InvitesSection";
 import ProposedEventsSection from "../components/ProposedEventsSection";
 import UserNavbar from "../components/UserNavbar";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboardContainer = () => {
   const { id, token, logout } = useStoreContext();
@@ -16,6 +17,7 @@ const UserDashboardContainer = () => {
   const [pendingInvites, setPendingInvites] = useState([]);
   const [proposedEvents, setProposedEvents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (activeSection === "Invites" && subSection === "All Invites") {
@@ -99,11 +101,14 @@ const UserDashboardContainer = () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async (e) => {
+    console.log(e);
+    localStorage.removeItem("role");
+    localStorage.removeItem("USER_DATA");
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("id");
     navigate("/");
-  };
+    };
 
   return (
     <Box sx={{ display: "flex", height: "100vh", backgroundColor: "grey.50" }}>
@@ -129,6 +134,7 @@ const UserDashboardContainer = () => {
             invites={invites}
             pendingInvites={pendingInvites}
             loading={loading}
+            userId={id} 
           />
         )}
         {activeSection === "Proposed Events" && (

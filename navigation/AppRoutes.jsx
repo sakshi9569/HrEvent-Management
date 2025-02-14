@@ -1,26 +1,34 @@
-import React from 'react';
-import { useState } from 'react'
-import Signup from '../screens/pages/signupPage'
-import Login from '../screens/pages/loginPage/containers/LoginContainer'
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import {Toaster} from 'react-hot-toast'
-import UserDashboard from '../screens/pages/userDashboard'
-import AdminDashboard from '../screens/pages/adminDashboard'
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import Signup from "../screens/signupPage";
+import Login from "../screens/loginPage/containers/LoginContainer";
+import UserDashboard from "../screens/userDashboard";
+import AdminDashboard from "../screens/adminDashboard";
+import { useStoreContext } from "../contextApi/ContextApi";
 
-function AppRoutes() {
+const AppRoutes = () => {
+  const { token } = useStoreContext();
+
   return (
     <>
       <BrowserRouter>
-      <Toaster position='bottom-center'/>
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<UserDashboard />} />
-        <Route path="/admindashboard" element={<AdminDashboard/>}></Route>
-      </Routes>
+        <Toaster position="bottom-center" />
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={token ? <UserDashboard /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admindashboard"
+            element={token ? <AdminDashboard /> : <Navigate to="/" />}
+          />
+        </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 };
 
 export default AppRoutes;

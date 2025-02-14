@@ -4,9 +4,11 @@ import PublicFooter from "../components/PublicFooter";
 
 const PublicLayoutContainer = ({ children }) => {
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <PublicHeader />
-      <main>{children}</main>
+      <main style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", paddingTop: "64px" }}>
+        {children}
+      </main>
       <PublicFooter />
     </div>
   );

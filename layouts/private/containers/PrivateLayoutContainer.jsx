@@ -3,11 +3,14 @@ import PrivateHeader from "../components/PrivateHeader";
 import PrivateFooter from "../components/PrivateFooter";
 
 const PrivateLayoutContainer = ({ children }) => {
+  const handleLogout = () => { 
+  };
+
   return (
     <div>
-      <PrivateHeader />
+      <PrivateHeader handleLogout={handleLogout} />
       <div style={{ display: "flex" }}>
-        <main>{children}</main>
+        <main style={{ flex: 1 }}>{children}</main>
       </div>
       <PrivateFooter />
     </div>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../../../../api/api';
+import api from '../../../api/api';
 import toast from 'react-hot-toast';
-import { useStoreContext } from '../../../../contextApi/ContextApi';
+import { useStoreContext } from '../../../contextApi/ContextApi';
 
 import { Container, Box } from '@mui/material';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/index';
 
 const LoginContainer = () => {
     const navigate = useNavigate();

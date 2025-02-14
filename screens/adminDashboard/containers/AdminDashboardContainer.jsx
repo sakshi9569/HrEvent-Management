@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useStoreContext } from "../../../../contextApi/ContextApi";
+import { useStoreContext } from "../../../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
-import api from "../../../../api/api";
+import api from "../../../api/api";
 import AdminSidebar from "../components/AdminSidebar";
 import EventCard from "../components/EventCard";
 import ProposedEventCard from "../components/ProposedEventCard";
@@ -16,7 +16,7 @@ const AdminDashboardContainer = () => {
   const [proposedEvents, setProposedEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null); // "create", "modify", or "addInvitees"
+  const [modalType, setModalType] = useState(null); 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventData, setEventData] = useState({
     firstName: "",
@@ -105,19 +105,20 @@ const AdminDashboardContainer = () => {
   };
 
   const handleLogout = async (e) => {
+    localStorage.removeItem("role");
+    localStorage.removeItem("USER_DATA");
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("id");
     navigate("/");
     };
-  // Handle modifying an event
   const handleModifyEvent = async (e) => {
     e.preventDefault();
     if (!selectedEvent) return;
 
     const updatedEvent = {
       eventId: selectedEvent.eventId,
-      empId: "7", // Replace with the actual empId
-      role: "admin", // Replace with the actual role
+      empId: "7", 
+      role: "admin", 
       action: "update",
       eventName: selectedEvent.agenda,
       eventDate: new Date(selectedEvent.date).toISOString(),
