@@ -48,7 +48,7 @@ public class AuthService {
         Optional<User> userFromDb = userDao.findByEmail(signupRequestDTO.getEmail());
         String token=jwtUtil.generateToken(signupRequestDTO.getEmail());
 
-        return new AuthResponseDTO(token, userFromDb.get().getUserId());
+        return new AuthResponseDTO(token, userFromDb.get().getUserId(),userFromDb.get().getRole());
     }
 
 }

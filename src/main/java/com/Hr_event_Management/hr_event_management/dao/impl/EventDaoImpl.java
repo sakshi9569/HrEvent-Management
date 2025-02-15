@@ -15,6 +15,8 @@ import java.util.UUID;
 @Transactional
 public class EventDaoImpl implements EventDao {
 
+    String Query_getALLEvents = "SELECT e FROM Event e";
+
     private final EntityManager entityManager;
 
     @Autowired
@@ -23,6 +25,7 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
+    // TODO - Why are u using merge here?
     public Event save(Event event) {
         if (event.getId() == null) {
             entityManager.persist(event);
@@ -39,7 +42,7 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public List<Event> findAll() {
-        return entityManager.createQuery("SELECT e FROM Event e", Event.class).getResultList();
+        return entityManager.createQuery(Query_getALLEvents, Event.class).getResultList();
     }
 
 

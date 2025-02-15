@@ -9,5 +9,5 @@ import lombok.*;
 public class InviteActionRequestDTO {
     
     private String userAction;  // Accept, Deny, or Reschedule
-    private String userRemarks; // Optional remarks
+    private String userRemarks;
 }

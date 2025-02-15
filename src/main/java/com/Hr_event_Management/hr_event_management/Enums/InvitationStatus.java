@@ -5,8 +5,6 @@ public enum InvitationStatus {
     ACCEPTED, // User has accepted the invitation.
     REJECTED, // User has rejected the invitation.
     RESCHEDULED; // The invitation has been canceled.
-
-    // Optionally, you can add a method to get a string value for the enum
     public String getStatus() {
         return this.name();
     }

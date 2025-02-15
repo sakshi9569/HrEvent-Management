@@ -10,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+// TODO - add validation. Read about @Valid
 public class EventRequestDTO {
     private String firstName;
     private String lastName;

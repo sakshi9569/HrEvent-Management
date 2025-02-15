@@ -19,7 +19,7 @@ public class EventProposalResponseDTO {
     private String eventTime;
     private String eventLocation;
     private String agenda;
-    private String proposalStatus;  // e.g., "PENDING", "APPROVED", etc.
+    private String proposalStatus;
     private Long createdById;
     private String message;
 }

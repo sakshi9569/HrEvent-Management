@@ -26,9 +26,12 @@ public class EventProposalService {
         this.userDao = userDao;
     }
 
+    // TODO - Add validation for all the requests.
     @Transactional
+    // TODO -
     public EventProposalResponseDTO proposeEvent(EventProposalRequestDTO eventProposalRequestDTO) {
         // Fetch the user who is proposing the event (creator)
+
         Optional<User> creatorUserOpt = userDao.findById(eventProposalRequestDTO.getCreatedById());
         if (creatorUserOpt.isEmpty()) {
 
@@ -41,8 +44,7 @@ public class EventProposalService {
         proposedEvent.setEventName(eventProposalRequestDTO.getEventName());
 
         // Convert String eventDate to LocalDateTime (adjust format if needed)
-        String eventDate = eventProposalRequestDTO.getEventDate();
-        proposedEvent.setEventDate(eventDate);  // Directly set the String value
+        proposedEvent.setEventDate(eventProposalRequestDTO.getEventDate());  // Directly set the String value
         proposedEvent.setEventTime(eventProposalRequestDTO.getEventTime());
         proposedEvent.setEventLocation(eventProposalRequestDTO.getEventLocation());
         proposedEvent.setAgenda(eventProposalRequestDTO.getAgenda());

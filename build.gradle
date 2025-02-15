@@ -23,12 +23,13 @@ repositories {
 	mavenCentral()
 }
 
+// TODO - remove the repeated dependency
 dependencies {
 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 //  implementation 'org.springframework.boot:spring-boot-starter-security'
 //  testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'org.mindrot:jbcrypt:0.4'
+	implementation 'org.mindrot:jbcrypt:0.4'  // TODO - find the usage of this dependency
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'

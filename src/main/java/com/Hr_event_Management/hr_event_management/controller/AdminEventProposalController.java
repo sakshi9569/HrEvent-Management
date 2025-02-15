@@ -2,13 +2,16 @@ package com.Hr_event_Management.hr_event_management.controller;
 
 import com.Hr_event_Management.hr_event_management.dto.AdminEventActionRequestDTO;
 import com.Hr_event_Management.hr_event_management.dto.AdminEventActionResponseDTO;
+import com.Hr_event_Management.hr_event_management.dto.EventProposalResponseDTO;
 import com.Hr_event_Management.hr_event_management.service.impl.AdminEventProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user")  // TODO - For all the admin APIs use admin0user in the path and put it in respective APiAuth Constant file.
 public class AdminEventProposalController {
 
     private final AdminEventProposalService adminEventProposalService;
@@ -25,6 +28,7 @@ public class AdminEventProposalController {
      * @param adminEventActionRequestDTO Event action details (accept/reject)
      * @return ResponseEntity with success message
      */
+    // TODO - Understand he working of this API.
     @PostMapping("/proposal/{proposalId}/action")
     public ResponseEntity<AdminEventActionResponseDTO> takeActionOnProposedEvent(
             @PathVariable Long proposalId,
@@ -34,5 +38,9 @@ public class AdminEventProposalController {
         AdminEventActionResponseDTO responseDTO = adminEventProposalService.takeAction(proposalId, adminEventActionRequestDTO);
 
         return ResponseEntity.ok(responseDTO);
+    }
+    @GetMapping("/proposedEvents/all")
+    public ResponseEntity<List<EventProposalResponseDTO>> getAll(){
+        return ResponseEntity.ok(adminEventProposalService.getAll());
     }
 }

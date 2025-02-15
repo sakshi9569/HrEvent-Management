@@ -29,10 +29,12 @@ public class InviteService {
 
     // Fetch invites for the given user ID
     public List<InviteResponseDTO> getInvitesForUser(Long userId) {
+        // Fetch all invites for the user
         List<Invite> invites = inviteDao.findByUserId(userId);
 
-        // Convert Invite entities to InviteResponseDTO
+        // Convert Invite entities to InviteResponseDTO, filtering for accepted invites only
         return invites.stream()
+                .filter(invite -> invite.getStatus() == InvitationStatus.ACCEPTED)  // Filter for accepted invites
                 .map(invite -> new InviteResponseDTO(
                         invite.getEvent().getId().toString(),  // Assuming the event ID is a String or UUID
                         invite.getEvent().getEventName(),
@@ -42,7 +44,6 @@ public class InviteService {
                 ))
                 .collect(Collectors.toList());
     }
-
 
     public List<PendingInviteResponseDTO> getPendingInvites(Long userId) {
         List<Invite> invites = inviteDao.findPendingByUserId(userId); // Fetch pending invites for the user
@@ -55,7 +56,7 @@ public class InviteService {
                         invite.getEvent().getDate().toString(),    // Event Date
                         invite.getEvent().getTime().toString(),    // Event Time
                         invite.getEvent().getLocation(),           // Event Location
-                        "PENDING"                                  // Status is always "PENDING"
+                        "PENDING"                                  // Status is always "PENDING" // TODO - create enums for status
                 ))
                 .collect(Collectors.toList());
     }
@@ -78,6 +79,8 @@ public class InviteService {
         switch (inviteActionRequestDTO.getUserAction().toUpperCase()) {
             case "ACCEPT":
                 invite.setStatus(InvitationStatus.ACCEPTED);
+                invite.setRemarks(inviteActionRequestDTO.getUserRemarks());
+                inviteDao.save(invite);
                 break;
             case "DENY":
                 invite.setStatus(InvitationStatus.REJECTED);
@@ -88,12 +91,6 @@ public class InviteService {
             default:
                 return "Invalid action. Allowed actions: 'ACCEPT', 'DENY', 'RESCHEDULE'.";
         }
-
-        // Set user remarks
-        invite.setRemarks(inviteActionRequestDTO.getUserRemarks());
-
-        // Save updated invite
-        inviteDao.save(invite);
 
         return "Invite response recorded successfully.";
     }
@@ -113,6 +110,7 @@ public class InviteService {
                 .collect(Collectors.toList());
     }
 
+    // TODO - Change the InviteResponseDTO for clearing seeing the conflicts
     public List<InviteResponseDTO> getConflictingInvites(Long userId) {
         List<Invite> conflictingInvites = inviteDao.findConflictingInvites(userId);
 

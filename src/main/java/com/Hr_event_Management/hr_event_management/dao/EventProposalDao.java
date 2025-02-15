@@ -11,5 +11,6 @@ public interface EventProposalDao {
     ProposedEvent getById(Long id);
     List<ProposedEvent> findByUserId(Long userId);// Method to find proposed events by user ID
     void deleteById(Long id);
+    List<ProposedEvent> findAll();
 }
 

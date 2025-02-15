@@ -11,12 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventProposalRequestDTO {
-
     private String eventName;
     private String eventDate;
     private Timestamp eventTime;
     private String eventLocation;
     private String agenda;
     private Long createdById;
-
 }

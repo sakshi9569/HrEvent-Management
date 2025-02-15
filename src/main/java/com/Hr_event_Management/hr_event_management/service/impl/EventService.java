@@ -14,6 +14,7 @@ import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.Enums.Role;
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class EventService {
 
     final static String CANCEL_ACTION = "cancel";
@@ -86,7 +88,7 @@ public class EventService {
                 invite.setStatus(InvitationStatus.PENDING);  // Set the status of the invitation
                 inviteDao.save(invite);  // Save the invite to the database
             } else {
-                throw new RuntimeException("User with ID " + userId + " not found");
+                log.error("User with ID {} not found", userId);
             }
         }
 
@@ -110,7 +112,7 @@ public class EventService {
     // Modify event method (unchanged as per your request)
     public String modifyEvent(Long eventId, ModifyEventRequestDTO modifyEventRequestDTO) {
         // Convert empId from String to Long
-        Long empId;
+        Long empId;  //TODO - hanlde the ambiguity between long and string in empId
         try {
             empId = Long.valueOf(modifyEventRequestDTO.getEmpId()); // Convert String empId to Long
         } catch (NumberFormatException e) {
@@ -174,7 +176,6 @@ public class EventService {
             if (userOptional.isEmpty()) {
                 throw new RuntimeException("User with ID " + dto.getUserId() + " not found.");
             }
-
             User user = userOptional.get();
             Invite invite = new Invite();
             invite.setEvent(event);
@@ -185,5 +186,25 @@ public class EventService {
 
         newInvites.forEach(inviteDao::save);
         return "Invitees added successfully.";
+    }
+    public List<EventResponseDTO> getAllEvents(){
+        List<Event> events = eventDao.findAll();  // Fetch all events
+
+        // Map Event entity to EventResponseDTO
+        return events.stream().map(event -> {
+            EventResponseDTO dto = new EventResponseDTO();
+            dto.setEventId(event.getId());
+            dto.setFirstName(event.getFirstName());
+            dto.setLastName(event.getLastName());
+            dto.setAgenda(event.getAgenda());
+            dto.setTime(event.getTime());
+            dto.setDate(event.getDate());
+            dto.setLocation(event.getLocation());
+            dto.setStatus(event.getStatus().toString()); // Convert Enum to String if needed
+            dto.setCreatedById(event.getCreatedBy().getUserId());
+            dto.setMessage(event.getAgenda());
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

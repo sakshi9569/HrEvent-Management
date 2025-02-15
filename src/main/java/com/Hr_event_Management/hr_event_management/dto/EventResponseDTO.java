@@ -10,7 +10,6 @@ public class EventResponseDTO {
     private String firstName;
     private String lastName;
     private String agenda;
-//    private String time;
     private Timestamp time;
     private Timestamp date;
     private String location;
