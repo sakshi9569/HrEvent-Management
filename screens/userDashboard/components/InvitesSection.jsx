@@ -8,7 +8,6 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import api from "../../../api/api";
 import { toast } from "react-hot-toast";
 
 const InvitesSection = ({
@@ -17,29 +16,9 @@ const InvitesSection = ({
   invites,
   pendingInvites,
   loading,
-  userId, 
+  userId,
+  handleRespondToInvite, 
 }) => {
-  const handleRespondToInvite = async (eventId, action, remarks = "") => {
-    try {
-      const response = await api.post(
-        `/user/${userId}/invites/${eventId}/respond`,
-        {
-          userAction: action,
-          userRemarks: remarks,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("JWT_TOKEN")}`,
-          },
-        }
-      );
-
-      toast.success(response.data.message);
-    } catch (error) {
-      toast.error(error.response ? error.response.data : "An error occurred");
-    }
-  };
-
   return (
     <Container
       sx={{
@@ -107,7 +86,7 @@ const InvitesSection = ({
           overflowY: "auto",
           marginTop: 2,
           paddingBottom: 2,
-          width: "100%", // Full width
+          width: "100%",
         }}
       >
         {loading ? (
@@ -137,7 +116,7 @@ const InvitesSection = ({
                       boxShadow: 6,
                     },
                     marginBottom: 2,
-                    width: "100%", 
+                    width: "100%",
                   }}
                 >
                   <CardContent>

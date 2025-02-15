@@ -101,6 +101,42 @@ const UserDashboardContainer = () => {
     }
   };
 
+  const handleRespondToInvite = async (eventId, action, remarks = "") => {
+    try {
+      const response = await api.post(
+        `/user/${id}/invites/${eventId}/respond`,
+        {
+          userAction: action,
+          userRemarks: remarks,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+     
+      if (subSection === "All Invites") {
+        const invitesResponse = await api.get(`/user/${id}/invites`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setInvites(invitesResponse.data);
+      } else if (subSection === "Pending Invites") {
+        const updatedPendingInvites = pendingInvites.filter(
+          (invite) => invite.eventId !== eventId
+        );
+        setPendingInvites(updatedPendingInvites);
+      }
+    } catch (error) {
+      toast.error(error.response ? error.response.data : "An error occurred");
+    }
+  };
+
   const handleLogout = async (e) => {
     console.log(e);
     localStorage.removeItem("role");
@@ -108,7 +144,7 @@ const UserDashboardContainer = () => {
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("id");
     navigate("/");
-    };
+  };
 
   return (
     <Box sx={{ display: "flex", height: "100vh", backgroundColor: "grey.50" }}>
@@ -124,7 +160,7 @@ const UserDashboardContainer = () => {
           overflow: "auto",
           padding: 30,
           marginTop: -25,
-          marginLeft: 30, 
+          marginLeft: 30,
         }}
       >
         {activeSection === "Invites" && (
@@ -134,7 +170,8 @@ const UserDashboardContainer = () => {
             invites={invites}
             pendingInvites={pendingInvites}
             loading={loading}
-            userId={id} 
+            userId={id}
+            handleRespondToInvite={handleRespondToInvite} 
           />
         )}
         {activeSection === "Proposed Events" && (
