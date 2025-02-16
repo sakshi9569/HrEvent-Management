@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
-import api from "../../../api/api";
 import { useStoreContext } from "../../../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
 import Sidebar from "../components/Sidebar";
@@ -8,9 +7,16 @@ import InvitesSection from "../components/InvitesSection";
 import ProposedEventsSection from "../components/ProposedEventsSection";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../../shared";
+import {
+  fetchUserInvites,
+  fetchUserPendingInvites,
+  fetchProposedEvents,
+  proposeEvent,
+  respondToInvite,
+} from "../../../api/auth"; 
 
 const UserDashboardContainer = () => {
-  const { id, token, logout } = useStoreContext();
+  const { id, token, setToken, setUserId } = useStoreContext();
   const [activeSection, setActiveSection] = useState(null);
   const [subSection, setSubSection] = useState(null);
   const [invites, setInvites] = useState([]);
@@ -19,69 +25,61 @@ const UserDashboardContainer = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch invites
   useEffect(() => {
     if (activeSection === "Invites" && subSection === "All Invites") {
-      const fetchInvites = async () => {
+      const fetchInvitesData = async () => {
         setLoading(true);
         try {
-          const response = await api.get(`/user/${id}/invites`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setInvites(response.data);
+          const response = await fetchUserInvites(id, token); // Use centralized API
+          setInvites(response);
         } catch (error) {
           toast.error(error.response ? error.response.data : "An error occurred");
         } finally {
           setLoading(false);
         }
       };
-      fetchInvites();
+      fetchInvitesData();
     }
   }, [id, token, activeSection, subSection]);
 
+  // Fetch pending invites
   useEffect(() => {
     if (activeSection === "Invites" && subSection === "Pending Invites") {
-      const fetchPendingInvites = async () => {
+      const fetchPendingInvitesData = async () => {
         setLoading(true);
         try {
-          const response = await api.get(`/user/${id}/invites/pending`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setPendingInvites(response.data);
+          const response = await fetchUserPendingInvites(id, token); // Use centralized API
+          setPendingInvites(response);
         } catch (error) {
           toast.error(error.response ? error.response.data : "An error occurred");
         } finally {
           setLoading(false);
         }
       };
-      fetchPendingInvites();
+      fetchPendingInvitesData();
     }
   }, [id, token, activeSection, subSection]);
 
+  // Fetch proposed events
   useEffect(() => {
     if (activeSection === "Proposed Events" && subSection) {
-      const fetchProposedEvents = async () => {
+      const fetchProposedEventsData = async () => {
         setLoading(true);
         try {
-          const response = await api.get(`/user/proposedEvents/all`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setProposedEvents(response.data);
+          const response = await fetchProposedEvents(token); // Use centralized API
+          setProposedEvents(response);
         } catch (error) {
           toast.error(error.response ? error.response.data : "An error occurred");
         } finally {
           setLoading(false);
         }
       };
-      fetchProposedEvents();
+      fetchProposedEventsData();
     }
   }, [id, token, activeSection, subSection]);
 
+  // Handle proposing an event
   const handleProposeEvent = async (eventData) => {
     try {
       const formattedEventData = {
@@ -90,42 +88,22 @@ const UserDashboardContainer = () => {
         eventTime: new Date(eventData.eventTime).toISOString(),
         eventDate: new Date(eventData.eventDate).toISOString(),
       };
-      await api.post(`/user/${id}/events/propose`, formattedEventData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await proposeEvent(id, formattedEventData, token); // Use centralized API
       toast.success("Event proposed successfully");
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
   };
 
+  // Handle responding to an invite
   const handleRespondToInvite = async (eventId, action, remarks = "") => {
     try {
-      const response = await api.post(
-        `/user/${id}/invites/${eventId}/respond`,
-        {
-          userAction: action,
-          userRemarks: remarks,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await respondToInvite(id, eventId, action, remarks, token); // Use centralized API
+      toast.success(response.message);
 
-      toast.success(response.data.message);
-
-     
       if (subSection === "All Invites") {
-        const invitesResponse = await api.get(`/user/${id}/invites`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setInvites(invitesResponse.data);
+        const invitesResponse = await fetchUserInvites(id, token); // Use centralized API
+        setInvites(invitesResponse);
       } else if (subSection === "Pending Invites") {
         const updatedPendingInvites = pendingInvites.filter(
           (invite) => invite.eventId !== eventId
@@ -137,8 +115,10 @@ const UserDashboardContainer = () => {
     }
   };
 
+  // Handle logout
   const handleLogout = async (e) => {
-    console.log(e);
+    setToken(null);
+    setUserId(null);
     localStorage.removeItem("role");
     localStorage.removeItem("USER_DATA");
     localStorage.removeItem("JWT_TOKEN");
@@ -171,7 +151,7 @@ const UserDashboardContainer = () => {
             pendingInvites={pendingInvites}
             loading={loading}
             userId={id}
-            handleRespondToInvite={handleRespondToInvite} 
+            handleRespondToInvite={handleRespondToInvite}
           />
         )}
         {activeSection === "Proposed Events" && (

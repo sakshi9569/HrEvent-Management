@@ -13,12 +13,9 @@ const AppRoutes = () => {
   return (
     <>
       <Toaster position="bottom-center" />
-      <Routes>  
+      <Routes>
         <Route path="/signup" element={<Signup />} />
-      
-         {/* <Route path="/" element= {token? <UserDashboard /> : <Login />} />  */}
-        <Route path="/" element= {<Login />} />
-    
+        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Login />} />
         <Route
           path="/dashboard"
           element={token ? <UserDashboard /> : <Navigate to="/" />}
@@ -27,6 +24,7 @@ const AppRoutes = () => {
           path="/admindashboard"
           element={token ? <AdminDashboard /> : <Navigate to="/" />}
         />
+        <Route path="*" element={token ? <Navigate to="/dashboard" /> : <Navigate to="/" />} />
       </Routes>
     </>
   );

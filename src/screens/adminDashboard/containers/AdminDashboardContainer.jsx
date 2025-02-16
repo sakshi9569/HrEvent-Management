@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useStoreContext } from "../../../contextApi/ContextApi";
 import { toast } from "react-hot-toast";
-import api from "../../../api/api";
+import {
+  fetchProposedEvents,
+  fetchAllEvents,
+  createEvent,
+  modifyEvent,
+  addInviteesToEvent,
+  handleProposalAction,
+} from "../../../api/auth"; // Update the import path
 import AdminSidebar from "../components/AdminSidebar";
 import EventCard from "../components/EventCard";
 import ProposedEventCard from "../components/ProposedEventCard";
-import Navbar from "../../../shared"
+import Navbar from "../../../shared";
 import EventForm from "../components/EventForm";
 import { Box, Typography, Grid, CircularProgress, Modal } from "@mui/material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboardContainer = () => {
-  const { id, token } = useStoreContext();
+  const { id, token, setToken ,setUserId} = useStoreContext();
   const [activeSection, setActiveSection] = useState(null);
   const [proposedEvents, setProposedEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null); 
+  const [modalType, setModalType] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventData, setEventData] = useState({
     firstName: "",
@@ -33,29 +40,24 @@ const AdminDashboardContainer = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   // Fetch proposed events
   useEffect(() => {
     if (activeSection === "Proposed Events") {
-      const fetchProposedEvents = async () => {
+      const fetchEvents = async () => {
         setLoading(true);
         try {
-          const response = await api.get(`/user/proposedEvents/all`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setProposedEvents(response.data);
+          const data = await fetchProposedEvents(token);
+          setProposedEvents(data);
         } catch (error) {
           toast.error(error.response ? error.response.data : "An error occurred");
         } finally {
           setLoading(false);
         }
       };
-      fetchProposedEvents();
+      fetchEvents();
     }
   }, [activeSection, token]);
 
-
-  
   // Handle creating a new event
   const handleCreateEvent = async (e) => {
     e.preventDefault();
@@ -67,9 +69,7 @@ const AdminDashboardContainer = () => {
     };
 
     try {
-      await api.post("/user/event/create", formattedEventData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await createEvent(formattedEventData, token);
       toast.success("Event created successfully");
       setIsModalOpen(false);
       setEventData({
@@ -91,10 +91,8 @@ const AdminDashboardContainer = () => {
   const handleFetchAllEvents = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/user/event/all", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setAllEvents(response.data);
+      const data = await fetchAllEvents(token);
+      setAllEvents(data);
       setActiveSection("All Events");
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
@@ -104,20 +102,23 @@ const AdminDashboardContainer = () => {
   };
 
   const handleLogout = async (e) => {
+    setToken(null);
+    setUserId(null);
     localStorage.removeItem("role");
     localStorage.removeItem("USER_DATA");
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("id");
     navigate("/");
-    };
+  };
+
   const handleModifyEvent = async (e) => {
     e.preventDefault();
     if (!selectedEvent) return;
 
     const updatedEvent = {
       eventId: selectedEvent.eventId,
-      empId: "7", 
-      role: "admin", 
+      empId: "7",
+      role: "admin",
       action: "update",
       eventName: selectedEvent.agenda,
       eventDate: new Date(selectedEvent.date).toISOString(),
@@ -126,9 +127,7 @@ const AdminDashboardContainer = () => {
     };
 
     try {
-      await api.put(`/user/event/${selectedEvent.eventId}/modify`, updatedEvent, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await modifyEvent(selectedEvent.eventId, updatedEvent, token);
       toast.success("Event modified successfully");
       setIsModalOpen(false);
       handleFetchAllEvents();
@@ -137,7 +136,6 @@ const AdminDashboardContainer = () => {
     }
   };
 
-  // Handle adding invitees to an event
   const handleAddInvitees = async (e) => {
     e.preventDefault();
     if (!selectedEvent) return;
@@ -148,9 +146,7 @@ const AdminDashboardContainer = () => {
       .filter((invitee) => !isNaN(invitee.userId));
 
     try {
-      await api.post(`/user/event/${selectedEvent.eventId}/add-invitees`, inviteesList, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await addInviteesToEvent(selectedEvent.eventId, inviteesList, token);
       toast.success("Invitees added successfully");
       setIsModalOpen(false);
       setInvitees("");
@@ -165,16 +161,10 @@ const AdminDashboardContainer = () => {
     const action = e.target.name;
 
     try {
-      await api.post(
-        `/user/proposal/${eventId}/action`,
-        { action, remark: "ok" },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await handleProposalAction(eventId, action, token);
       toast.success(`Proposal ${action.toLowerCase()} successfully`);
-      const response = await api.get(`/user/proposedEvents/all`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setProposedEvents(response.data);
+      const data = await fetchProposedEvents(token);
+      setProposedEvents(data);
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
@@ -196,36 +186,27 @@ const AdminDashboardContainer = () => {
   };
 
   return (
-    
-    <Box sx={{ display: "flex", flexDirection: "column" }} >
-      {/* Sidebar and Main Content */}
-      {/* Navbar */}
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Navbar handleLogout={handleLogout} />
-
-      {/* Main Layout */}
-      
-
-      {/* Footer */}
-
-      <Box sx={{ display: "flex", flexGrow: 8, height: '100%' }}>
-        {/* Sidebar */}
-        <AdminSidebar openModal={openModal} handleFetchAllEvents={handleFetchAllEvents} setActiveSection={setActiveSection} />
-
-        {/* Main Content */}
-        <Box component="main" 
-        sx={{
-          flex: 1,
-          overflow: "auto",
-          padding: 20,
-          marginTop: -12,
-          marginLeft: 32, 
-        }}
+      <Box sx={{ display: "flex", flexGrow: 8, height: "100%" }}>
+        <AdminSidebar
+          openModal={openModal}
+          handleFetchAllEvents={handleFetchAllEvents}
+          setActiveSection={setActiveSection}
+        />
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            padding: 20,
+            marginTop: -12,
+            marginLeft: 32,
+          }}
         >
           {activeSection === "Proposed Events" && (
             <Box>
-              <Typography variant="h4" gutterBottom
-               sx={{ color: "#5C7285", fontWeight: "bold" }}
-              >
+              <Typography variant="h4" gutterBottom sx={{ color: "#5C7285", fontWeight: "bold" }}>
                 Proposed Events
               </Typography>
               {loading ? (
@@ -246,9 +227,7 @@ const AdminDashboardContainer = () => {
 
           {activeSection === "All Events" && (
             <Box>
-              <Typography variant="h4" gutterBottom
-              sx={{ color: "#5C7285", fontWeight: "bold" }}
-              >
+              <Typography variant="h4" gutterBottom sx={{ color: "#5C7285", fontWeight: "bold" }}>
                 All Events
               </Typography>
               {loading ? (
@@ -269,13 +248,7 @@ const AdminDashboardContainer = () => {
         </Box>
       </Box>
 
-      {/* Modal */}
-      <Modal
-        open={isModalOpen}
-        onClose={closeModal}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
+      <Modal open={isModalOpen} onClose={closeModal}>
         <Box
           sx={{
             position: "absolute",
