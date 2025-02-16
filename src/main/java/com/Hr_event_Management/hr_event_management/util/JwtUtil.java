@@ -53,8 +53,6 @@ public class JwtUtil {
             throw new RuntimeException("Invalid JWT token", e);
         }
     }
-
-    // Check if the token has expired
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
