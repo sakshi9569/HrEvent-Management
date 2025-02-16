@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
 
 const storedData = JSON.parse(localStorage.getItem("USER_DATA")) || { token: null, id: null };
 
@@ -26,8 +26,10 @@ export const ContextProvider = ({ children }) => {
     localStorage.removeItem("id");
   };
 
+  const value = useMemo(() => ({ token, id, setToken, setUserId, updateUser, logout }), [token, id]);
+
   return (
-    <ContextApi.Provider value={{ token, id, setToken, setUserId, updateUser, logout }}>
+    <ContextApi.Provider value={value}>
       {children}
     </ContextApi.Provider>
   );

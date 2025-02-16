@@ -8,7 +8,7 @@ import {
   modifyEvent,
   addInviteesToEvent,
   handleProposalAction,
-} from "../../../api/auth"; // Update the import path
+} from "../../../api/auth"; 
 import AdminSidebar from "../components/AdminSidebar";
 import EventCard from "../components/EventCard";
 import ProposedEventCard from "../components/ProposedEventCard";
