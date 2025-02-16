@@ -1,29 +1,21 @@
-import { useState } from 'react'
-import './App.css'
-import Signup from './Components/Signup'
-import Login from './Components/Login'
-import Footer from './components/Footer'
-import Navbar from './Components/NavBar'
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import {Toaster} from 'react-hot-toast'
-import UserDashboard from './Components/UserDashboard'
-import AdminDashboard from './Components/AdminDashboard'
+import React from "react";
+import { BrowserRouter } from "react-router-dom";  
+import AppRoutes from "./navigation/AppRoutes";
+import { useStoreContext } from "./contextApi/ContextApi";
+import PublicLayoutContainer from "./layouts/public/containers/PublicLayoutContainer";
+import PrivateLayoutContainer from "./layouts/private/containers/PrivateLayoutContainer";
 
-function App() {
+const App = () => {
+  const { token } = useStoreContext();
+  const Layout = token ? PrivateLayoutContainer : PublicLayoutContainer;
+
   return (
-    <>
-      <BrowserRouter>
-      <Navbar/>
-      <Toaster position='bottom-center'/>
-      <Routes>
-        <Route path="/" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<UserDashboard />} />
-        <Route path="/admindashboard" element={<AdminDashboard/>}></Route>
-      </Routes>
-      </BrowserRouter>
-    </>
-  )
-}
+    <BrowserRouter>  
+      <Layout>
+        <AppRoutes />
+      </Layout>
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;
