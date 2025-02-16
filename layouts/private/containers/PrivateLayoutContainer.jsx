@@ -1,20 +1,26 @@
-import React from "react";
-import PrivateHeader from "../components/PrivateHeader";
-import PrivateFooter from "../components/PrivateFooter";
+import React, { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useStoreContext } from "../../../contextApi/ContextApi";
 
-const PrivateLayoutContainer = ({ children }) => {
-  const handleLogout = () => { 
-  };
+const PrivateLayoutContainer = ({ children, requiredRole }) => {
+  const { token, role } = useStoreContext();
+  const navigate = useNavigate();
 
-  return (
-    <div>
-      <PrivateHeader handleLogout={handleLogout} />
-      <div style={{ display: "flex" }}>
-        <main style={{ flex: 1 }}>{children}</main>
-      </div>
-      <PrivateFooter />
-    </div>
-  );
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+    }
+  }, [token, navigate]);
+
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (requiredRole && role !== requiredRole) {
+    return <Navigate to={role === "ADMIN" ? "/admindashboard" : "/dashboard"} replace />;
+  }
+
+  return children;
 };
 
 export default PrivateLayoutContainer;

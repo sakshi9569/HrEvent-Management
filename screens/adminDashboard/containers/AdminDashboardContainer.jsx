@@ -5,7 +5,7 @@ import api from "../../../api/api";
 import AdminSidebar from "../components/AdminSidebar";
 import EventCard from "../components/EventCard";
 import ProposedEventCard from "../components/ProposedEventCard";
-import AdminNavbar from "../components/AdminNavbar"
+import Navbar from "../../../shared"
 import EventForm from "../components/EventForm";
 import { Box, Typography, Grid, CircularProgress, Modal } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -88,7 +88,6 @@ const AdminDashboardContainer = () => {
     }
   };
 
-  // Fetch all events
   const handleFetchAllEvents = async () => {
     setLoading(true);
     try {
@@ -201,7 +200,7 @@ const AdminDashboardContainer = () => {
     <Box sx={{ display: "flex", flexDirection: "column" }} >
       {/* Sidebar and Main Content */}
       {/* Navbar */}
-      <AdminNavbar handleLogout={handleLogout} />
+      <Navbar handleLogout={handleLogout} />
 
       {/* Main Layout */}
       
@@ -218,8 +217,8 @@ const AdminDashboardContainer = () => {
           flex: 1,
           overflow: "auto",
           padding: 20,
-          marginTop: -14,
-          marginLeft: 30, 
+          marginTop: -12,
+          marginLeft: 32, 
         }}
         >
           {activeSection === "Proposed Events" && (

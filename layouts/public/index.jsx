@@ -1,3 +1,3 @@
 import PublicLayoutContainer from "./containers/PublicLayoutContainer";
 
-export {PublicLayoutContainer};
+export { PublicLayoutContainer };

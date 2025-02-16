@@ -41,12 +41,10 @@ const PublicHeader = () => {
           PeopleSync
         </Typography>
         {token ? (
-          // If the user is logged in, show the logout button
           <ButtonBox>
             <CustomButton onClick={logout}>Logout</CustomButton>
           </ButtonBox>
         ) : (
-          // If the user is not logged in, show login and signup buttons
           <>
             <ButtonBox>
               <CustomButton href="/">Login</CustomButton>

@@ -1,16 +1,20 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";  
 import AppRoutes from "./navigation/AppRoutes";
-import {PublicLayoutContainer as PublicLayout} from "./layouts/public/index.jsx";
-import PrivateLayout from "./layouts/private";
 import { useStoreContext } from "./contextApi/ContextApi";
+import PublicLayoutContainer from "./layouts/public/containers/PublicLayoutContainer";
+import PrivateLayoutContainer from "./layouts/private/containers/PrivateLayoutContainer";
 
 const App = () => {
-  const { token } = useStoreContext();  
-  const Layout = token ? PrivateLayout : PublicLayout;
+  const { token } = useStoreContext();
+  const Layout = token ? PrivateLayoutContainer : PublicLayoutContainer;
+
   return (
-    <Layout>
-      <AppRoutes />
-    </Layout>
+    <BrowserRouter>  
+      <Layout>
+        <AppRoutes />
+      </Layout>
+    </BrowserRouter>
   );
 };
 

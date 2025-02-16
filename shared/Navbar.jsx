@@ -2,7 +2,7 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const AdminNavbar = ({ handleLogout }) => {
+const Navbar = ({ handleLogout }) => {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +22,7 @@ const AdminNavbar = ({ handleLogout }) => {
             color: "#E2E0C8",
             cursor: "pointer",
           }}
-          onClick={() => navigate("/admindashboard")}
+          onClick={() => navigate("/")}
         >
           PeopleSync
         </Typography>
@@ -42,4 +42,4 @@ const AdminNavbar = ({ handleLogout }) => {
   );
 };
 
-export default AdminNavbar;
+export default Navbar;

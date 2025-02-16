@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../../../api/api';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useStoreContext } from '../../../contextApi/ContextApi';
+import { loginUser } from '../../../api/auth';
 
 import { Container, Box } from '@mui/material';
 import LoginForm from '../components/index';
@@ -11,7 +11,8 @@ import LoginForm from '../components/index';
 const LoginContainer = () => {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false);
-    const { setToken, setUserId } = useStoreContext();
+    const { setToken, setUserId ,token} = useStoreContext();
+
 
     const {
         register,
@@ -29,27 +30,26 @@ const LoginContainer = () => {
     const loginHandler = async (data) => {
         setLoader(true);
         try {
-            const { data: response } = await api.post("/user/login", data);
+            const response = await loginUser(data);
             setToken(response.token);
             setUserId(response.id);
+
             localStorage.setItem("JWT_TOKEN", JSON.stringify(response.token));
             localStorage.setItem("id", response.id);
-            localStorage.setItem("role",response.role);
-            
+            localStorage.setItem("role", response.role);
+
             toast.success("Login Successful!");
             reset();
-            navigate("/admindashboard");
-            if(response.role === "ADMIN"){
+
+            if (response.role === "ADMIN") {
                 navigate("/admindashboard");
-            }
-            else if(response.role === "USER"){
+            } else if (response.role === "USER") {
                 navigate("/dashboard");
-            }
-            else{
+            } else {
                 navigate("/");
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error("Login Failed!");
         } finally {
             setLoader(false);
@@ -57,6 +57,7 @@ const LoginContainer = () => {
     };
 
     return (
+        
         <Container maxWidth="xs">
             <Box
                 sx={{
@@ -67,6 +68,7 @@ const LoginContainer = () => {
                     justifyContent: "center"
                 }}
             >
+
                 <LoginForm
                     onSubmit={handleSubmit(loginHandler)}
                     loader={loader}

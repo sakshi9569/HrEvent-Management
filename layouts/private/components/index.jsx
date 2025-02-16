@@ -1,1 +1,1 @@
-export { default as PrivateRoute } from './PrivateRoute';
+export { default as PrivateHeader} from './PrivateHeader';

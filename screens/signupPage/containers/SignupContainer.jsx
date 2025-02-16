@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../api/api';
 import toast from 'react-hot-toast';
+import { signupUser } from '../../../api/auth';
 import { Container, Box } from '@mui/material';
 import SignupForm from '../components/SignupForm';
 
@@ -30,12 +30,12 @@ const SignupContainer = () => {
     const registerHandler = async (data) => {
         setLoader(true);
         try {
-            const { data: response } = await api.post("/user/signup", data);
+            await signupUser(data);
             reset();
             navigate("/login");
             toast.success("Registration Successful!");
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error("Registration Failed!");
         } finally {
             setLoader(false);

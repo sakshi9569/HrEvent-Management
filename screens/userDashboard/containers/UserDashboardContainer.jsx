@@ -6,8 +6,8 @@ import { toast } from "react-hot-toast";
 import Sidebar from "../components/Sidebar";
 import InvitesSection from "../components/InvitesSection";
 import ProposedEventsSection from "../components/ProposedEventsSection";
-import UserNavbar from "../components/UserNavbar";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../../shared";
 
 const UserDashboardContainer = () => {
   const { id, token, logout } = useStoreContext();
@@ -148,7 +148,7 @@ const UserDashboardContainer = () => {
 
   return (
     <Box sx={{ display: "flex", height: "100vh", backgroundColor: "grey.50" }}>
-      <UserNavbar handleLogout={handleLogout} />
+      <Navbar handleLogout={handleLogout} />
       <Sidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}
