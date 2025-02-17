@@ -60,10 +60,8 @@ class LoginContainer extends Component {
   }
 }
 
-// Assign Context API to class
 LoginContainer.contextType = ContextApi;
 
-// Export component wrapped with `withRouter` for navigation support
 export default withRouter(LoginContainer);
 
 // Wrap the functional component to use useForm

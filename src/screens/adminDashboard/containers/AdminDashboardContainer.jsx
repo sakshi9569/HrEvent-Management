@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useStoreContext } from "../../../contextApi/ContextApi";
+import React, { Component } from "react";
 import { toast } from "react-hot-toast";
 import {
   fetchProposedEvents,
@@ -8,71 +7,27 @@ import {
   modifyEvent,
   addInviteesToEvent,
   handleProposalAction,
-} from "../../../api/auth"; 
+} from "../../../api/auth";
 import AdminSidebar from "../components/AdminSidebar";
 import EventCard from "../components/EventCard";
 import ProposedEventCard from "../components/ProposedEventCard";
 import Navbar from "../../../shared";
 import EventForm from "../components/EventForm";
 import { Box, Typography, Grid, CircularProgress, Modal } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { withRouter } from "../../../utils/withRouter";
+import { ContextApi } from "../../../contextApi/ContextApi";
 
-const AdminDashboardContainer = () => {
-  const { id, token, setToken ,setUserId} = useStoreContext();
-  const [activeSection, setActiveSection] = useState(null);
-  const [proposedEvents, setProposedEvents] = useState([]);
-  const [allEvents, setAllEvents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [eventData, setEventData] = useState({
-    firstName: "",
-    lastName: "",
-    agenda: "",
-    time: "",
-    date: "",
-    location: "",
-    status: "SCHEDULED",
-    createdById: id,
-    invitedUserIds: "",
-  });
-  const [invitees, setInvitees] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  // Fetch proposed events
-  useEffect(() => {
-    if (activeSection === "Proposed Events") {
-      const fetchEvents = async () => {
-        setLoading(true);
-        try {
-          const data = await fetchProposedEvents(token);
-          setProposedEvents(data);
-        } catch (error) {
-          toast.error(error.response ? error.response.data : "An error occurred");
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchEvents();
-    }
-  }, [activeSection, token]);
-
-  // Handle creating a new event
-  const handleCreateEvent = async (e) => {
-    e.preventDefault();
-    const formattedEventData = {
-      ...eventData,
-      time: new Date(eventData.time).toISOString(),
-      date: new Date(eventData.date).toISOString(),
-      invitedUserIds: eventData.invitedUserIds.split(",").map(Number),
-    };
-
-    try {
-      await createEvent(formattedEventData, token);
-      toast.success("Event created successfully");
-      setIsModalOpen(false);
-      setEventData({
+class AdminDashboardContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeSection: null,
+      proposedEvents: [],
+      allEvents: [],
+      isModalOpen: false,
+      modalType: null,
+      selectedEvent: null,
+      eventData: {
         firstName: "",
         lastName: "",
         agenda: "",
@@ -80,216 +35,268 @@ const AdminDashboardContainer = () => {
         date: "",
         location: "",
         status: "SCHEDULED",
-        createdById: id,
+        createdById: "",  // Set in context
         invitedUserIds: "",
-      });
-    } catch (error) {
-      toast.error(error.response ? error.response.data : "An error occurred");
-    }
-  };
+      },
+      invitees: "",
+      loading: false,
+      token: "", // Set in context
+    };
+  }
 
-  const handleFetchAllEvents = async () => {
-    setLoading(true);
+  static contextType = ContextApi; // Declare the context type for the class component
+
+  componentDidMount() {
+    const { id, token } = this.context; // Access context values
+    this.setState({
+      token: token,
+      eventData: { ...this.state.eventData, createdById: id },
+    });
+  }
+
+  // Fetch proposed events when active section changes
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.activeSection !== this.state.activeSection && this.state.activeSection === "Proposed Events") {
+      this.fetchProposedEvents();
+    }
+  }
+
+  fetchProposedEvents = async () => {
+    this.setState({ loading: true });
     try {
-      const data = await fetchAllEvents(token);
-      setAllEvents(data);
-      setActiveSection("All Events");
+      const data = await fetchProposedEvents(this.state.token);
+      this.setState({ proposedEvents: data });
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     } finally {
-      setLoading(false);
+      this.setState({ loading: false });
     }
   };
 
-  const handleLogout = async (e) => {
-    setToken(null);
-    setUserId(null);
+  handleCreateEvent = async (e) => {
+    e.preventDefault();
+    const formattedEventData = {
+      ...this.state.eventData,
+      time: new Date(this.state.eventData.time).toISOString(),
+      date: new Date(this.state.eventData.date).toISOString(),
+      invitedUserIds: this.state.eventData.invitedUserIds.split(",").map(Number),
+    };
+
+    try {
+      await createEvent(formattedEventData, this.state.token);
+      toast.success("Event created successfully");
+      this.setState({ isModalOpen: false, eventData: {
+        firstName: "",
+        lastName: "",
+        agenda: "",
+        time: "",
+        date: "",
+        location: "",
+        status: "SCHEDULED",
+        createdById: this.context.id,  // Set createdById from context
+        invitedUserIds: "",
+      } });
+    } catch (error) {
+      toast.error(error.response ? error.response.data : "An error occurred");
+    }
+  };
+
+  handleFetchAllEvents = async () => {
+    this.setState({ loading: true });
+    try {
+      const data = await fetchAllEvents(this.state.token);
+      this.setState({ allEvents: data, activeSection: "All Events" });
+    } catch (error) {
+      toast.error(error.response ? error.response.data : "An error occurred");
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
+
+  handleLogout = async (e) => {
+    this.context.setToken(null);
+    this.context.setUserId(null);
     localStorage.removeItem("role");
     localStorage.removeItem("USER_DATA");
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("id");
-    navigate("/");
+    this.props.navigate("/");
   };
 
-  const handleModifyEvent = async (e) => {
+  handleModifyEvent = async (e) => {
     e.preventDefault();
-    if (!selectedEvent) return;
+    if (!this.state.selectedEvent) return;
 
     const updatedEvent = {
-      eventId: selectedEvent.eventId,
+      eventId: this.state.selectedEvent.eventId,
       empId: "7",
       role: "admin",
       action: "update",
-      eventName: selectedEvent.agenda,
-      eventDate: new Date(selectedEvent.date).toISOString(),
-      eventTime: new Date(selectedEvent.time).toISOString(),
-      eventLocation: selectedEvent.location,
+      eventName: this.state.selectedEvent.agenda,
+      eventDate: new Date(this.state.selectedEvent.date).toISOString(),
+      eventTime: new Date(this.state.selectedEvent.time).toISOString(),
+      eventLocation: this.state.selectedEvent.location,
     };
 
     try {
-      await modifyEvent(selectedEvent.eventId, updatedEvent, token);
+      await modifyEvent(this.state.selectedEvent.eventId, updatedEvent, this.state.token);
       toast.success("Event modified successfully");
-      setIsModalOpen(false);
-      handleFetchAllEvents();
+      this.setState({ isModalOpen: false });
+      this.handleFetchAllEvents();
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
   };
 
-  const handleAddInvitees = async (e) => {
+  handleAddInvitees = async (e) => {
     e.preventDefault();
-    if (!selectedEvent) return;
+    if (!this.state.selectedEvent) return;
 
-    const inviteesList = invitees
+    const inviteesList = this.state.invitees
       .split(",")
       .map((userId) => ({ userId: parseInt(userId.trim(), 10) }))
       .filter((invitee) => !isNaN(invitee.userId));
 
     try {
-      await addInviteesToEvent(selectedEvent.eventId, inviteesList, token);
+      await addInviteesToEvent(this.state.selectedEvent.eventId, inviteesList, this.state.token);
       toast.success("Invitees added successfully");
-      setIsModalOpen(false);
-      setInvitees("");
-      handleFetchAllEvents();
+      this.setState({ isModalOpen: false, invitees: "" });
+      this.handleFetchAllEvents();
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
   };
 
-  const handleSuccess = async (e, eventId) => {
+  handleSuccess = async (e, eventId) => {
     e.preventDefault();
     const action = e.target.name;
 
     try {
-      await handleProposalAction(eventId, action, token);
+      await handleProposalAction(eventId, action, this.state.token);
       toast.success(`Proposal ${action.toLowerCase()} successfully`);
-      const data = await fetchProposedEvents(token);
-      setProposedEvents(data);
+      const data = await fetchProposedEvents(this.state.token);
+      this.setState({ proposedEvents: data });
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
   };
 
-  // Open modal for create, modify, or add invitees
-  const openModal = (type, event = null) => {
-    setModalType(type);
-    setIsModalOpen(true);
-    if (event) setSelectedEvent(event);
+  openModal = (type, event = null) => {
+    this.setState({ modalType: type, isModalOpen: true, selectedEvent: event });
   };
 
-  // Close modal and reset state
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalType(null);
-    setSelectedEvent(null);
-    setInvitees("");
+  closeModal = () => {
+    this.setState({ isModalOpen: false, modalType: null, selectedEvent: null, invitees: "" });
   };
 
-  return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Navbar handleLogout={handleLogout} />
-      <Box sx={{ display: "flex", flexGrow: 8, height: "100%" }}>
-        <AdminSidebar
-          openModal={openModal}
-          handleFetchAllEvents={handleFetchAllEvents}
-          setActiveSection={setActiveSection}
-        />
-        <Box
-          component="main"
-          sx={{
-            flex: 1,
-            overflow: "auto",
-            padding: 20,
-            marginTop: -12,
-            marginLeft: 32,
-          }}
-        >
-          {activeSection === "Proposed Events" && (
-            <Box>
-              <Typography variant="h4" gutterBottom sx={{ color: "#5C7285", fontWeight: "bold" }}>
-                Proposed Events
-              </Typography>
-              {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-                  <CircularProgress />
-                </Box>
-              ) : (
-                <Grid container spacing={3}>
-                  {proposedEvents.map((event) => (
-                    <Grid item xs={12} sm={6} md={4} key={event.eventId}>
-                      <ProposedEventCard event={event} handleSuccess={handleSuccess} />
-                    </Grid>
-                  ))}
-                </Grid>
-              )}
-            </Box>
-          )}
+  render() {
+    const { activeSection, proposedEvents, allEvents, isModalOpen, modalType, selectedEvent, eventData, invitees, loading } = this.state;
 
-          {activeSection === "All Events" && (
-            <Box>
-              <Typography variant="h4" gutterBottom sx={{ color: "#5C7285", fontWeight: "bold" }}>
-                All Events
-              </Typography>
-              {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-                  <CircularProgress />
-                </Box>
-              ) : (
-                <Grid container spacing={3}>
-                  {allEvents.map((event) => (
-                    <Grid item xs={12} sm={6} md={4} key={event.eventId}>
-                      <EventCard event={event} openModal={openModal} />
-                    </Grid>
-                  ))}
-                </Grid>
-              )}
-            </Box>
-          )}
-        </Box>
-      </Box>
-
-      <Modal open={isModalOpen} onClose={closeModal}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h5" gutterBottom>
-            {modalType === "create"
-              ? "Create Event"
-              : modalType === "modify"
-              ? "Modify Event"
-              : "Add Invitees"}
-          </Typography>
-          <EventForm
-            modalType={modalType}
-            eventData={eventData}
-            setEventData={setEventData}
-            selectedEvent={selectedEvent}
-            setSelectedEvent={setSelectedEvent}
-            invitees={invitees}
-            setInvitees={setInvitees}
-            handleSubmit={
-              modalType === "create"
-                ? handleCreateEvent
-                : modalType === "modify"
-                ? handleModifyEvent
-                : handleAddInvitees
-            }
-            closeModal={closeModal}
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Navbar handleLogout={this.handleLogout} />
+        <Box sx={{ display: "flex", flexGrow: 8, height: "100%" }}>
+          <AdminSidebar
+            openModal={this.openModal}
+            handleFetchAllEvents={this.handleFetchAllEvents}
+            setActiveSection={(section) => this.setState({ activeSection: section })}
           />
-        </Box>
-      </Modal>
-    </Box>
-  );
-};
+          <Box
+            component="main"
+            sx={{
+              flex: 1,
+              overflow: "auto",
+              padding: 20,
+              marginTop: -12,
+              marginLeft: 32,
+            }}
+          >
+            {activeSection === "Proposed Events" && (
+              <Box>
+                <Typography variant="h4" gutterBottom sx={{ color: "#5C7285", fontWeight: "bold" }}>
+                  Proposed Events
+                </Typography>
+                {loading ? (
+                  <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  <Grid container spacing={3}>
+                    {proposedEvents.map((event) => (
+                      <Grid item xs={12} sm={6} md={4} key={event.eventId}>
+                        <ProposedEventCard event={event} handleSuccess={this.handleSuccess} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
+              </Box>
+            )}
 
-export default AdminDashboardContainer;
+            {activeSection === "All Events" && (
+              <Box>
+                <Typography variant="h4" gutterBottom sx={{ color: "#5C7285", fontWeight: "bold" }}>
+                  All Events
+                </Typography>
+                {loading ? (
+                  <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  <Grid container spacing={3}>
+                    {allEvents.map((event) => (
+                      <Grid item xs={12} sm={6} md={4} key={event.eventId}>
+                        <EventCard event={event} openModal={this.openModal} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        <Modal open={isModalOpen} onClose={this.closeModal}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              {modalType === "create"
+                ? "Create Event"
+                : modalType === "modify"
+                ? "Modify Event"
+                : "Add Invitees"}
+            </Typography>
+            <EventForm
+              modalType={modalType}
+              eventData={eventData}
+              setEventData={(data) => this.setState({ eventData: data })}
+              selectedEvent={selectedEvent}
+              setSelectedEvent={(event) => this.setState({ selectedEvent: event })}
+              invitees={invitees}
+              setInvitees={(invitees) => this.setState({ invitees })}
+              handleSubmit={
+                modalType === "create"
+                  ? this.handleCreateEvent
+                  : modalType === "modify"
+                  ? this.handleModifyEvent
+                  : this.handleAddInvitees
+              }
+            />
+          </Box>
+        </Modal>
+      </Box>
+    );
+  }
+}
+
+export default withRouter(AdminDashboardContainer);
