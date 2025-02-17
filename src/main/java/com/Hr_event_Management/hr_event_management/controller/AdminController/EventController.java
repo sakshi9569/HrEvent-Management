@@ -47,7 +47,7 @@ public class EventController {
     }
 
     @PostMapping("/{eventId}/add-invitees")
-    public ResponseEntity<String> addInvitees(@PathVariable Long eventId, @RequestBody List<InviteRequestDTO> inviteRequestDTOs) {
+    public ResponseEntity<String> addInvitees(@PathVariable Long eventId, @RequestBody List<InviteRequestDTOv2> inviteRequestDTOs) {
         String response = eventService.addInvitees(eventId, inviteRequestDTOs);
         return ResponseEntity.ok(response);
     }
@@ -56,4 +56,5 @@ public class EventController {
         List<EventResponseDTO> events = eventService.getAllEvents();
         return ResponseEntity.ok(events);
     }
+
 }

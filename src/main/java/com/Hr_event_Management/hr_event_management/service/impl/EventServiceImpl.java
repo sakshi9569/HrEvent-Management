@@ -3,10 +3,7 @@ package com.Hr_event_Management.hr_event_management.service.impl;
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.dao.EventDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
-import com.Hr_event_Management.hr_event_management.dto.EventRequestDTO;
-import com.Hr_event_Management.hr_event_management.dto.EventResponseDTO;
-import com.Hr_event_Management.hr_event_management.dto.InviteRequestDTO;
-import com.Hr_event_Management.hr_event_management.dto.ModifyEventRequestDTO;
+import com.Hr_event_Management.hr_event_management.dto.*;
 import com.Hr_event_Management.hr_event_management.model.Event;
 import com.Hr_event_Management.hr_event_management.model.Invite;
 import com.Hr_event_Management.hr_event_management.model.User;
@@ -41,7 +38,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventResponseDTO createEventWithInvites(EventRequestDTO eventRequestDTO, List<Long> invitedUserIds) {
+    public EventResponseDTO createEventWithInvites(EventRequestDTO eventRequestDTO, List<String> invitedUserIds) {
         Optional<User> creatorUser = userDao.findById(eventRequestDTO.getCreatedById());
         if (creatorUser.isEmpty()) {
             throw new RuntimeException("Creator not found");
@@ -70,8 +67,8 @@ public class EventServiceImpl implements EventService {
 
         event = eventDao.save(event);
 
-        for (Long userId : invitedUserIds) {
-            Optional<User> invitedUserOpt = userDao.findById(userId);
+        for (String email : invitedUserIds) {
+            Optional<User> invitedUserOpt = userDao.findByEmail(email);
             if (invitedUserOpt.isPresent()) {
                 User invitedUser = invitedUserOpt.get();
                 Invite invite = new Invite();
@@ -80,7 +77,7 @@ public class EventServiceImpl implements EventService {
                 invite.setStatus(InvitationStatus.PENDING);
                 inviteDao.save(invite);
             } else {
-                log.error("User with ID {} not found", userId);
+                log.error("User with ID {} not found", email);
             }
         }
 
@@ -145,7 +142,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public String addInvitees(Long eventId, List<InviteRequestDTO> inviteRequestDTOs) {
+    public String addInvitees(Long eventId, List<InviteRequestDTOv2> inviteRequestDTOs) {
         Optional<Event> eventOptional = eventDao.findById(eventId);
         if (eventOptional.isEmpty()) {
             return "Event not found.";
@@ -154,9 +151,9 @@ public class EventServiceImpl implements EventService {
         Event event = eventOptional.get();
 
         List<Invite> newInvites = inviteRequestDTOs.stream().map(dto -> {
-            Optional<User> userOptional = userDao.findById(dto.getUserId());
+            Optional<User> userOptional = userDao.findByEmail(dto.getEmail());
             if (userOptional.isEmpty()) {
-                throw new RuntimeException("User with ID " + dto.getUserId() + " not found.");
+                throw new RuntimeException("User with ID " + dto.getEmail() + " not found.");
             }
             User user = userOptional.get();
             Invite invite = new Invite();

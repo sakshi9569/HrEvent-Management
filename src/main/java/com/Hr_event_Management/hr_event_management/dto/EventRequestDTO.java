@@ -20,6 +20,7 @@ public class EventRequestDTO {
     private String location;
     private String status; // create a enum for all status
     private Long createdById;
-    private List<Long> invitedUserIds;
+//    private List<Long> invitedUserIds;
+    private List<String> invitedUserIds;
     // ID of the user who is creating the event
 }
