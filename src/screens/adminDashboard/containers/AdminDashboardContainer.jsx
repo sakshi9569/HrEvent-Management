@@ -151,17 +151,19 @@ class AdminDashboardContainer extends Component {
   handleAddInvitees = async (e) => {
     e.preventDefault();
     if (!this.state.selectedEvent) return;
-
+  
+    // Split the invitees string by comma and trim whitespace
     const inviteesList = this.state.invitees
       .split(",")
-      .map((userId) => ({ userId: parseInt(userId.trim(), 10) }))
-      .filter((invitee) => !isNaN(invitee.userId));
-
+      .map((email) => ({ email: email.trim() })) // Map to an array of objects with email
+      .filter((invitee) => invitee.email); // Filter out empty or invalid emails
+  
     try {
+      // Call the API to add invitees by email
       await addInviteesToEvent(this.state.selectedEvent.eventId, inviteesList, this.state.token);
       toast.success("Invitees added successfully");
-      this.setState({ isModalOpen: false, invitees: "" });
-      this.handleFetchAllEvents();
+      this.setState({ isModalOpen: false, invitees: "" }); // Reset the modal and input
+      this.handleFetchAllEvents(); // Refresh the event list
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }

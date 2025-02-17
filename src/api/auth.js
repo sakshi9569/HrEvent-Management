@@ -1,10 +1,7 @@
-
-import api from "./api"; 
+import api from "./api";
 
 const apiCall = async (method, url, data = null, token = null) => {
-  const config = token
-    ? { headers: { Authorization: `Bearer ${token}` } }
-    : {};
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
   try {
     let response;
@@ -49,9 +46,20 @@ export const proposeEvent = async (userId, eventData, token) => {
   return apiCall("post", `/user/${userId}/events/propose`, eventData, token);
 };
 
-export const respondToInvite = async (userId, eventId, action, remarks, token) => {
+export const respondToInvite = async (
+  userId,
+  eventId,
+  action,
+  remarks,
+  token
+) => {
   const data = { userAction: action, userRemarks: remarks };
-  return apiCall("post", `/user/${userId}/invites/${eventId}/respond`, data, token);
+  return apiCall(
+    "post",
+    `/user/${userId}/invites/${eventId}/respond`,
+    data,
+    token
+  );
 };
 
 // Admin Dashboard APIs
@@ -68,10 +76,20 @@ export const modifyEvent = async (eventId, updatedEvent, token) => {
 };
 
 export const addInviteesToEvent = async (eventId, inviteesList, token) => {
-  return apiCall("post", `/user/event/${eventId}/add-invitees`, inviteesList, token);
+  return apiCall(
+    "post",
+    `/user/event/${eventId}/add-invitees`,
+    inviteesList,
+    token
+  );
 };
 
 export const handleProposalAction = async (eventId, action, token) => {
   const data = { action, remark: "ok" };
   return apiCall("post", `/user/proposal/${eventId}/action`, data, token);
 };
+
+export const fetchEventInvites = async (eventId, token) => {
+  return apiCall("get", `/user/event/${eventId}/allInvitees`, null, token);
+};
+
