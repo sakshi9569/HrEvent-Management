@@ -7,34 +7,31 @@ import com.Hr_event_Management.hr_event_management.dto.EventProposalResponseDTO;
 import com.Hr_event_Management.hr_event_management.model.ProposedEvent;
 import com.Hr_event_Management.hr_event_management.model.User;
 import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
+import com.Hr_event_Management.hr_event_management.service.EventProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @Service
-public class EventProposalService {
+public class EventProposalServiceImpl implements EventProposalService {
 
     private final EventProposalDao eventProposalDao;
     private final UserDao userDao;
 
     @Autowired
-    public EventProposalService(EventProposalDao eventProposalDao, UserDao userDao) {
+    public EventProposalServiceImpl(EventProposalDao eventProposalDao, UserDao userDao) {
         this.eventProposalDao = eventProposalDao;
         this.userDao = userDao;
     }
 
-    // TODO - Add validation for all the requests.
+    @Override
     @Transactional
-    // TODO -
     public EventProposalResponseDTO proposeEvent(EventProposalRequestDTO eventProposalRequestDTO) {
         // Fetch the user who is proposing the event (creator)
-
         Optional<User> creatorUserOpt = userDao.findById(eventProposalRequestDTO.getCreatedById());
         if (creatorUserOpt.isEmpty()) {
-
             throw new RuntimeException("Creator not found");
         }
         User creator = creatorUserOpt.get();
@@ -42,8 +39,6 @@ public class EventProposalService {
         // Create and populate the ProposedEvent entity
         ProposedEvent proposedEvent = new ProposedEvent();
         proposedEvent.setEventName(eventProposalRequestDTO.getEventName());
-
-        // Convert String eventDate to LocalDateTime (adjust format if needed)
         proposedEvent.setEventDate(eventProposalRequestDTO.getEventDate());  // Directly set the String value
         proposedEvent.setEventTime(eventProposalRequestDTO.getEventTime());
         proposedEvent.setEventLocation(eventProposalRequestDTO.getEventLocation());

@@ -2,8 +2,7 @@ package com.Hr_event_Management.hr_event_management.controller.AdminController;
 
 import com.Hr_event_Management.hr_event_management.dto.*;
 import com.Hr_event_Management.hr_event_management.dto.EventResponseDTO;
-import com.Hr_event_Management.hr_event_management.model.Event;
-import com.Hr_event_Management.hr_event_management.service.impl.EventService;
+import com.Hr_event_Management.hr_event_management.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -25,7 +25,6 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    // TODO - Why are u using merge here?
     public Event save(Event event) {
         if (event.getId() == null) {
             entityManager.persist(event);
@@ -34,6 +33,7 @@ public class EventDaoImpl implements EventDao {
             return entityManager.merge(event);
         }
     }
+    //updating
 
     @Override
     public Optional<Event> findById(Long eventId) {

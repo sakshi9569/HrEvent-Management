@@ -1,17 +1,11 @@
 package com.Hr_event_Management.hr_event_management.config;
 import com.Hr_event_Management.hr_event_management.interceptor.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
@@ -41,17 +35,4 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .allowCredentials(true)  // Allow cookies and authorization headers
                 .maxAge(3600); // Cache preflight response for 1 hour
     }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//        configuration.setAllowedHeaders(Collections.singletonList("*"));
-//        configuration.setAllowCredentials(false);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
 }

@@ -1,10 +1,7 @@
 package com.Hr_event_Management.hr_event_management.util;
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -19,8 +16,6 @@ public class JwtUtil {
     public JwtUtil() {
         this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
-
-    // TODO - Read about crietiea of setting expiration time
     // Method to generate a JWT token
     public String generateToken(String username) {
         return Jwts.builder()
@@ -53,6 +48,7 @@ public class JwtUtil {
             throw new RuntimeException("Invalid JWT token", e);
         }
     }
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

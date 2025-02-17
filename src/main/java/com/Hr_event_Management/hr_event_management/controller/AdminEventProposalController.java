@@ -3,7 +3,7 @@ package com.Hr_event_Management.hr_event_management.controller;
 import com.Hr_event_Management.hr_event_management.dto.AdminEventActionRequestDTO;
 import com.Hr_event_Management.hr_event_management.dto.AdminEventActionResponseDTO;
 import com.Hr_event_Management.hr_event_management.dto.EventProposalResponseDTO;
-import com.Hr_event_Management.hr_event_management.service.impl.AdminEventProposalService;
+import com.Hr_event_Management.hr_event_management.service.AdminEventProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

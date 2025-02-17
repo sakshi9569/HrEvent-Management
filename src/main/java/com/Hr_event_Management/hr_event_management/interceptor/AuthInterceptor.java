@@ -22,12 +22,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         String requestURI = request.getRequestURI();
-
-        if (requestURI.contains("/api/auth/login") ||
-                requestURI.contains("/api/auth/register") ||
-                requestURI.contains("/api/auth/verify") ||
-                requestURI.contains("/api/auth/resend-otp") ||
-                requestURI.contains("/error")) {
+        if (requestURI.contains("/user/login") ||
+                requestURI.contains("/user/signup")
+                ) {
             return true;
         }
 
@@ -48,8 +45,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             response.getWriter().write("Unauthorized: Invalid token");
             return false;
         }
-
-        // Optionally, store the authenticated user's email in the request for further processing
 
         return true;
     }

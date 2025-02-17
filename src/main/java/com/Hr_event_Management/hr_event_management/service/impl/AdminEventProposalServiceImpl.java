@@ -10,7 +10,7 @@ import com.Hr_event_Management.hr_event_management.dto.AdminEventActionResponseD
 import com.Hr_event_Management.hr_event_management.dto.EventProposalResponseDTO;
 import com.Hr_event_Management.hr_event_management.model.Event;
 import com.Hr_event_Management.hr_event_management.model.ProposedEvent;
-import lombok.AllArgsConstructor;
+import com.Hr_event_Management.hr_event_management.service.AdminEventProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +18,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AdminEventProposalService {
+public class AdminEventProposalServiceImpl implements AdminEventProposalService {
 
     private final AdminEventProposalDao adminEventProposalDao;
     private final EventDao eventDao;
     private final EventProposalDao eventProposalDao;
 
-
     @Autowired
-    public AdminEventProposalService(AdminEventProposalDao adminEventProposalDao, EventDao eventDao, EventProposalDao eventProposalDao, EventProposalDao eventProposalDao1) {
+    public AdminEventProposalServiceImpl(AdminEventProposalDao adminEventProposalDao, EventDao eventDao, EventProposalDao eventProposalDao) {
         this.adminEventProposalDao = adminEventProposalDao;
         this.eventDao = eventDao;
-
-        this.eventProposalDao = eventProposalDao1;
+        this.eventProposalDao = eventProposalDao;
     }
 
+    @Override
     public AdminEventActionResponseDTO takeAction(Long proposalId, AdminEventActionRequestDTO adminEventActionRequestDTO) {
         ProposedEvent proposedEvent = eventProposalDao.getById(proposalId);
 
@@ -52,16 +51,15 @@ public class AdminEventProposalService {
             event.setUpdatedAt(proposedEvent.getCreatedAt());
             eventDao.save(event);
             eventProposalDao.deleteById(proposalId);
-        }
-        else{
+        } else {
             eventProposalDao.deleteById(proposalId);
         }
 
         return new AdminEventActionResponseDTO("success", "Event proposal " + adminEventActionRequestDTO.getAction() + "ed successfully");
     }
 
-    //get all proposl invites
-    public List<EventProposalResponseDTO> getAll() {  // Fix return type
+    @Override
+    public List<EventProposalResponseDTO> getAll() {
         List<ProposedEvent> proposedEventList = eventProposalDao.findAll();
 
         return proposedEventList.stream().map(event -> new EventProposalResponseDTO(

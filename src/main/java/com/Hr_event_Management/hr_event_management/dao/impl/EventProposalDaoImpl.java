@@ -53,7 +53,6 @@ public class EventProposalDaoImpl implements EventProposalDao {
     public List<ProposedEvent> findAll() {
         String queryStr = "SELECT e FROM ProposedEvent e";
         TypedQuery<ProposedEvent> query = entityManager.createQuery(queryStr, ProposedEvent.class);
-        // TODO - read about typedQuery
         return query.getResultList();
     }
 

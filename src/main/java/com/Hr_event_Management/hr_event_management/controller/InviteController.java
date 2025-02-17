@@ -1,7 +1,7 @@
 package com.Hr_event_Management.hr_event_management.controller;
 
 import com.Hr_event_Management.hr_event_management.dto.*;
-import com.Hr_event_Management.hr_event_management.service.impl.InviteService;
+import com.Hr_event_Management.hr_event_management.service.InviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

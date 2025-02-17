@@ -39,10 +39,8 @@ public class AuthService {
         user.setPassword(signupRequestDTO.getPassword());
         user.setEmpId(signupRequestDTO.getEmpId()); // Assuming password is part of the DTO
         // Hash the password
-        String hashedPassword = BCrypt.hashpw(signupRequestDTO.getEmail() , BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw(signupRequestDTO.getPassword() , BCrypt.gensalt());
         user.setPassword(hashedPassword);
-
-        // Save the user to the database
         userDao.save(user);
         userDao.save(user);
         Optional<User> userFromDb = userDao.findByEmail(signupRequestDTO.getEmail());

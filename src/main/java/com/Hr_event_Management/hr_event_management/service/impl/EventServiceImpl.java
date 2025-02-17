@@ -13,6 +13,7 @@ import com.Hr_event_Management.hr_event_management.model.User;
 import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.Enums.Role;
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus;
+import com.Hr_event_Management.hr_event_management.service.EventService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +26,22 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class EventService {
-
-    final static String CANCEL_ACTION = "cancel";
+public class EventServiceImpl implements EventService {
 
     private final EventDao eventDao;
     private final InviteDao inviteDao;
     private final UserDao userDao;
 
     @Autowired
-    public EventService(EventDao eventDao, InviteDao inviteDao, UserDao userDao) {
+    public EventServiceImpl(EventDao eventDao, InviteDao inviteDao, UserDao userDao) {
         this.eventDao = eventDao;
         this.inviteDao = inviteDao;
         this.userDao = userDao;
     }
 
-    // Method to create an event and send invites to multiple users
+    @Override
     @Transactional
     public EventResponseDTO createEventWithInvites(EventRequestDTO eventRequestDTO, List<Long> invitedUserIds) {
-        // Fetch the creator (admin) from the database
         Optional<User> creatorUser = userDao.findById(eventRequestDTO.getCreatedById());
         if (creatorUser.isEmpty()) {
             throw new RuntimeException("Creator not found");
@@ -51,8 +49,6 @@ public class EventService {
 
         User creator = creatorUser.get();
 
-        // TODO - check conflicts of event
-        // Create and populate the Event entity
         Event event = new Event();
         event.setFirstName(eventRequestDTO.getFirstName());
         event.setLastName(eventRequestDTO.getLastName());
@@ -61,10 +57,9 @@ public class EventService {
         event.setDate(eventRequestDTO.getDate());
         event.setLocation(eventRequestDTO.getLocation());
 
-        // Convert String status from DTO to EventStatus enum
         try {
-            EventStatus status = EventStatus.valueOf(eventRequestDTO.getStatus().toUpperCase());  // Convert String to Enum
-            event.setStatus(status);  // Set status as EventStatus enum
+            EventStatus status = EventStatus.valueOf(eventRequestDTO.getStatus().toUpperCase());
+            event.setStatus(status);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid status value: " + eventRequestDTO.getStatus());
         }
@@ -73,77 +68,63 @@ public class EventService {
         event.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         event.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        // Save the event to the database
-        event = eventDao.save(event);  // Persist the event and capture the saved entity
+        event = eventDao.save(event);
 
-        // Create invites for each user in the invitedUserIds list
-        //TODO - use streaming
         for (Long userId : invitedUserIds) {
             Optional<User> invitedUserOpt = userDao.findById(userId);
             if (invitedUserOpt.isPresent()) {
                 User invitedUser = invitedUserOpt.get();
                 Invite invite = new Invite();
-                invite.setEvent(event);  // Link the invite to the created event
-                invite.setUser(invitedUser);  // Link the invite to the invited user
-                invite.setStatus(InvitationStatus.PENDING);  // Set the status of the invitation
-                inviteDao.save(invite);  // Save the invite to the database
+                invite.setEvent(event);
+                invite.setUser(invitedUser);
+                invite.setStatus(InvitationStatus.PENDING);
+                inviteDao.save(invite);
             } else {
                 log.error("User with ID {} not found", userId);
             }
         }
 
-        // Prepare EventResponseDTO to return
         EventResponseDTO eventResponseDTO = new EventResponseDTO();
-        eventResponseDTO.setEventId(event.getId());  // Set the event ID properly
+        eventResponseDTO.setEventId(event.getId());
         eventResponseDTO.setFirstName(event.getFirstName());
         eventResponseDTO.setLastName(event.getLastName());
         eventResponseDTO.setAgenda(event.getAgenda());
         eventResponseDTO.setTime(event.getTime());
         eventResponseDTO.setDate(event.getDate());
         eventResponseDTO.setLocation(event.getLocation());
-        eventResponseDTO.setStatus(event.getStatus().name());  // Convert enum to String to return in response
+        eventResponseDTO.setStatus(event.getStatus().name());
         eventResponseDTO.setCreatedById(creator.getUserId());
         eventResponseDTO.setMessage("Event and invitations created successfully");
 
         return eventResponseDTO;
     }
 
-
-    // Modify event method (unchanged as per your request)
+    @Override
     public String modifyEvent(Long eventId, ModifyEventRequestDTO modifyEventRequestDTO) {
-        // Convert empId from String to Long
-        Long empId;  //TODO - hanlde the ambiguity between long and string in empId
+        Long empId;
         try {
-            empId = Long.valueOf(modifyEventRequestDTO.getEmpId()); // Convert String empId to Long
+            empId = Long.valueOf(modifyEventRequestDTO.getEmpId());
         } catch (NumberFormatException e) {
             return "Invalid employee ID format!";
         }
 
-        // Ensure the requester is an admin
-        Optional<User> userOptional = userDao.findById(empId); // Now using the Long type for empId
+        Optional<User> userOptional = userDao.findById(empId);
         if (userOptional.isEmpty() || !Role.ADMIN.equals(userOptional.get().getRole())) {
             return "Unauthorized: Only admins can modify events!";
         }
 
-        // Fetch the event by ID (Ensure the eventId is correct type)
         Optional<Event> eventOptional = eventDao.findById(modifyEventRequestDTO.getEventId());
-        // Assuming modifyEventRequestDTO is an instance of ModifyEventRequestDTO
         if (eventOptional.isEmpty()) {
             return "Event not found!";
         }
 
         Event event = eventOptional.get();
 
-        //TODO - make variable in the class
-        // Perform the action (cancel, update, or reschedule)
         switch (modifyEventRequestDTO.getAction().toLowerCase()) {
-            case CANCEL_ACTION:
+            case "cancel":
                 event.setStatus(EventStatus.CANCELED);
                 break;
             case "update":
-//                if(modifyEventRequestDTO.getEventName() != null){
-//                    event.setFirstName(modifyEventRequestDTO.getEventName());
-//                }
                 event.setAgenda(modifyEventRequestDTO.getEventName());
                 event.setTime(Timestamp.valueOf(modifyEventRequestDTO.getEventTime().toLocalDateTime()));
                 event.setDate(Timestamp.valueOf(modifyEventRequestDTO.getEventDate().toLocalDateTime()));
@@ -155,16 +136,17 @@ public class EventService {
                 break;
             default:
                 return "Invalid action! Use 'cancel', 'update', or 'reschedule'.";
-        }// Update the event
+        }
+
         event.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         eventDao.save(event);
         return "Event modified successfully!";
     }
 
+    @Override
     @Transactional
     public String addInvitees(Long eventId, List<InviteRequestDTO> inviteRequestDTOs) {
         Optional<Event> eventOptional = eventDao.findById(eventId);
-
         if (eventOptional.isEmpty()) {
             return "Event not found.";
         }
@@ -187,10 +169,11 @@ public class EventService {
         newInvites.forEach(inviteDao::save);
         return "Invitees added successfully.";
     }
-    public List<EventResponseDTO> getAllEvents(){
-        List<Event> events = eventDao.findAll();  // Fetch all events
 
-        // Map Event entity to EventResponseDTO
+    @Override
+    public List<EventResponseDTO> getAllEvents() {
+        List<Event> events = eventDao.findAll();
+
         return events.stream().map(event -> {
             EventResponseDTO dto = new EventResponseDTO();
             dto.setEventId(event.getId());
@@ -200,7 +183,7 @@ public class EventService {
             dto.setTime(event.getTime());
             dto.setDate(event.getDate());
             dto.setLocation(event.getLocation());
-            dto.setStatus(event.getStatus().toString()); // Convert Enum to String if needed
+            dto.setStatus(event.getStatus().toString());
             dto.setCreatedById(event.getCreatedBy().getUserId());
             dto.setMessage(event.getAgenda());
 
