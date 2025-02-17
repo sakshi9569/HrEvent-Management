@@ -10,27 +10,29 @@ const AdminDashboard = lazy(() => import("../screens/adminDashboard"));
 
 const Loader = () => <span className="block text-center text-lg font-semibold">Loading...</span>;
 
+const ProtectedRoute = ({ element, allowedRole }) => {
+  const { token } = useStoreContext();
+  const role = localStorage.getItem("role");
+
+  return token && role === allowedRole ? element : <Navigate to="/" />;
+};
+
 const AppRoutes = () => {
   const { token } = useStoreContext();
   const role = localStorage.getItem("role");
+  const redirectPath = role === "ADMIN" ? "/admindashboard" : "/dashboard";
 
   return (
     <>
       <Toaster position="bottom-center" />
       <Suspense fallback={<Loader />}>
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={token ? (role == "ADMIN" ? <Navigate to="/admindashboard" /> : <Navigate to="/dashboard" />) : <Login />} />
-        <Route
-          path="/admindashboard"
-          element={token && role == "ADMIN" ? <AdminDashboard /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/dashboard"
-          element={token && role == "USER" ? <UserDashboard /> : <Navigate to="/" />}
-        />
-        <Route path="*" element={token ? (role == "ADMIN" ? <Navigate to="/admindashboard" />: <Navigate to="/dashboard" /> ): <Navigate to="/" />} />
-      </Routes>
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={token ? <Navigate to={redirectPath} /> : <Login />} />
+          <Route path="/admindashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRole="ADMIN" />} />
+          <Route path="/dashboard" element={<ProtectedRoute element={<UserDashboard />} allowedRole="USER" />} />
+          <Route path="*" element={<Navigate to={token ? redirectPath : "/"} />} />
+        </Routes>
       </Suspense>
     </>
   );
