@@ -291,6 +291,7 @@ class AdminDashboardContainer extends Component {
                   ? this.handleModifyEvent
                   : this.handleAddInvitees
               }
+              closeModal={this.closeModal}
             />
           </Box>
         </Modal>

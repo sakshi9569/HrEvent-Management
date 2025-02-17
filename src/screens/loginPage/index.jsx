@@ -1,1 +1,3 @@
-export { default as LoginContainer } from './containers/LoginContainer';
+import LoginContainer from "./containers";
+
+export default LoginContainer;

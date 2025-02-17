@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { withRouter } from "../../../utils/withRouter.jsx"; 
 import toast from "react-hot-toast";
 import { ContextApi } from "../../../contextApi/ContextApi.jsx"; 
-import { loginUser } from "../../../api/auth";
+import { loginUser } from "../../../api/auth.js";
 
 import { Container, Box } from "@mui/material";
 import { useForm } from "react-hook-form"; 
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/LoginForm.jsx";
 
 class LoginContainer extends Component {
   constructor(props) {

@@ -1,90 +1,77 @@
-import api from "./api";
+
+import api from "./api"; 
+
+const apiCall = async (method, url, data = null, token = null) => {
+  const config = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : {};
+
+  try {
+    let response;
+    if (method === "get") {
+      response = await api.get(url, config);
+    } else if (method === "post") {
+      response = await api.post(url, data, config);
+    } else if (method === "put") {
+      response = await api.put(url, data, config);
+    } else if (method === "delete") {
+      response = await api.delete(url, config);
+    }
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : "An error occurred";
+  }
+};
 
 // Auth APIs
 export const loginUser = async (data) => {
-  const response = await api.post("/user/login", data);
-  return response.data;
+  return apiCall("post", "/user/login", data);
 };
 
 export const signupUser = async (data) => {
-  const response = await api.post("/user/signup", data);
-  return response.data;
+  return apiCall("post", "/user/signup", data);
 };
 
 // User Dashboard APIs
 export const fetchUserInvites = async (userId, token) => {
-  const response = await api.get(`/user/${userId}/invites`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("get", `/user/${userId}/invites`, null, token);
 };
 
 export const fetchUserPendingInvites = async (userId, token) => {
-  const response = await api.get(`/user/${userId}/invites/pending`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("get", `/user/${userId}/invites/pending`, null, token);
 };
 
 export const fetchProposedEvents = async (token) => {
-  const response = await api.get("/user/proposedEvents/all", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("get", "/user/proposedEvents/all", null, token);
 };
 
 export const proposeEvent = async (userId, eventData, token) => {
-  const response = await api.post(`/user/${userId}/events/propose`, eventData, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("post", `/user/${userId}/events/propose`, eventData, token);
 };
 
 export const respondToInvite = async (userId, eventId, action, remarks, token) => {
-  const response = await api.post(
-    `/user/${userId}/invites/${eventId}/respond`,
-    { userAction: action, userRemarks: remarks },
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  return response.data;
+  const data = { userAction: action, userRemarks: remarks };
+  return apiCall("post", `/user/${userId}/invites/${eventId}/respond`, data, token);
 };
 
 // Admin Dashboard APIs
 export const fetchAllEvents = async (token) => {
-  const response = await api.get("/user/event/all", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("get", "/user/event/all", null, token);
 };
 
 export const createEvent = async (eventData, token) => {
-  const response = await api.post("/user/event/create", eventData, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("post", "/user/event/create", eventData, token);
 };
 
 export const modifyEvent = async (eventId, updatedEvent, token) => {
-  const response = await api.put(`/user/event/${eventId}/modify`, updatedEvent, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("put", `/user/event/${eventId}/modify`, updatedEvent, token);
 };
 
 export const addInviteesToEvent = async (eventId, inviteesList, token) => {
-  const response = await api.post(`/user/event/${eventId}/add-invitees`, inviteesList, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return apiCall("post", `/user/event/${eventId}/add-invitees`, inviteesList, token);
 };
 
 export const handleProposalAction = async (eventId, action, token) => {
-  const response = await api.post(
-    `/user/proposal/${eventId}/action`,
-    { action, remark: "ok" },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return response.data;
+  const data = { action, remark: "ok" };
+  return apiCall("post", `/user/proposal/${eventId}/action`, data, token);
 };
