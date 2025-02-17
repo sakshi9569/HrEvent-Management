@@ -48,6 +48,14 @@ public class InviteDaoImpl implements InviteDao {
         return Optional.ofNullable(invite);  // Return the invite wrapped in Optional
     }
 
+    @Override
+    public List<Long> findUserIdsByEventId(Long eventId) {
+        TypedQuery<Long> query = entityManager.createQuery(
+                "SELECT i.user.userId FROM Invite i WHERE i.event.id = :eventId", Long.class);
+        query.setParameter("eventId", eventId);
+        return query.getResultList();
+    }
+
 
     // TODO - Read about pagination
     public List<Invite> findHistoryByUserId(Long userId) {

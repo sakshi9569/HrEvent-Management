@@ -14,7 +14,7 @@ import java.util.List;
 //TODO - rename as admin
 public class EventController {
 
-    // TODO - read about final
+    // TODO - read about finalhhh
     private final EventService eventService;
 
     @Autowired
@@ -56,5 +56,8 @@ public class EventController {
         List<EventResponseDTO> events = eventService.getAllEvents();
         return ResponseEntity.ok(events);
     }
-
+    @GetMapping("/{eventId}/allInvitees")
+    public ResponseEntity<List<String>> allInvitees(@PathVariable Long eventId){
+        return ResponseEntity.ok(eventService.getInviteesByEventId(eventId));
+    }
 }

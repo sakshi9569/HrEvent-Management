@@ -12,6 +12,7 @@ public interface InviteDao {
     List<Invite> findHistoryByUserId(Long userId);
 
     List<Invite> findConflictingInvites(Long userId);
+    List<Long> findUserIdsByEventId(Long eventId);
 
     void save(Invite invite);
 }

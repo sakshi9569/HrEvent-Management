@@ -9,4 +9,5 @@ public interface EventService {
     String modifyEvent(Long eventId, ModifyEventRequestDTO modifyEventRequestDTO);
     String addInvitees(Long eventId, List<InviteRequestDTOv2> inviteRequestDTOs);
     List<EventResponseDTO> getAllEvents();
+    List<String> getInviteesByEventId(Long eventId);
 }

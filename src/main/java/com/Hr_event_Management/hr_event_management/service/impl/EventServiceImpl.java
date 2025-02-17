@@ -187,4 +187,19 @@ public class EventServiceImpl implements EventService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public List<String> getInviteesByEventId(Long eventId) {
+
+        List<Long> userIds = inviteDao.findUserIdsByEventId(eventId);
+
+
+        return userIds.stream()
+                .map(userId -> userDao.findById(userId)
+                        .map(User::getEmail)
+                        .orElse(null))
+                .filter(email -> email != null)
+                .collect(Collectors.toList());
+    }
+
 }
