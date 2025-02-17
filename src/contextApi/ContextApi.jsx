@@ -7,6 +7,7 @@ export const ContextApi = createContext();
 export const ContextProvider = ({ children }) => {
   const [token, setToken] = useState(storedData.token);
   const [id, setUserId] = useState(storedData.id);
+  // const [role, setRole] = useState(storedData.role);
 
   useEffect(() => {
     localStorage.setItem("USER_DATA", JSON.stringify({ token, id }));
@@ -15,6 +16,7 @@ export const ContextProvider = ({ children }) => {
   const updateUser = (newToken, newUserId) => {
     setToken(newToken);
     setUserId(newUserId);
+    // setRole(role)
   };
 
   const logout = () => {

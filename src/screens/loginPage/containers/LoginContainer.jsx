@@ -24,6 +24,7 @@ class LoginContainer extends Component {
 
       this.context.setToken(response.token);
       this.context.setUserId(response.id);
+    //   this.context.setRole(response.role);
 
       localStorage.setItem("JWT_TOKEN", JSON.stringify(response.token));
       localStorage.setItem("id", response.id);
