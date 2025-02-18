@@ -5,29 +5,32 @@ import { Check as CheckIcon, Close as CloseIcon } from "@mui/icons-material";
 const ProposedEventCard = ({ event, handleSuccess }) => {
   return (
     <Card
-    sx={{
-      bgcolor: "#E2E0C8", 
-      boxShadow: 10,
-      borderRadius: 2,
-      transition: "transform 0.2s, box-shadow 0.2s",
-      "&:hover": {
-        transform: "scale(1.02)",
-        boxShadow: 6,
-      },
-    }}
+      sx={{
+        bgcolor: "#E2E0C8",
+        boxShadow: 10,
+        borderRadius: 2,
+        transition: "transform 0.2s, box-shadow 0.2s",
+        "&:hover": {
+          transform: "scale(1.02)",
+          boxShadow: 6,
+        },
+      }}
     >
       <CardContent>
         <Box display="flex" flexDirection="column">
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#5C7285" }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", color: "#5C7285" }}
+          >
             {event.eventName}
           </Typography>
-          <Typography sx={{ color: "#5C7285",mt:1 }}>
-            Date: {(event.eventDate)}
+          <Typography sx={{ color: "#5C7285", mt: 1 }}>
+            Date: {event.eventDate}
           </Typography>
-          <Typography sx={{ color: "#5C7285",mt:1 }}>
+          <Typography sx={{ color: "#5C7285", mt: 1 }}>
             Time: {event.eventTime}
           </Typography>
-          <Typography sx={{ color: "#5C7285",mt:1 }}>
+          <Typography sx={{ color: "#5C7285", mt: 1 }}>
             Location: {event.eventLocation}
           </Typography>
           <Typography sx={{ fontWeight: "#5C7285", color: "#5C7285" }}>

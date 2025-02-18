@@ -20,12 +20,12 @@ const ProposedEventsSection = ({
   return (
     <Container
       sx={{
-        width: "50vw", // Adjust width as needed
-        height: "100vh", // Full height
+        width: "50vw",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         paddingY: 4,
-        maxWidth: "none", // Remove max-width restriction
+        maxWidth: "none",
       }}
     >
       {/* Header Section */}
@@ -76,6 +76,8 @@ const ProposedEventsSection = ({
           </Button>
         </Box>
       </Box>
+
+      {/* Scrollable Content */}
       <Box
         sx={{
           flexGrow: 1,
@@ -95,42 +97,64 @@ const ProposedEventsSection = ({
             }}
           >
             <CircularProgress sx={{ color: "#5C7285" }} />
+            <Typography sx={{ color: "#5C7285", ml: 2 }}>
+              Loading proposed events...
+            </Typography>
           </Box>
         ) : (
           <>
-            {subSection === "All Proposed Events" &&
-              proposedEvents.map((event) => (
-                <Card
-                  key={event.eventId}
-                  sx={{
-                    bgcolor: "#E2E0C8",
-                    boxShadow: 3,
-                    borderRadius: 2,
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    "&:hover": {
-                      transform: "scale(1.02)",
-                      boxShadow: 6,
-                    },
-                    marginBottom: 2,
-                    width: "100%", 
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" sx={{ color: "#5C7285", fontWeight: "bold" }}>
-                      {event.eventName}
-                    </Typography>
-                    <Typography sx={{ color: "#5C7285", mt: 1 }}>
-                      Date: {event.eventDate}
-                    </Typography>
-                    <Typography sx={{ color: "#5C7285" }}>
-                      Time: {event.eventTime}
-                    </Typography>
-                    <Typography sx={{ color: "#5C7285" }}>
-                      Location: {event.eventLocation}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
+            {subSection === "All Proposed Events" && (
+              <>
+                {proposedEvents.length === 0 ? (
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: "#5C7285",
+                      textAlign: "center",
+                      marginTop: 4,
+                    }}
+                  >
+                    No proposed events available.
+                  </Typography>
+                ) : (
+                  proposedEvents.map((event) => (
+                    <Card
+                      key={event.eventId}
+                      sx={{
+                        bgcolor: "#E2E0C8",
+                        boxShadow: 3,
+                        borderRadius: 2,
+                        transition: "transform 0.2s, box-shadow 0.2s",
+                        "&:hover": {
+                          transform: "scale(1.02)",
+                          boxShadow: 6,
+                        },
+                        marginBottom: 2,
+                        width: "100%",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          sx={{ color: "#5C7285", fontWeight: "bold" }}
+                        >
+                          {event.eventName}
+                        </Typography>
+                        <Typography sx={{ color: "#5C7285", mt: 1 }}>
+                          Date: {event.eventDate}
+                        </Typography>
+                        <Typography sx={{ color: "#5C7285" }}>
+                          Time: {event.eventTime}
+                        </Typography>
+                        <Typography sx={{ color: "#5C7285" }}>
+                          Location: {event.eventLocation}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </>
+            )}
 
             {subSection === "Propose Event" && (
               <ProposeEventForm handleProposeEvent={handleProposeEvent} />

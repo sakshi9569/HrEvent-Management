@@ -17,8 +17,24 @@ const InvitesSection = ({
   pendingInvites,
   loading,
   userId,
-  handleRespondToInvite, 
+  handleRespondToInvite,
 }) => {
+  // Handle section change with toast notification
+  const handleSectionChange = (section) => {
+    setSubSection(section);
+    toast.success(`Switched to ${section}`);
+  };
+
+  // Handle invite response with toast notification
+  const handleInviteResponse = async (eventId, action) => {
+    try {
+      await handleRespondToInvite(eventId, action);
+      toast.success(`Invite ${action.toLowerCase()}ed successfully`);
+    } catch (error) {
+      toast.error(`Failed to ${action.toLowerCase()} invite: ${error.message}`);
+    }
+  };
+
   return (
     <Container
       sx={{
@@ -60,7 +76,7 @@ const InvitesSection = ({
               color: subSection === "All Invites" ? "white" : "#5C7285",
               "&:hover": { backgroundColor: "#818C78", color: "white" },
             }}
-            onClick={() => setSubSection("All Invites")}
+            onClick={() => handleSectionChange("All Invites")}
           >
             All Invites
           </Button>
@@ -72,7 +88,7 @@ const InvitesSection = ({
               color: subSection === "Pending Invites" ? "white" : "#5C7285",
               "&:hover": { backgroundColor: "#818C78", color: "white" },
             }}
-            onClick={() => setSubSection("Pending Invites")}
+            onClick={() => handleSectionChange("Pending Invites")}
           >
             Pending Invites
           </Button>
@@ -99,6 +115,9 @@ const InvitesSection = ({
             }}
           >
             <CircularProgress sx={{ color: "#5C7285" }} />
+            <Typography sx={{ color: "#5C7285", ml: 2 }}>
+              Loading invites...
+            </Typography>
           </Box>
         ) : (
           <>
@@ -140,21 +159,21 @@ const InvitesSection = ({
                         <Button
                           variant="contained"
                           sx={{ backgroundColor: "#5C7285", color: "white" }}
-                          onClick={() => handleRespondToInvite(invite.eventId, "ACCEPT")}
+                          onClick={() => handleInviteResponse(invite.eventId, "ACCEPT")}
                         >
                           Accept
                         </Button>
                         <Button
                           variant="contained"
                           sx={{ backgroundColor: "#5C7285", color: "white" }}
-                          onClick={() => handleRespondToInvite(invite.eventId, "DENY")}
+                          onClick={() => handleInviteResponse(invite.eventId, "DENY")}
                         >
                           Deny
                         </Button>
                         <Button
                           variant="contained"
                           sx={{ backgroundColor: "#5C7285", color: "white" }}
-                          onClick={() => handleRespondToInvite(invite.eventId, "RESCHEDULE")}
+                          onClick={() => handleInviteResponse(invite.eventId, "RESCHEDULE")}
                         >
                           Reschedule
                         </Button>
