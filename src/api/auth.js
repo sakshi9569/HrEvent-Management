@@ -20,7 +20,6 @@ const apiCall = async (method, url, data = null, token = null) => {
   }
 };
 
-// Auth APIs
 export const loginUser = async (data) => {
   return apiCall("post", "/user/login", data);
 };

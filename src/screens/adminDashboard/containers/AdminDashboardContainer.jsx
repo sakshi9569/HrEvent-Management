@@ -35,7 +35,7 @@ class AdminDashboardContainer extends Component {
         date: "",
         location: "",
         status: "SCHEDULED",
-        createdById: "",  // Set in context
+        createdById: "",  
         invitedUserIds: "",
       },
       invitees: "",
@@ -129,14 +129,16 @@ class AdminDashboardContainer extends Component {
 
     const updatedEvent = {
       eventId: this.state.selectedEvent.eventId,
-      empId: "7",
-      role: "admin",
+      empId: localStorage.getItem("id"),
+      role: localStorage.getItem("role"),
       action: "update",
       eventName: this.state.selectedEvent.agenda,
       eventDate: new Date(this.state.selectedEvent.date).toISOString(),
       eventTime: new Date(this.state.selectedEvent.time).toISOString(),
       eventLocation: this.state.selectedEvent.location,
     };
+
+    console.log("This is the updatedEvent" , updatedEvent);
 
     try {
       await modifyEvent(this.state.selectedEvent.eventId, updatedEvent, this.state.token);
