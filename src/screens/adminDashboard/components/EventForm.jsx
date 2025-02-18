@@ -1,9 +1,43 @@
 import React from "react";
 import { TextField, Button, Box } from "@mui/material";
 
-const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelectedEvent, invitees, setInvitees, handleSubmit, closeModal }) => {
+const EventForm = ({
+  modalType,
+  eventData,
+  setEventData,
+  selectedEvent,
+  setSelectedEvent,
+  invitees,
+  setInvitees,
+  handleSubmit,
+  closeModal,
+}) => {
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, backgroundColor: "#E2E0C8", padding: 3, borderRadius: 2, boxShadow: 3 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ mt: 2, backgroundColor: "#E2E0C8", padding: 3, borderRadius: 2, boxShadow: 3 }}
+    >
       {modalType === "create" && (
         <>
           <TextField
@@ -33,6 +67,9 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
             value={eventData.time}
             onChange={(e) => setEventData({ ...eventData, time: e.target.value })}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
+            inputProps={{
+              min: getCurrentDateTime(), // Disable past dates and times
+            }}
           />
           <TextField
             fullWidth
@@ -40,6 +77,9 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
             value={eventData.date}
             onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
+            inputProps={{
+              min: getCurrentDate(), // Disable past dates
+            }}
           />
           <TextField
             fullWidth
@@ -72,6 +112,9 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
             value={selectedEvent.time ? new Date(selectedEvent.time).toISOString().slice(0, 16) : ""}
             onChange={(e) => setSelectedEvent({ ...selectedEvent, time: e.target.value })}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
+            inputProps={{
+              min: getCurrentDateTime(), // Disable past dates and times
+            }}
           />
           <TextField
             fullWidth
@@ -79,6 +122,9 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
             value={selectedEvent.date ? new Date(selectedEvent.date).toISOString().slice(0, 10) : ""}
             onChange={(e) => setSelectedEvent({ ...selectedEvent, date: e.target.value })}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
+            inputProps={{
+              min: getCurrentDate(), // Disable past dates
+            }}
           />
           <TextField
             fullWidth
@@ -98,14 +144,23 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
           sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
         />
       )}
-      <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: "#5C7285", color: "#E2E0C8", "&:hover": { backgroundColor: "#818C78" } }}>
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        sx={{ backgroundColor: "#5C7285", color: "#E2E0C8", "&:hover": { backgroundColor: "#818C78" } }}
+      >
         {modalType === "create"
           ? "Create Event"
           : modalType === "modify"
           ? "Modify Event"
           : "Add Invitees"}
       </Button>
-      <Button onClick={closeModal} fullWidth sx={{ mt: 1, backgroundColor: "#818C78", color: "#E2E0C8", "&:hover": { backgroundColor: "#5C7285" } }}>
+      <Button
+        onClick={closeModal}
+        fullWidth
+        sx={{ mt: 1, backgroundColor: "#818C78", color: "#E2E0C8", "&:hover": { backgroundColor: "#5C7285" } }}
+      >
         Cancel
       </Button>
     </Box>

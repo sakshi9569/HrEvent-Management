@@ -44,10 +44,10 @@ class AdminDashboardContainer extends Component {
     };
   }
 
-  static contextType = ContextApi; // Declare the context type for the class component
+  static contextType = ContextApi; 
 
   componentDidMount() {
-    const { id, token } = this.context; // Access context values
+    const { id, token } = this.context; 
     this.setState({
       token: token,
       eventData: { ...this.state.eventData, createdById: id },
