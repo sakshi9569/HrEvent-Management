@@ -79,7 +79,7 @@ class AdminDashboardContainer extends Component {
       ...this.state.eventData,
       time: new Date(this.state.eventData.time).toISOString(),
       date: new Date(this.state.eventData.date).toISOString(),
-      invitedUserIds: this.state.eventData.invitedUserIds.split(",").map(Number),
+      invitedUserIds: this.state.eventData.invitedUserIds.split(","),
     };
 
     try {

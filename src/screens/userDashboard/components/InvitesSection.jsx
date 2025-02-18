@@ -19,7 +19,7 @@ const InvitesSection = ({
   userId,
   handleRespondToInvite,
 }) => {
-  // Handle section change with toast notification
+  
   const handleSectionChange = (section) => {
     setSubSection(section);
     toast.success(`Switched to ${section}`);

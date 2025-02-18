@@ -50,7 +50,7 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
           />
           <TextField
             fullWidth
-            label="Invited User IDs (comma-separated)"
+            label="Invited Email IDs (comma-separated)"
             value={eventData.invitedUserIds}
             onChange={(e) => setEventData({ ...eventData, invitedUserIds: e.target.value })}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
@@ -92,7 +92,7 @@ const EventForm = ({ modalType, eventData, setEventData, selectedEvent, setSelec
       {modalType === "addInvitees" && (
         <TextField
           fullWidth
-          label="Invitee User IDs (comma-separated)"
+          label="Invitee Email IDs (comma-separated)"
           value={invitees}
           onChange={(e) => setInvitees(e.target.value)}
           sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
