@@ -37,7 +37,7 @@ public class EventProposalServiceImpl implements EventProposalService {
         User creator = creatorUserOpt.get();
         ProposedEvent proposedEvent = new ProposedEvent();
         proposedEvent.setEventName(eventProposalRequestDTO.getEventName());
-        proposedEvent.setEventDate(eventProposalRequestDTO.getEventDate());  // Directly set the String value
+        proposedEvent.setEventDate(eventProposalRequestDTO.getEventDate());
         proposedEvent.setEventTime(eventProposalRequestDTO.getEventTime());
         proposedEvent.setEventLocation(eventProposalRequestDTO.getEventLocation());
         proposedEvent.setAgenda(eventProposalRequestDTO.getAgenda());
@@ -67,8 +67,8 @@ public class EventProposalServiceImpl implements EventProposalService {
 
         List<ProposedEvent> proposedEventsInDb = eventProposalDao.findByUserId(id).stream()
                 .filter(event -> {
-                    LocalDate eventDate = event.getEventDate().toLocalDateTime().toLocalDate();
-                    LocalTime eventTime = event.getEventTime().toLocalDateTime().toLocalTime();
+                    LocalDate eventDate = event.getEventDate();
+                    LocalTime eventTime = event.getEventTime();
                     LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
 
                     // Include today's events if the time is in the future

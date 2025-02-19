@@ -35,8 +35,8 @@ public class InviteServiceImpl implements InviteService {
         List<Invite> invites = inviteDao.findByUserId(userId).stream()
                 .filter(invite -> invite.getStatus() == InvitationStatus.ACCEPTED)
                 .filter(invite -> {
-                    LocalDate eventDate = invite.getEvent().getDate().toLocalDateTime().toLocalDate();
-                    LocalTime eventTime = invite.getEvent().getTime().toLocalDateTime().toLocalTime();
+                    LocalDate eventDate = invite.getEvent().getDate();
+                    LocalTime eventTime = invite.getEvent().getTime();
                     LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
                     return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
                 })
@@ -61,8 +61,8 @@ public class InviteServiceImpl implements InviteService {
 
         List<Invite> invites = inviteDao.findPendingByUserId(userId).stream()
                 .filter(invite -> {
-                    LocalDate eventDate = invite.getEvent().getDate().toLocalDateTime().toLocalDate();
-                    LocalTime eventTime = invite.getEvent().getTime().toLocalDateTime().toLocalTime();
+                    LocalDate eventDate = invite.getEvent().getDate();
+                    LocalTime eventTime = invite.getEvent().getTime();
                     LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
                     return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
                 })

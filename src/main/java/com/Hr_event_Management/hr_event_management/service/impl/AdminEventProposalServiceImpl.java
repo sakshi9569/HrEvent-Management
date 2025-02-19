@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdminEventProposalServiceImpl implements AdminEventProposalService {
-
     private final AdminEventProposalDao adminEventProposalDao;
     private final EventDao eventDao;
     private final EventProposalDao eventProposalDao;
@@ -31,14 +30,13 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
     @Override
     public AdminEventActionResponseDTO takeAction(Long proposalId, AdminEventActionRequestDTO adminEventActionRequestDTO) {
         ProposedEvent proposedEvent = eventProposalDao.getById(proposalId);
-
         if (ProposalStatus.ACCEPTED.equals(adminEventActionRequestDTO.getAction())) {
             Event event = new Event();
             event.setFirstName(proposedEvent.getUser().getFirstname());
             event.setLastName(proposedEvent.getUser().getLastname());
             event.setAgenda(proposedEvent.getEventName());
             event.setTime(proposedEvent.getEventTime());
-            event.setDate(proposedEvent.getCreatedAt());
+            event.setDate(proposedEvent.getEventDate());
             event.setProposalStatus(ProposalStatus.ACCEPTED);
             event.setLocation(proposedEvent.getEventLocation());
             event.setInvites(null);
@@ -61,8 +59,8 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
         LocalDate today = now.toLocalDate();
         List<ProposedEvent> proposedEventList = eventProposalDao.findAll().stream()
                 .filter(event -> {
-                    LocalDate eventDate = event.getEventDate().toLocalDateTime().toLocalDate();
-                    LocalTime eventTime = event.getEventTime().toLocalDateTime().toLocalTime();
+                    LocalDate eventDate = event.getEventDate();
+                    LocalTime eventTime = event.getEventTime();
                     LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
                     return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
                 })

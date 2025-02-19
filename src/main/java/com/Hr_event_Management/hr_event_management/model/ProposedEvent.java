@@ -4,7 +4,9 @@ import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +30,10 @@ public class ProposedEvent {
     private String eventName;
 
     @Column(nullable = false)
-    private Timestamp eventDate ;
+    private LocalDate eventDate ;
 
     @Column(nullable = false)
-    private Timestamp eventTime;
+    private LocalTime eventTime;
 
     @Column(nullable = false)
     private String eventLocation;

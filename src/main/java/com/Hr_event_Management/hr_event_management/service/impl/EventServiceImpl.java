@@ -122,13 +122,13 @@ public class EventServiceImpl implements EventService {
                 break;
             case "update":
                 event.setAgenda(modifyEventRequestDTO.getEventName());
-                event.setTime(Timestamp.valueOf(modifyEventRequestDTO.getEventTime().toLocalDateTime()));
-                event.setDate(Timestamp.valueOf(modifyEventRequestDTO.getEventDate().toLocalDateTime()));
+                event.setTime(modifyEventRequestDTO.getEventTime());
+                event.setDate(modifyEventRequestDTO.getEventDate());
                 event.setLocation(modifyEventRequestDTO.getEventLocation());
                 break;
             case "reschedule":
-                event.setTime(Timestamp.valueOf(modifyEventRequestDTO.getEventTime() + ":00"));
-                event.setDate(Timestamp.valueOf(modifyEventRequestDTO.getEventDate() + " 00:00:00"));
+                event.setTime(modifyEventRequestDTO.getEventTime());
+                event.setDate(modifyEventRequestDTO.getEventDate());
                 break;
             default:
                 return "Invalid action! Use 'cancel', 'update', or 'reschedule'.";
@@ -173,12 +173,12 @@ public class EventServiceImpl implements EventService {
         LocalDate today = now.toLocalDate();
         List<Event> events = eventDao.findAll()
                 .stream()
-                .filter(event -> {
-                    LocalDate eventDate = event.getDate().toLocalDateTime().toLocalDate();
-                    LocalTime eventTime = event.getTime().toLocalDateTime().toLocalTime();
-                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
-                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
-                })
+//                .filter(event -> {
+//                    LocalDate eventDate = event.getDate().toLocalDateTime().toLocalDate();
+//                    LocalTime eventTime = event.getTime().toLocalDateTime().toLocalTime();
+//                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+//                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+//                })
                 .collect(Collectors.toList());
         return events.stream()
                 .map(event -> {

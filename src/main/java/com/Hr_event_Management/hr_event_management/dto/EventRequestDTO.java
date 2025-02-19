@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -13,8 +15,8 @@ public class EventRequestDTO {
     private String firstName;
     private String lastName;
     private String agenda;
-    private Timestamp time;
-    private Timestamp date;
+    private LocalTime time;
+    private LocalDate date;
     private String location;
     private EventStatus status;
     private Long createdById;

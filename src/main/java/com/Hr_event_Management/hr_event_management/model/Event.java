@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus; // Import EventStatus Enum
 import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
@@ -34,10 +36,10 @@ public class Event {
     }
 
     @Column(nullable = false)
-    private Timestamp time;
+    private LocalTime time;
 
     @Column(nullable = false)
-    private Timestamp date;
+    private LocalDate date;
 
     @Column(nullable = false)
     private String location;

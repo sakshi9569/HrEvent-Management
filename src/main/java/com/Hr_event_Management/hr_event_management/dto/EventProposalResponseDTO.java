@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -16,8 +18,8 @@ public class EventProposalResponseDTO {
 
     private Long eventId;
     private String eventName;
-    private Timestamp eventDate;
-    private Timestamp eventTime;
+    private LocalDate eventDate;
+    private LocalTime eventTime;
     private String eventLocation;
     private String agenda;
     private ProposalStatus proposalStatus;
