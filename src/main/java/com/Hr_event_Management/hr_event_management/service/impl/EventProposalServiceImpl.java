@@ -48,7 +48,7 @@ public class EventProposalServiceImpl implements EventProposalService {
         eventProposalResponseDTO.setEventId(proposedEvent.getId());
         eventProposalResponseDTO.setEventName(proposedEvent.getEventName());
         eventProposalResponseDTO.setEventDate(proposedEvent.getEventDate());
-        eventProposalResponseDTO.setEventTime(String.valueOf(proposedEvent.getEventTime()));
+        eventProposalResponseDTO.setEventTime(proposedEvent.getEventTime());
         eventProposalResponseDTO.setEventLocation(proposedEvent.getEventLocation());
         eventProposalResponseDTO.setAgenda(proposedEvent.getAgenda());
         eventProposalResponseDTO.setProposalStatus(proposedEvent.getProposalStatus().name());

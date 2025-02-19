@@ -29,7 +29,7 @@ public class ProposedEvent {
     private String eventName;
 
     @Column(nullable = false)
-    private String eventDate ;
+    private Timestamp eventDate ;
 
     @Column(nullable = false)
     private Timestamp eventTime;
@@ -49,7 +49,7 @@ public class ProposedEvent {
     private User createdBy;
 
     @Enumerated(EnumType.STRING)
-    private ProposalStatus proposalStatus = ProposalStatus.PENDING;  // Default status is "PENDING"
+    private ProposalStatus proposalStatus = ProposalStatus.PENDING;
 
     @Column(nullable = false)
     private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());

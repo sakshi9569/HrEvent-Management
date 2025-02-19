@@ -24,7 +24,6 @@ public class AuthService {
         this.userDao = userDao;
     }
     public AuthResponseDTO signup(SignupRequest signupRequestDTO) {
-        // Check if the user already exists with the given email
         Optional<User> existingUser = userDao.findByEmail(signupRequestDTO.getEmail());
 
         if (existingUser.isPresent()) {

@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         log.info("user successfully saved");
         String token=jwtUtil.generateToken(signupRequest.getEmail());
 
-        return new AuthResponseDTO(token, userFromDb.get().getUserId(), Role.USER);
+        return new AuthResponseDTO(token, userFromDb.get().getUserId(), Role.ADMIN);
     }
 
     private void validateRequest(SignupRequest signupRequest) {

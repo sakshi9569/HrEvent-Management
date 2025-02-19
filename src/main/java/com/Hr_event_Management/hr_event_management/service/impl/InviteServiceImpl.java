@@ -34,8 +34,8 @@ public class InviteServiceImpl implements InviteService {
                 .map(invite -> new InviteResponseDTO(
                         invite.getEvent().getId().toString(),
                         invite.getEvent().getEventName(),
-                        invite.getEvent().getDate().toString(),
-                        invite.getEvent().getTime().toString(),
+                        invite.getEvent().getDate(),
+                        invite.getEvent().getTime(),
                         invite.getEvent().getLocation()
                 ))
                 .collect(Collectors.toList());
@@ -49,8 +49,8 @@ public class InviteServiceImpl implements InviteService {
                 .map(invite -> new PendingInviteResponseDTO(
                         invite.getEvent().getId().toString(),
                         invite.getEvent().getAgenda(),
-                        invite.getEvent().getDate().toString(),
-                        invite.getEvent().getTime().toString(),
+                        invite.getEvent().getDate(),
+                        invite.getEvent().getTime(),
                         invite.getEvent().getLocation(),
                         "PENDING"
                 ))
@@ -113,8 +113,8 @@ public class InviteServiceImpl implements InviteService {
                 .map(invite -> new InviteResponseDTO(
                         invite.getEvent().getId().toString(),
                         invite.getEvent().getEventName(),
-                        invite.getEvent().getDate().toString(),
-                        invite.getEvent().getTime().toString(),
+                        invite.getEvent().getDate(),
+                        invite.getEvent().getTime(),
                         invite.getEvent().getLocation()
                 ))
                 .collect(Collectors.toList());

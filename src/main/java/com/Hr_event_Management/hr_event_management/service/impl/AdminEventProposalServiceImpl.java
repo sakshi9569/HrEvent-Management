@@ -66,7 +66,7 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
                 event.getId(),
                 event.getEventName(),
                 event.getEventDate(),
-                event.getEventTime().toString(),
+                event.getEventTime(),
                 event.getEventLocation(),
                 event.getAgenda(),
                 event.getProposalStatus().toString(),

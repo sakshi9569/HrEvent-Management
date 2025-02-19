@@ -41,7 +41,7 @@ public class Event {
     @Column(nullable = false)
     private Timestamp date;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String location;
 
     @Enumerated(EnumType.STRING)

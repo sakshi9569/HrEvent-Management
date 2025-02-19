@@ -171,6 +171,7 @@ public class EventServiceImpl implements EventService {
     public List<EventResponseDTO> getAllEvents() {
         List<Event> events = eventDao.findAll();
 
+
         return events.stream().map(event -> {
             EventResponseDTO dto = new EventResponseDTO();
             dto.setEventId(event.getId());

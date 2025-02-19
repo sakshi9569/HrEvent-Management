@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EventProposalRequestDTO {
     private String eventName;
-    private String eventDate;
+    private Timestamp eventDate;
     private Timestamp eventTime;
     private String eventLocation;
     private String agenda;

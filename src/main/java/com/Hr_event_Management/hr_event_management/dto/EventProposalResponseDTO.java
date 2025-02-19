@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,8 +16,8 @@ public class EventProposalResponseDTO {
 
     private Long eventId;
     private String eventName;
-    private String eventDate;
-    private String eventTime;
+    private Timestamp eventDate;
+    private Timestamp eventTime;
     private String eventLocation;
     private String agenda;
     private String proposalStatus;

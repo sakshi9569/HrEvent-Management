@@ -2,6 +2,8 @@ package com.Hr_event_Management.hr_event_management.dto;
 
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,7 +11,7 @@ import lombok.*;
 public class InviteResponseDTO {
     private String eventId;
     private String eventName;
-    private String eventDate;
-    private String eventTime;
+    private Timestamp eventDate;
+    private Timestamp eventTime;
     private String eventLocation;
 }
