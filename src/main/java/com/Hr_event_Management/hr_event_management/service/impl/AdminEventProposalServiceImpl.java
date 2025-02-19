@@ -14,6 +14,7 @@ import com.Hr_event_Management.hr_event_management.service.AdminEventProposalSer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,11 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
 
     @Override
     public List<EventProposalResponseDTO> getAll() {
-        List<ProposedEvent> proposedEventList = eventProposalDao.findAll();
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        List<ProposedEvent> proposedEventList = eventProposalDao.findAll().stream()
+                .filter(event -> event.getEventTime().after(currentTimestamp)) // Filter future events
+                .collect(Collectors.toList());
 
         return proposedEventList.stream().map(event -> new EventProposalResponseDTO(
                 event.getId(),
@@ -69,7 +74,7 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
                 event.getEventTime(),
                 event.getEventLocation(),
                 event.getAgenda(),
-                event.getProposalStatus().toString(),
+                event.getProposalStatus(),
                 event.getCreatedBy().getUserId(),
                 "Event retrieved successfully"
         )).collect(Collectors.toList());

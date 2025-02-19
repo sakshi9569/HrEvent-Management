@@ -9,6 +9,7 @@ import com.Hr_event_Management.hr_event_management.service.InviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,10 +28,14 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     public List<InviteResponseDTO> getInvitesForUser(Long userId) {
-        List<Invite> invites = inviteDao.findByUserId(userId);
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        List<Invite> invites = inviteDao.findByUserId(userId).stream()
+                .filter(invite -> invite.getStatus() == InvitationStatus.ACCEPTED)  // Filter only accepted invites
+                .filter(invite -> invite.getEvent().getTime().after(currentTimestamp))  // Filter future events
+                .collect(Collectors.toList());
 
         return invites.stream()
-                .filter(invite -> invite.getStatus() == InvitationStatus.ACCEPTED)
                 .map(invite -> new InviteResponseDTO(
                         invite.getEvent().getId().toString(),
                         invite.getEvent().getEventName(),
@@ -41,9 +46,14 @@ public class InviteServiceImpl implements InviteService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public List<PendingInviteResponseDTO> getPendingInvites(Long userId) {
-        List<Invite> invites = inviteDao.findPendingByUserId(userId);
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        List<Invite> invites = inviteDao.findPendingByUserId(userId).stream()
+                .filter(invite -> invite.getEvent().getTime().after(currentTimestamp)) // Filter future events
+                .collect(Collectors.toList());
 
         return invites.stream()
                 .map(invite -> new PendingInviteResponseDTO(

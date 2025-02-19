@@ -59,4 +59,5 @@ public class InviteController {
         return ResponseEntity.ok(conflicts);
     }
 
+
 }

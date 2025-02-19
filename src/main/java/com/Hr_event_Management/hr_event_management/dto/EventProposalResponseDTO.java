@@ -1,5 +1,6 @@
 package com.Hr_event_Management.hr_event_management.dto;
 
+import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class EventProposalResponseDTO {
     private Timestamp eventTime;
     private String eventLocation;
     private String agenda;
-    private String proposalStatus;
+    private ProposalStatus proposalStatus;
     private Long createdById;
     private String message;
 }

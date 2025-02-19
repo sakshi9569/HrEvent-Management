@@ -169,9 +169,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventResponseDTO> getAllEvents() {
-        List<Event> events = eventDao.findAll();
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-
+        List<Event> events = eventDao.findAll()
+                .stream()
+                .filter(event -> event.getTime().after(currentTimestamp))  // Filter future events
+                .collect(Collectors.toList());
         return events.stream().map(event -> {
             EventResponseDTO dto = new EventResponseDTO();
             dto.setEventId(event.getId());
@@ -184,7 +187,6 @@ public class EventServiceImpl implements EventService {
             dto.setStatus(event.getStatus().toString());
             dto.setCreatedById(event.getCreatedBy().getUserId());
             dto.setMessage(event.getAgenda());
-
             return dto;
         }).collect(Collectors.toList());
     }

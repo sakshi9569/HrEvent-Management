@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EventProposalServiceImpl implements EventProposalService {
@@ -51,10 +53,29 @@ public class EventProposalServiceImpl implements EventProposalService {
         eventProposalResponseDTO.setEventTime(proposedEvent.getEventTime());
         eventProposalResponseDTO.setEventLocation(proposedEvent.getEventLocation());
         eventProposalResponseDTO.setAgenda(proposedEvent.getAgenda());
-        eventProposalResponseDTO.setProposalStatus(proposedEvent.getProposalStatus().name());
+        eventProposalResponseDTO.setProposalStatus(proposedEvent.getProposalStatus());
         eventProposalResponseDTO.setCreatedById(creator.getUserId());
         eventProposalResponseDTO.setMessage("Event proposal created successfully");
 
         return eventProposalResponseDTO;
+    }
+
+    @Override
+    public List<EventProposalResponseDTO> getProposedEvents(Long id) {
+        List<ProposedEvent> proposedEventsInDb = eventProposalDao.findByUserId(id);
+
+        return proposedEventsInDb.stream()
+                .map(event -> new EventProposalResponseDTO(
+                        event.getId(),
+                        event.getEventName(),
+                        event.getEventDate(),
+                        event.getEventTime(),
+                        event.getEventLocation(),
+                        event.getAgenda(),
+                        event.getProposalStatus(),
+                        event.getCreatedBy().getUserId(),
+                        "Event retrieved successfully"
+                ))
+                .collect(Collectors.toList());
     }
 }
