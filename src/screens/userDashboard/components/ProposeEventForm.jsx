@@ -43,7 +43,6 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
       </Typography>
 
       <Box sx={{ mt: 3 }}>
-        {/* Event Name Field */}
         <TextField
           fullWidth
           label="Event Name"
@@ -109,11 +108,10 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
             bgcolor: "#A7B49E",
             borderRadius: 1,
             "& .MuiInputBase-input": { color: "#5C7285" },
-            "& .MuiInputLabel-root": { color: "#5C7285" }, // Label color
+            "& .MuiInputLabel-root": { color: "#5C7285" }, 
           }}
         />
 
-        {/* Agenda Field */}
         <TextField
           fullWidth
           label="Agenda"
@@ -126,13 +124,11 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
             mb: 2,
             bgcolor: "#A7B49E",
             borderRadius: 1,
-            "& .MuiInputBase-input": { color: "#5C7285" }, // Input text color
-            "& .MuiInputLabel-root": { color: "#5C7285" }, // Label color
+            "& .MuiInputBase-input": { color: "#5C7285" }, 
+            "& .MuiInputLabel-root": { color: "#5C7285" }, 
           }}
         />
       </Box>
-
-      {/* Submit Button */}
       <Button
         type="submit"
         fullWidth

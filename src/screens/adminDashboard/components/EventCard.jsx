@@ -23,6 +23,19 @@ const EventCard = ({ event, openModal }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { token } = useStoreContext();
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+  const formatTime = (timeString) => {
+    const time = new Date(`1970-01-01T${timeString}`); 
+    const hours = String(time.getHours()).padStart(2, "0");
+    const minutes = String(time.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
 
   const fetchInvitees = async () => {
     setLoading(true);
@@ -75,10 +88,10 @@ const EventCard = ({ event, openModal }) => {
           {event.agenda}
         </Typography>
         <Typography sx={{ color: "#5C7285", mt: 1 }}>
-          Date: {new Date(event.date).toLocaleDateString()}
+          Date: {formatDate(event.date)} {/* Format the date */}
         </Typography>
         <Typography sx={{ color: "#5C7285" }}>
-          Time: {new Date(event.time).toLocaleTimeString()}
+          Time: {formatTime(event.time)} {/* Format the time */}
         </Typography>
         <Typography sx={{ color: "#5C7285" }}>
           Location: {event.location}

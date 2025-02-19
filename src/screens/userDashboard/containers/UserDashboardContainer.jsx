@@ -33,10 +33,7 @@ class UserDashboardContainer extends Component {
   async componentDidUpdate(prevProps, prevState) {
     const { activeSection, subSection } = this.state;
 
-    if (
-      prevState.activeSection !== activeSection ||
-      prevState.subSection !== subSection
-    ) {
+    if (prevState.activeSection !== activeSection || prevState.subSection !== subSection) {
       const { id, token } = this.context;
 
       if (activeSection === "Invites" && subSection === "All Invites") {
@@ -93,12 +90,8 @@ class UserDashboardContainer extends Component {
       const formattedEventData = {
         ...eventData,
         createdById: id,
-        eventTime: new Date(
-          `${new Date().toISOString().split("T")[0]}T${
-            eventData.eventTime
-          }:00+07:00`
-        ).toISOString(),
-        eventDate: new Date(eventData.eventDate).toISOString(),
+        eventTime: eventData.eventTime,
+        eventDate: eventData.eventDate,
       };
       await proposeEvent(id, formattedEventData, token);
       toast.success("Event proposed successfully");
@@ -110,13 +103,7 @@ class UserDashboardContainer extends Component {
   handleRespondToInvite = async (eventId, action, remarks = "") => {
     const { id, token } = this.context;
     try {
-      const response = await respondToInvite(
-        id,
-        eventId,
-        action,
-        remarks,
-        token
-      );
+      const response = await respondToInvite(id, eventId, action, remarks, token);
       toast.success(response.message);
 
       const { subSection, invites, pendingInvites } = this.state;
@@ -134,38 +121,29 @@ class UserDashboardContainer extends Component {
   };
 
   handleLogout = async () => {
-    const { setToken, setUserId } = this.context;
-    setToken(null);
-    setUserId(null);
-
+    const { setToken, setUserId } = this.context; 
+    setToken(null); 
+    setUserId(null); 
+  
     localStorage.removeItem("role");
     localStorage.removeItem("USER_DATA");
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("id");
+  
 
     this.props.navigate("/");
   };
+  
 
   render() {
-    const {
-      activeSection,
-      subSection,
-      invites,
-      pendingInvites,
-      proposedEvents,
-      loading,
-    } = this.state;
+    const { activeSection, subSection, invites, pendingInvites, proposedEvents, loading } = this.state;
 
     return (
-      <Box
-        sx={{ display: "flex", height: "100vh", backgroundColor: "grey.50" }}
-      >
+      <Box sx={{ display: "flex", height: "100vh", backgroundColor: "grey.50" }}>
         <Navbar handleLogout={this.handleLogout} />
         <Sidebar
           activeSection={activeSection}
-          setActiveSection={(section) =>
-            this.setState({ activeSection: section })
-          }
+          setActiveSection={(section) => this.setState({ activeSection: section })}
           setSubSection={(subSection) => this.setState({ subSection })}
         />
         <Box
@@ -180,9 +158,7 @@ class UserDashboardContainer extends Component {
           {activeSection === "Invites" && (
             <InvitesSection
               subSection={subSection}
-              setSubSection={(section) =>
-                this.setState({ subSection: section })
-              }
+              setSubSection={(section) => this.setState({ subSection: section })}
               invites={invites}
               pendingInvites={pendingInvites}
               loading={loading}
@@ -193,9 +169,7 @@ class UserDashboardContainer extends Component {
           {activeSection === "Proposed Events" && (
             <ProposedEventsSection
               subSection={subSection}
-              setSubSection={(section) =>
-                this.setState({ subSection: section })
-              }
+              setSubSection={(section) => this.setState({ subSection: section })}
               proposedEvents={proposedEvents}
               loading={loading}
               handleProposeEvent={this.handleProposeEvent}

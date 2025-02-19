@@ -76,16 +76,13 @@ const EventForm = ({
           <TextField
             fullWidth
             type="time"
-            value={eventData.time ? eventData.time.slice(11, 16) : ""}
+            value={eventData.time} 
             onChange={(e) => {
-              const timeValue = e.target.value;
-              const datePart = new Date().toISOString().split("T")[0];
-              const fullTimestamp = `${datePart}T${timeValue}:00`;
-              setEventData({ ...eventData, time: fullTimestamp });
+              setEventData({ ...eventData, time: e.target.value }); 
             }}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
             inputProps={{
-              min: new Date().toISOString().slice(11, 16),
+              min: new Date().toISOString().slice(11, 16), 
             }}
           />
           <TextField
@@ -136,38 +133,25 @@ const EventForm = ({
             type="time"
             value={
               selectedEvent.time
-                ? new Date(selectedEvent.time).toLocaleTimeString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })
+                ? selectedEvent.time
                 : ""
             }
-            onChange={(e) => {
-              const timeValue = e.target.value;
-              const [hours, minutes] = timeValue.split(":");
-              const fullTimestamp = new Date();
-              fullTimestamp.setHours(
-                parseInt(hours, 10),
-                parseInt(minutes, 10),
-                0,
-                0
-              );
-
-              setSelectedEvent({
-                ...selectedEvent,
-                time: fullTimestamp.toISOString(),
-              });
-            }}
+            onChange={(e) =>
+              setSelectedEvent({ ...selectedEvent, time: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
+            inputProps={{
+              min: getCurrentDateTime(), 
+            }}
           />
 
+          
           <TextField
             fullWidth
             type="date"
             value={
               selectedEvent.date
-                ? new Date(selectedEvent.date).toISOString().slice(0, 10)
+                ? selectedEvent.date
                 : ""
             }
             onChange={(e) =>

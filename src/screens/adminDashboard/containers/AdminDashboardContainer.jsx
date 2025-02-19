@@ -76,8 +76,8 @@ class AdminDashboardContainer extends Component {
     e.preventDefault();
     const formattedEventData = {
       ...this.state.eventData,
-      time: new Date(this.state.eventData.time).toISOString(),
-      date: new Date(this.state.eventData.date).toISOString(),
+      time: this.state.eventData.time,
+      date: this.state.eventData.date,
       invitedUserIds: this.state.eventData.invitedUserIds.split(","),
     };
 
@@ -132,8 +132,8 @@ class AdminDashboardContainer extends Component {
       role: localStorage.getItem("role"),
       action: "update",
       eventName: this.state.selectedEvent.agenda,
-      eventDate: new Date(this.state.selectedEvent.date).toISOString(),
-      eventTime: new Date(this.state.selectedEvent.time).toISOString(),
+      eventDate: this.state.selectedEvent.date,
+      eventTime: this.state.selectedEvent.time,
       eventLocation: this.state.selectedEvent.location,
     };
 
@@ -160,8 +160,8 @@ class AdminDashboardContainer extends Component {
     try {
       await addInviteesToEvent(this.state.selectedEvent.eventId, inviteesList, this.state.token);
       toast.success("Invitees added successfully");
-      this.setState({ isModalOpen: false, invitees: "" }); // Reset the modal and input
-      this.handleFetchAllEvents(); // Refresh the event list
+      this.setState({ isModalOpen: false, invitees: "" }); 
+      this.handleFetchAllEvents(); 
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
     }
@@ -170,7 +170,6 @@ class AdminDashboardContainer extends Component {
   handleSuccess = async (e, eventId) => {
     e.preventDefault();
     const action = e.target.name;
-
     try {
       await handleProposalAction(eventId, action, this.state.token);
       toast.success(`Proposal ${action.toLowerCase()} successfully`);

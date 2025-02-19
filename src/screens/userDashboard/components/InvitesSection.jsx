@@ -25,7 +25,7 @@ const InvitesSection = ({
     toast.success(`Switched to ${section}`);
   };
 
-  // Handle invite response with toast notification
+
   const handleInviteResponse = async (eventId, action) => {
     try {
       await handleRespondToInvite(eventId, action);
@@ -94,8 +94,6 @@ const InvitesSection = ({
           </Button>
         </Box>
       </Box>
-
-      {/* Scrollable Content */}
       <Box
         sx={{
           flexGrow: 1,
@@ -143,10 +141,10 @@ const InvitesSection = ({
                       {invite.eventName}
                     </Typography>
                     <Typography sx={{ color: "#5C7285", mt: 1 }}>
-                    Date: {new Date(invite.eventDate).toLocaleDateString()}
+                    Date: {invite.eventDate}
                     </Typography>
                     <Typography sx={{ color: "#5C7285" }}>
-                    Time: {new Date(invite.eventTime).toLocaleTimeString()}
+                    Time: {invite.eventTime}
                     </Typography>
                     <Typography sx={{ color: "#5C7285" }}>
                       Location: {invite.eventLocation}
