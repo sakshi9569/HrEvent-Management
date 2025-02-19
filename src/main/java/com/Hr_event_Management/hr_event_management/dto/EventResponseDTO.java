@@ -26,7 +26,6 @@ public class EventResponseDTO {
         this.eventId = eventId;
     }
 
-    // Other getters and setters for other fields
     public String getFirstName() {
         return firstName;
     }

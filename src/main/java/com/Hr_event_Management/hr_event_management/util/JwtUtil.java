@@ -16,27 +16,22 @@ public class JwtUtil {
     public JwtUtil() {
         this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
-    // Method to generate a JWT token
     public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(username)  // The user info (usually username or user id)
-                .setIssuedAt(new Date())  // Token creation time
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // Token expiration time
-                .signWith(key, SignatureAlgorithm.HS256)  // Signing the token with the secret key
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
-    // Method to extract username (subject) from the JWT token
     public String extractUsername(String token) {
         return extractClaims(token).getSubject();
     }
 
-    // Method to extract expiration date from the JWT token
     public Date extractExpiration(String token) {
         return extractClaims(token).getExpiration();
     }
 
-    // Extracting the claims (payload) from the token
     private Claims extractClaims(String token) {
         try {
             return Jwts.parser()
@@ -53,12 +48,10 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    // Validate the JWT token with username
     public boolean validateToken(String token, String username) {
         return username.equals(extractUsername(token)) && !isTokenExpired(token);
     }
 
-    // Validate the JWT token without username (for general use)
     public boolean validateToken(String token) {
         return !isTokenExpired(token);
     }

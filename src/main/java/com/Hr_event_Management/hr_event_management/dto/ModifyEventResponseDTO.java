@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModifyEventResponseDTO {
-    private String status;  // "success" or "error"
-    private String message; // Message describing the result
+    private String status;
+    private String message;
 }

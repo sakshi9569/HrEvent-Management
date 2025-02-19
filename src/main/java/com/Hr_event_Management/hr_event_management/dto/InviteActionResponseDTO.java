@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 public class InviteActionResponseDTO {
 
-    private int status;   // HTTP status code
-    private String message; // Response message
+    private int status;
+    private String message;
 }
 

@@ -14,13 +14,12 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-    // SignUp API (Using DTO - SignupRequest)
+
     @PostMapping("/signup")
     public AuthResponseDTO signUp(@RequestBody SignupRequest signupRequest) {
         return userService.signUp(signupRequest);
     }
 
-    // Login API
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
         return userService.login(loginRequest);

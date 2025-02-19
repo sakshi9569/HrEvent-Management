@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AdminNotificationResponseDTO {
     private String notificationId;
-    private String type; // event_feedback, event_proposal, user_action_required
+    private String type;
     private String message;
     private LocalDateTime timestamp;
 }

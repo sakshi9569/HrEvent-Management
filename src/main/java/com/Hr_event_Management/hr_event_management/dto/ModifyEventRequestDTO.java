@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModifyEventRequestDTO {
-    private Long eventId; // Change this to Long to match Event entity
+    private Long eventId;
     private String empId;
     private String role;
     private String action;

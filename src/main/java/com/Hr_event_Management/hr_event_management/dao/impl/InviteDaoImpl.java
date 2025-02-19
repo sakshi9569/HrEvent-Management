@@ -15,13 +15,9 @@ import java.util.Optional;
 @Repository
 public class InviteDaoImpl implements InviteDao {
 
-    // Use @PersistenceContext instead of @Autowired for EntityManager
-    //TODO - Read about the reason above u have mentioned
     @PersistenceContext
     private EntityManager entityManager;
 
-
-    // Fetch invites by user ID
     @Override
     public List<Invite> findByUserId(Long userId) {
         String jpql = "SELECT i FROM Invite i WHERE i.user.id = :userId";
@@ -56,8 +52,6 @@ public class InviteDaoImpl implements InviteDao {
         return query.getResultList();
     }
 
-
-    // TODO - Read about pagination
     public List<Invite> findHistoryByUserId(Long userId) {
         LocalDateTime last24Hours = LocalDateTime.now().minusHours(24);
 

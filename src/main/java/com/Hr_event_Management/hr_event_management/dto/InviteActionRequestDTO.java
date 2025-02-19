@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 public class InviteActionRequestDTO {
     
-    private String userAction;  // Accept, Deny, or Reschedule
+    private String userAction;
     private String userRemarks;
 }

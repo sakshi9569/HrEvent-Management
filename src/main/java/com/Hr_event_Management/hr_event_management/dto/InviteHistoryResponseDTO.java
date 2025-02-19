@@ -8,11 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InviteHistoryResponseDTO {
-    private String eventId;           // Event ID
-    private String eventName;         // Name of the event
-    private String eventDate;         // Date of the event
-    private String eventTime;         // Time of the event
-    private String eventLocation;     // Location of the event
-    private InvitationStatus eventAction; // Action taken (ACCEPTED, REJECTED, PENDING,RESCHEDULED)
+    private String eventId;
+    private String eventName;
+    private String eventDate;
+    private String eventTime;
+    private String eventLocation;
+    private InvitationStatus eventAction;
 }
 

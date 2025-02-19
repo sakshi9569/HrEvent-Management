@@ -23,8 +23,6 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
         this.userDao = userDao;
     }
-
-    // SignUp method for saving the user
     public AuthResponseDTO signup(SignupRequest signupRequestDTO) {
         // Check if the user already exists with the given email
         Optional<User> existingUser = userDao.findByEmail(signupRequestDTO.getEmail());
@@ -33,12 +31,10 @@ public class AuthService {
             throw new RuntimeException("Email already exists");
         }
 
-        // Create new user and set values
         User user = new User();
-        user.setEmail(signupRequestDTO.getEmail());// Assuming name is part of the DTO
+        user.setEmail(signupRequestDTO.getEmail());
         user.setPassword(signupRequestDTO.getPassword());
-        user.setEmpId(signupRequestDTO.getEmpId()); // Assuming password is part of the DTO
-        // Hash the password
+        user.setEmpId(signupRequestDTO.getEmpId());
         String hashedPassword = BCrypt.hashpw(signupRequestDTO.getPassword() , BCrypt.gensalt());
         user.setPassword(hashedPassword);
         userDao.save(user);

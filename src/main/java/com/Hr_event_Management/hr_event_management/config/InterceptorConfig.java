@@ -21,18 +21,18 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
                 .excludePathPatterns(
-                        "/user/login",          // Exclude login (no need for JWT)
-                        "/user/signup")         // Exclude signup (no need for JWT))    // Exclude public org routes
-                .addPathPatterns("/user/**"); // Apply interceptor to all other API routes
+                        "/user/login",
+                        "/user/signup")
+                .addPathPatterns("/user/**");
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // Apply to all endpoints
-                .allowedOrigins("http://localhost:5173")  // Replace with your frontend's origin
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allowed HTTP methods
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers")  // Allowed headers
-                .allowCredentials(true)  // Allow cookies and authorization headers
-                .maxAge(3600); // Cache preflight response for 1 hour
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 }

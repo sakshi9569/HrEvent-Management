@@ -1,5 +1,6 @@
 package com.Hr_event_Management.hr_event_management.dto;
 
+import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminEventActionRequestDTO {
-    private String action;  // "accept" or "reject"
-    private String remarks; // Reason for action
+    private ProposalStatus action;
+    private String remarks;
 }

@@ -29,14 +29,11 @@ public class EventProposalServiceImpl implements EventProposalService {
     @Override
     @Transactional
     public EventProposalResponseDTO proposeEvent(EventProposalRequestDTO eventProposalRequestDTO) {
-        // Fetch the user who is proposing the event (creator)
         Optional<User> creatorUserOpt = userDao.findById(eventProposalRequestDTO.getCreatedById());
         if (creatorUserOpt.isEmpty()) {
             throw new RuntimeException("Creator not found");
         }
         User creator = creatorUserOpt.get();
-
-        // Create and populate the ProposedEvent entity
         ProposedEvent proposedEvent = new ProposedEvent();
         proposedEvent.setEventName(eventProposalRequestDTO.getEventName());
         proposedEvent.setEventDate(eventProposalRequestDTO.getEventDate());  // Directly set the String value
@@ -45,11 +42,8 @@ public class EventProposalServiceImpl implements EventProposalService {
         proposedEvent.setAgenda(eventProposalRequestDTO.getAgenda());
         proposedEvent.setUser(creator);  // User who proposed the event
         proposedEvent.setCreatedBy(creator);
-        proposedEvent.setProposalStatus(ProposalStatus.PENDING);  // Set status to PENDING by default
-
-        proposedEvent = eventProposalDao.save(proposedEvent);  // Save the proposed event to the database
-
-        // Prepare the EventProposalResponseDTO to return
+        proposedEvent.setProposalStatus(ProposalStatus.PENDING);
+        proposedEvent = eventProposalDao.save(proposedEvent);
         EventProposalResponseDTO eventProposalResponseDTO = new EventProposalResponseDTO();
         eventProposalResponseDTO.setEventId(proposedEvent.getId());
         eventProposalResponseDTO.setEventName(proposedEvent.getEventName());

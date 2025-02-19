@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")  // TODO - For all the admin APIs use admin0user in the path and put it in respective APiAuth Constant file.
+@RequestMapping("/user")
 public class AdminEventProposalController {
 
     private final AdminEventProposalService adminEventProposalService;
@@ -21,14 +21,6 @@ public class AdminEventProposalController {
         this.adminEventProposalService = adminEventProposalService;
     }
 
-    /**
-     * Endpoint for Admin to take action on a proposed event
-     *
-     * @param proposalId Proposal ID
-     * @param adminEventActionRequestDTO Event action details (accept/reject)
-     * @return ResponseEntity with success message
-     */
-    // TODO - Understand he working of this API.
     @PostMapping("/proposal/{proposalId}/action")
     public ResponseEntity<AdminEventActionResponseDTO> takeActionOnProposedEvent(
             @PathVariable Long proposalId,

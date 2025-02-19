@@ -9,10 +9,8 @@ import java.util.Optional;
 @Repository
 public interface AdminEventProposalDao {
 
-    // Fetch a proposed event by its proposalId
     Optional<ProposedEvent> findByProposalId(Long proposalId);
 
-    // Save the updated event proposal after admin's action
     ProposedEvent save(ProposedEvent proposedEvent);
 
     List<ProposedEvent> findAll();

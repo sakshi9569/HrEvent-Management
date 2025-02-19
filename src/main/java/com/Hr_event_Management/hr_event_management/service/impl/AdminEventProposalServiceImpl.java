@@ -66,12 +66,12 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
                 event.getId(),
                 event.getEventName(),
                 event.getEventDate(),
-                event.getEventTime().toString(), // Convert Timestamp to String
+                event.getEventTime().toString(),
                 event.getEventLocation(),
                 event.getAgenda(),
-                event.getProposalStatus().toString(), // Convert Enum to String
-                event.getCreatedBy().getUserId(), // Correct extraction of createdById
+                event.getProposalStatus().toString(),
+                event.getCreatedBy().getUserId(),
                 "Event retrieved successfully"
-        )).collect(Collectors.toList()); // Returns List<EventProposalResponseDTO>
+        )).collect(Collectors.toList());
     }
 }

@@ -8,11 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 public class PendingInviteResponseDTO {
 
-    private String eventId;            // Event ID (could be a String or UUID)
-    private String eventName;          // Name of the event
-    private String eventDate;          // Date of the event
-    private String eventTime;          // Time of the event
-    private String eventLocation;      // Location of the event
-    private String status;             // Status of the invitation (should always be "PENDING")
+    private String eventId;
+    private String eventName;
+    private String eventDate;
+    private String eventTime;
+    private String eventLocation;
+    private String status;
 }
 

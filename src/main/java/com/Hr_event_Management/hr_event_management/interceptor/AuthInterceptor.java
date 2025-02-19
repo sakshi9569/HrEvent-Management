@@ -27,19 +27,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                 ) {
             return true;
         }
-
-        // Extract token from request header
         String token = request.getHeader("Authorization");
         if (token == null || !token.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized: Missing or invalid token");
             return false;
         }
-
-        // Remove "Bearer " prefix
         token = token.substring(7);
-
-        // Validate the token
         if (!jwtTokenProvider.validateToken(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized: Invalid token");

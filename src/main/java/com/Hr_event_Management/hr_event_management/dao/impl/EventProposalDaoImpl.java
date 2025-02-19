@@ -16,7 +16,6 @@ public class EventProposalDaoImpl implements EventProposalDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    // Save or update a proposed event
     @Override
     public ProposedEvent save(ProposedEvent proposedEvent) {
         if (proposedEvent.getId() == null) {
@@ -32,7 +31,6 @@ public class EventProposalDaoImpl implements EventProposalDao {
         return entityManager.find(ProposedEvent.class, id);
 
     }
-    // Find all proposed events for a given user by userId
     @Override
     public List<ProposedEvent> findByUserId(Long userId) {
         String queryStr = "SELECT e FROM ProposedEvent e WHERE e.user.id = :userId";
