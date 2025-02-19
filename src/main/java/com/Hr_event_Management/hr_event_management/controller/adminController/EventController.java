@@ -1,4 +1,4 @@
-package com.Hr_event_Management.hr_event_management.controller.AdminController;
+package com.Hr_event_Management.hr_event_management.controller.adminController;
 
 import com.Hr_event_Management.hr_event_management.dto.*;
 import com.Hr_event_Management.hr_event_management.dto.EventResponseDTO;

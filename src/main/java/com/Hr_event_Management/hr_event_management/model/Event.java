@@ -32,7 +32,7 @@ public class Event {
     private String agenda;
 
     public String getEventName() {
-        return this.agenda;  // Return agenda as the event's name
+        return this.agenda;
     }
 
     @Column(nullable = false)
@@ -46,7 +46,7 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EventStatus status;  // Enum field for status
+    private EventStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

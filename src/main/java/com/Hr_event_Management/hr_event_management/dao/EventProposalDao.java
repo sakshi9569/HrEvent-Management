@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface EventProposalDao {
 
-    ProposedEvent save(ProposedEvent proposedEvent);  // Method to save or update an event proposal
+    ProposedEvent save(ProposedEvent proposedEvent);
     ProposedEvent getById(Long id);
-    List<ProposedEvent> findByUserId(Long userId);// Method to find proposed events by user ID
+    List<ProposedEvent> findByUserId(Long userId);
     void deleteById(Long id);
     List<ProposedEvent> findAll();
 }

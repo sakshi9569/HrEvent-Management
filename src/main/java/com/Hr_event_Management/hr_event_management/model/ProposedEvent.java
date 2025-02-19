@@ -42,7 +42,7 @@ public class ProposedEvent {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;  // User who proposed the event
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
