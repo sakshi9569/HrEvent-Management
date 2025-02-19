@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { styled } from "@mui/system";
 import { useStoreContext } from "../../../contextApi/ContextApi"; 
+import { useLocation, Link } from "react-router-dom";
 
 const CustomAppBar = styled(AppBar)({
   backgroundColor: "#5C7285",
@@ -12,28 +13,27 @@ const CustomAppBar = styled(AppBar)({
   zIndex: 1000,
 });
 
-const CustomButton = styled(Button)({
+const CustomButton = styled(Button)(({ active }) => ({
   color: "#E2E0C8",
-  margin: "0 10px",
+  margin: "5 10px",
+  backgroundColor: active ? "#818C78" : "transparent",
   "&:hover": {
     backgroundColor: "#818C78",
   },
-});
+}));
 
 const ButtonBox = styled(Box)({
-  backgroundColor: "#A7B49E",
   padding: "8px 16px",
   margin: "0 6px",
-  borderRadius: "4px",
+  borderRadius: "12px",
   display: "inline-flex",
   alignItems: "center",
-  "&:hover": {
-    backgroundColor: "#818C78",
-  },
 });
 
 const PublicHeader = () => {
   const { token, logout } = useStoreContext(); 
+  const location = useLocation();
+
   return (
     <CustomAppBar>
       <Toolbar>
@@ -47,10 +47,14 @@ const PublicHeader = () => {
         ) : (
           <>
             <ButtonBox>
-              <CustomButton href="/">Login</CustomButton>
+              <CustomButton component={Link} to="/" active={location.pathname === "/" ? 1 : 0}>
+                Login
+              </CustomButton>
             </ButtonBox>
             <ButtonBox>
-              <CustomButton href="/signup">Signup</CustomButton>
+              <CustomButton component={Link} to="/signup" active={location.pathname === "/signup" ? 1 : 0}>
+                Signup
+              </CustomButton>
             </ButtonBox>
           </>
         )}

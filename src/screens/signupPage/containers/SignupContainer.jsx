@@ -21,7 +21,7 @@ class SignupContainer extends Component {
       await signupUser(data);
       toast.success("Registration Successful!");
 
-      this.props.navigate("/"); // Redirect to login page
+      this.props.navigate("/"); 
     } catch (error) {
       console.error(error);
       toast.error("Registration Failed!");

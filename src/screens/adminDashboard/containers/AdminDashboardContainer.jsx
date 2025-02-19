@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { toast } from "react-hot-toast";
 import {
   fetchProposedEvents,
+  fetchProposedEventsForAdmin,
   fetchAllEvents,
   createEvent,
   modifyEvent,
@@ -64,7 +65,7 @@ class AdminDashboardContainer extends Component {
   fetchProposedEvents = async () => {
     this.setState({ loading: true });
     try {
-      const data = await fetchProposedEvents(this.state.token);
+      const data = await fetchProposedEventsForAdmin(this.state.token);
       this.setState({ proposedEvents: data });
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");
@@ -178,7 +179,7 @@ class AdminDashboardContainer extends Component {
     try {
       await handleProposalAction(eventId, action, this.state.token);
       toast.success(`Proposal ${action.toLowerCase()} successfully`);
-      const data = await fetchProposedEvents(this.state.token);
+      const data = await fetchProposedEventsForAdmin(this.state.token);
       this.setState({ proposedEvents: data });
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");

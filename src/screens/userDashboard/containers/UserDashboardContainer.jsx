@@ -43,7 +43,7 @@ class UserDashboardContainer extends Component {
         this.fetchUserPendingInvitesData(id, token);
       }
       if (activeSection === "Proposed Events" && subSection) {
-        this.fetchProposedEventsData(token);
+        this.fetchProposedEventsData(id, token);
       }
     }
   }
@@ -72,10 +72,10 @@ class UserDashboardContainer extends Component {
     }
   };
 
-  fetchProposedEventsData = async (token) => {
+  fetchProposedEventsData = async (id, token) => {
     this.setState({ loading: true });
     try {
-      const response = await fetchProposedEvents(token);
+      const response = await fetchProposedEvents(id, token);
       this.setState({ proposedEvents: response });
     } catch (error) {
       toast.error(error.response ? error.response.data : "An error occurred");

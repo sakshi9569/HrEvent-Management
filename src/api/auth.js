@@ -37,10 +37,12 @@ export const fetchUserPendingInvites = async (userId, token) => {
   return apiCall("get", `/user/${userId}/invites/pending`, null, token);
 };
 
-export const fetchProposedEvents = async (token) => {
-  return apiCall("get", "/user/proposedEvents/all", null, token);
+export const fetchProposedEvents = async (userId, token) => {
+  return apiCall("get", `/user/${userId}/proposedEventsAll`, null, token);
 };
-
+export const fetchProposedEventsForAdmin = async (token) => {
+  return apiCall("get", `user/proposedEvents/all`, null, token);
+};
 export const proposeEvent = async (userId, eventData, token) => {
   return apiCall("post", `/user/${userId}/events/propose`, eventData, token);
 };
