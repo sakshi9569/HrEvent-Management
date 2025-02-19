@@ -36,7 +36,13 @@ const EventForm = ({
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ mt: 2, backgroundColor: "#E2E0C8", padding: 3, borderRadius: 2, boxShadow: 3 }}
+      sx={{
+        mt: 2,
+        backgroundColor: "#E2E0C8",
+        padding: 3,
+        borderRadius: 2,
+        boxShadow: 3,
+      }}
     >
       {modalType === "create" && (
         <>
@@ -44,38 +50,51 @@ const EventForm = ({
             fullWidth
             label="First Name"
             value={eventData.firstName}
-            onChange={(e) => setEventData({ ...eventData, firstName: e.target.value })}
+            onChange={(e) =>
+              setEventData({ ...eventData, firstName: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
           <TextField
             fullWidth
             label="Last Name"
             value={eventData.lastName}
-            onChange={(e) => setEventData({ ...eventData, lastName: e.target.value })}
+            onChange={(e) =>
+              setEventData({ ...eventData, lastName: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
           <TextField
             fullWidth
-            label="Agenda"
+            label="Event Name"
             value={eventData.agenda}
-            onChange={(e) => setEventData({ ...eventData, agenda: e.target.value })}
+            onChange={(e) =>
+              setEventData({ ...eventData, agenda: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
           <TextField
             fullWidth
-            type="datetime-local"
-            value={eventData.time}
-            onChange={(e) => setEventData({ ...eventData, time: e.target.value })}
+            type="time"
+            value={eventData.time ? eventData.time.slice(11, 16) : ""}
+            onChange={(e) => {
+              const timeValue = e.target.value;
+              const datePart = new Date().toISOString().split("T")[0];
+              const fullTimestamp = `${datePart}T${timeValue}:00`;
+              setEventData({ ...eventData, time: fullTimestamp });
+            }}
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
             inputProps={{
-              min: getCurrentDateTime(), // Disable past dates and times
+              min: new Date().toISOString().slice(11, 16),
             }}
           />
           <TextField
             fullWidth
             type="date"
             value={eventData.date}
-            onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
+            onChange={(e) =>
+              setEventData({ ...eventData, date: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
             inputProps={{
               min: getCurrentDate(), // Disable past dates
@@ -85,14 +104,18 @@ const EventForm = ({
             fullWidth
             label="Location"
             value={eventData.location}
-            onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
+            onChange={(e) =>
+              setEventData({ ...eventData, location: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
           <TextField
             fullWidth
             label="Invited Email IDs (comma-separated)"
             value={eventData.invitedUserIds}
-            onChange={(e) => setEventData({ ...eventData, invitedUserIds: e.target.value })}
+            onChange={(e) =>
+              setEventData({ ...eventData, invitedUserIds: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
         </>
@@ -101,26 +124,55 @@ const EventForm = ({
         <>
           <TextField
             fullWidth
-            label="Agenda"
+            label="Event name"
             value={selectedEvent.agenda}
-            onChange={(e) => setSelectedEvent({ ...selectedEvent, agenda: e.target.value })}
+            onChange={(e) =>
+              setSelectedEvent({ ...selectedEvent, agenda: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
           <TextField
             fullWidth
-            type="datetime-local"
-            value={selectedEvent.time ? new Date(selectedEvent.time).toISOString().slice(0, 16) : ""}
-            onChange={(e) => setSelectedEvent({ ...selectedEvent, time: e.target.value })}
-            sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
-            inputProps={{
-              min: getCurrentDateTime(), // Disable past dates and times
+            type="time"
+            value={
+              selectedEvent.time
+                ? new Date(selectedEvent.time).toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })
+                : ""
+            }
+            onChange={(e) => {
+              const timeValue = e.target.value;
+              const [hours, minutes] = timeValue.split(":");
+              const fullTimestamp = new Date();
+              fullTimestamp.setHours(
+                parseInt(hours, 10),
+                parseInt(minutes, 10),
+                0,
+                0
+              );
+
+              setSelectedEvent({
+                ...selectedEvent,
+                time: fullTimestamp.toISOString(),
+              });
             }}
+            sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
+
           <TextField
             fullWidth
             type="date"
-            value={selectedEvent.date ? new Date(selectedEvent.date).toISOString().slice(0, 10) : ""}
-            onChange={(e) => setSelectedEvent({ ...selectedEvent, date: e.target.value })}
+            value={
+              selectedEvent.date
+                ? new Date(selectedEvent.date).toISOString().slice(0, 10)
+                : ""
+            }
+            onChange={(e) =>
+              setSelectedEvent({ ...selectedEvent, date: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
             inputProps={{
               min: getCurrentDate(), // Disable past dates
@@ -130,7 +182,9 @@ const EventForm = ({
             fullWidth
             label="Location"
             value={selectedEvent.location}
-            onChange={(e) => setSelectedEvent({ ...selectedEvent, location: e.target.value })}
+            onChange={(e) =>
+              setSelectedEvent({ ...selectedEvent, location: e.target.value })
+            }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
           />
         </>
@@ -148,7 +202,11 @@ const EventForm = ({
         type="submit"
         variant="contained"
         fullWidth
-        sx={{ backgroundColor: "#5C7285", color: "#E2E0C8", "&:hover": { backgroundColor: "#818C78" } }}
+        sx={{
+          backgroundColor: "#5C7285",
+          color: "#E2E0C8",
+          "&:hover": { backgroundColor: "#818C78" },
+        }}
       >
         {modalType === "create"
           ? "Create Event"
@@ -159,7 +217,12 @@ const EventForm = ({
       <Button
         onClick={closeModal}
         fullWidth
-        sx={{ mt: 1, backgroundColor: "#818C78", color: "#E2E0C8", "&:hover": { backgroundColor: "#5C7285" } }}
+        sx={{
+          mt: 1,
+          backgroundColor: "#818C78",
+          color: "#E2E0C8",
+          "&:hover": { backgroundColor: "#5C7285" },
+        }}
       >
         Cancel
       </Button>

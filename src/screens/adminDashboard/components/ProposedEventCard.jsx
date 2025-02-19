@@ -25,11 +25,18 @@ const ProposedEventCard = ({ event, handleSuccess }) => {
             {event.eventName}
           </Typography>
           <Typography sx={{ color: "#5C7285", mt: 1 }}>
-          Date: {new Date(event.eventDate).toLocaleDateString()}
+            Date: {new Date(event.eventDate).toLocaleDateString()}
           </Typography>
           <Typography sx={{ color: "#5C7285", mt: 1 }}>
-          Time: {new Date(event.eventTime).toLocaleTimeString()}
+            Time:{" "}
+            {new Date(event.eventTime).toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+              timeZone: "Asia/Bangkok", 
+            })}
           </Typography>
+
           <Typography sx={{ color: "#5C7285", mt: 1 }}>
             Location: {event.eventLocation}
           </Typography>

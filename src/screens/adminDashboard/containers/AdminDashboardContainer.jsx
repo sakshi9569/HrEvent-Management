@@ -54,8 +54,6 @@ class AdminDashboardContainer extends Component {
       eventData: { ...this.state.eventData, createdById: id },
     });
   }
-
-  // Fetch proposed events when active section changes
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.activeSection !== this.state.activeSection && this.state.activeSection === "Proposed Events") {
       this.fetchProposedEvents();
@@ -154,15 +152,12 @@ class AdminDashboardContainer extends Component {
   handleAddInvitees = async (e) => {
     e.preventDefault();
     if (!this.state.selectedEvent) return;
-  
-    // Split the invitees string by comma and trim whitespace
     const inviteesList = this.state.invitees
       .split(",")
-      .map((email) => ({ email: email.trim() })) // Map to an array of objects with email
-      .filter((invitee) => invitee.email); // Filter out empty or invalid emails
+      .map((email) => ({ email: email.trim() })) 
+      .filter((invitee) => invitee.email); 
   
     try {
-      // Call the API to add invitees by email
       await addInviteesToEvent(this.state.selectedEvent.eventId, inviteesList, this.state.token);
       toast.success("Invitees added successfully");
       this.setState({ isModalOpen: false, invitees: "" }); // Reset the modal and input

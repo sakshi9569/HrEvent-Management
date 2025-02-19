@@ -30,8 +30,8 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
         boxShadow: 3,
         borderRadius: 2,
         bgcolor: "#E2E0C8",
-        margin: "0 auto", 
-        mt: 2, 
+        margin: "0 auto",
+        mt: 2,
       }}
     >
       <Typography
@@ -54,8 +54,8 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
             mb: 2,
             bgcolor: "#A7B49E",
             borderRadius: 1,
-            "& .MuiInputBase-input": { color: "#5C7285" }, 
-            "& .MuiInputLabel-root": { color: "#5C7285" }, 
+            "& .MuiInputBase-input": { color: "#5C7285" },
+            "& .MuiInputLabel-root": { color: "#5C7285" },
           }}
         />
 
@@ -63,7 +63,7 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
           fullWidth
           label="Event Date"
           type="date"
-          InputLabelProps={{ shrink: true }} 
+          InputLabelProps={{ shrink: true }}
           {...register("eventDate", { required: "Event Date is required" })}
           error={!!errors.eventDate}
           helperText={errors.eventDate?.message}
@@ -71,17 +71,16 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
             mb: 2,
             bgcolor: "#A7B49E",
             borderRadius: 1,
-            "& .MuiInputBase-input": { color: "#5C7285" }, 
-            "& .MuiInputLabel-root": { color: "#5C7285" }, 
+            "& .MuiInputBase-input": { color: "#5C7285" },
+            "& .MuiInputLabel-root": { color: "#5C7285" },
           }}
         />
 
-        {/* Event Time Field */}
         <TextField
           fullWidth
           label="Event Time"
-          type="datetime-local"
-          InputLabelProps={{ shrink: true }} // Ensure the label doesn't overlap
+          type="time"
+          InputLabelProps={{ shrink: true }}
           {...register("eventTime", { required: "Event Time is required" })}
           error={!!errors.eventTime}
           helperText={errors.eventTime?.message}
@@ -89,12 +88,14 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
             mb: 2,
             bgcolor: "#A7B49E",
             borderRadius: 1,
-            "& .MuiInputBase-input": { color: "#5C7285" }, // Input text color
-            "& .MuiInputLabel-root": { color: "#5C7285" }, // Label color
+            "& .MuiInputBase-input": { color: "#5C7285" },
+            "& .MuiInputLabel-root": { color: "#5C7285" },
+          }}
+          inputProps={{
+            step: 60,
           }}
         />
 
-        {/* Event Location Field */}
         <TextField
           fullWidth
           label="Event Location"
@@ -107,7 +108,7 @@ const ProposeEventForm = ({ handleProposeEvent }) => {
             mb: 2,
             bgcolor: "#A7B49E",
             borderRadius: 1,
-            "& .MuiInputBase-input": { color: "#5C7285" }, 
+            "& .MuiInputBase-input": { color: "#5C7285" },
             "& .MuiInputLabel-root": { color: "#5C7285" }, // Label color
           }}
         />
