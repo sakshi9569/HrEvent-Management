@@ -93,7 +93,7 @@ class AdminDashboardContainer extends Component {
         date: "",
         location: "",
         status: "SCHEDULED",
-        createdById: this.context.id,  // Set createdById from context
+        createdById: this.context.id,  
         invitedUserIds: "",
       } });
     } catch (error) {

@@ -143,16 +143,13 @@ const InvitesSection = ({
                       {invite.eventName}
                     </Typography>
                     <Typography sx={{ color: "#5C7285", mt: 1 }}>
-                      Date: {invite.eventDate}
+                    Date: {new Date(invite.eventDate).toLocaleDateString()}
                     </Typography>
                     <Typography sx={{ color: "#5C7285" }}>
-                      Time: {invite.eventTime}
+                    Time: {new Date(invite.eventTime).toLocaleTimeString()}
                     </Typography>
                     <Typography sx={{ color: "#5C7285" }}>
                       Location: {invite.eventLocation}
-                    </Typography>
-                    <Typography sx={{ color: "#5C7285" }}>
-                      Status: {invite.status}
                     </Typography>
                     {subSection === "Pending Invites" && (
                       <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
@@ -170,13 +167,13 @@ const InvitesSection = ({
                         >
                           Deny
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="contained"
                           sx={{ backgroundColor: "#5C7285", color: "white" }}
                           onClick={() => handleInviteResponse(invite.eventId, "RESCHEDULE")}
                         >
                           Reschedule
-                        </Button>
+                        </Button> */}
                       </Box>
                     )}
                   </CardContent>

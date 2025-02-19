@@ -141,7 +141,7 @@ const ProposedEventsSection = ({
                           {event.eventName}
                         </Typography>
                         <Typography sx={{ color: "#5C7285", mt: 1 }}>
-                          Date: {event.eventDate}
+                        Date: {new Date(event.eventDate).toLocaleDateString()}
                         </Typography>
                         <Typography sx={{ color: "#5C7285" }}>
                           Time: {event.eventTime}
