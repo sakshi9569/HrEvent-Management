@@ -1,5 +1,4 @@
 package com.Hr_event_Management.hr_event_management.service.impl;
-
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.dao.EventDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
@@ -13,10 +12,12 @@ import com.Hr_event_Management.hr_event_management.Enums.EventStatus;
 import com.Hr_event_Management.hr_event_management.service.EventService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,8 +29,6 @@ public class EventServiceImpl implements EventService {
     private final EventDao eventDao;
     private final InviteDao inviteDao;
     private final UserDao userDao;
-
-    @Autowired
     public EventServiceImpl(EventDao eventDao, InviteDao inviteDao, UserDao userDao) {
         this.eventDao = eventDao;
         this.inviteDao = inviteDao;
@@ -55,7 +54,7 @@ public class EventServiceImpl implements EventService {
         event.setLocation(eventRequestDTO.getLocation());
 
         try {
-            EventStatus status = EventStatus.valueOf(eventRequestDTO.getStatus().toUpperCase());
+            EventStatus status = eventRequestDTO.getStatus();
             event.setStatus(status);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid status value: " + eventRequestDTO.getStatus());
@@ -89,7 +88,7 @@ public class EventServiceImpl implements EventService {
         eventResponseDTO.setTime(event.getTime());
         eventResponseDTO.setDate(event.getDate());
         eventResponseDTO.setLocation(event.getLocation());
-        eventResponseDTO.setStatus(event.getStatus().name());
+        eventResponseDTO.setStatus(event.getStatus());
         eventResponseDTO.setCreatedById(creator.getUserId());
         eventResponseDTO.setMessage("Event and invitations created successfully");
 
@@ -170,33 +169,40 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventResponseDTO> getAllEvents() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-
+        LocalDateTime now = currentTimestamp.toLocalDateTime();
+        LocalDate today = now.toLocalDate();
         List<Event> events = eventDao.findAll()
                 .stream()
-                .filter(event -> event.getTime().after(currentTimestamp))  // Filter future events
+                .filter(event -> {
+                    LocalDate eventDate = event.getDate().toLocalDateTime().toLocalDate();
+                    LocalTime eventTime = event.getTime().toLocalDateTime().toLocalTime();
+                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+                })
                 .collect(Collectors.toList());
-        return events.stream().map(event -> {
-            EventResponseDTO dto = new EventResponseDTO();
-            dto.setEventId(event.getId());
-            dto.setFirstName(event.getFirstName());
-            dto.setLastName(event.getLastName());
-            dto.setAgenda(event.getAgenda());
-            dto.setTime(event.getTime());
-            dto.setDate(event.getDate());
-            dto.setLocation(event.getLocation());
-            dto.setStatus(event.getStatus().toString());
-            dto.setCreatedById(event.getCreatedBy().getUserId());
-            dto.setMessage(event.getAgenda());
-            return dto;
-        }).collect(Collectors.toList());
+        return events.stream()
+                .map(event -> {
+                    EventResponseDTO dto = new EventResponseDTO();
+                    dto.setEventId(event.getId());
+                    dto.setFirstName(event.getFirstName());
+                    dto.setLastName(event.getLastName());
+                    dto.setAgenda(event.getAgenda());
+                    dto.setTime(event.getTime());
+                    dto.setDate(event.getDate());
+                    dto.setLocation(event.getLocation());
+                    dto.setStatus(event.getStatus());
+                    dto.setCreatedById(event.getCreatedBy().getUserId());
+                    dto.setMessage(event.getAgenda());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<String> getInviteesByEventId(Long eventId) {
-
         List<Long> userIds = inviteDao.findUserIdsByEventId(eventId);
-
-
         return userIds.stream()
                 .map(userId -> userDao.findById(userId)
                         .map(User::getEmail)

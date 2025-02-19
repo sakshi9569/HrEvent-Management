@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -57,8 +56,4 @@ public class ProposedEvent {
     @Column(nullable = false)
     private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
 
-
-    public void setRemarks(String remarks) {
-
-    }
 }

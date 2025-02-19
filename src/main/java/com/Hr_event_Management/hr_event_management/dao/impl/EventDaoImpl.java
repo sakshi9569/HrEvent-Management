@@ -4,7 +4,6 @@ import com.Hr_event_Management.hr_event_management.dao.EventDao;
 import com.Hr_event_Management.hr_event_management.model.Event;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +17,6 @@ public class EventDaoImpl implements EventDao {
 
     private final EntityManager entityManager;
 
-    @Autowired
     public EventDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -32,7 +30,6 @@ public class EventDaoImpl implements EventDao {
             return entityManager.merge(event);
         }
     }
-    //updating
 
     @Override
     public Optional<Event> findById(Long eventId) {

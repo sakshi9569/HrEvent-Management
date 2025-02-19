@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import com.Hr_event_Management.hr_event_management.Enums.Role; // Import Role Enum
+import com.Hr_event_Management.hr_event_management.Enums.Role;
 
 @Entity
 @Getter

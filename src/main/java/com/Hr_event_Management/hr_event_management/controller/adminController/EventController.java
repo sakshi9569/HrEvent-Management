@@ -22,9 +22,7 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    // Create Event with Invites
     @PostMapping("/create")
-    // TODO
     public EventResponseDTO createEventWithInvites(@RequestBody EventRequestDTO eventRequestDTO) {
         return eventService.createEventWithInvites(eventRequestDTO, eventRequestDTO.getInvitedUserIds());
     }
@@ -33,10 +31,7 @@ public class EventController {
     public ResponseEntity<ModifyEventResponseDTO> modifyEvent(
             @PathVariable("eventId") Long eventId,
             @RequestBody ModifyEventRequestDTO modifyEventRequest) {
-
-        // Call the service layer to modify the event
         String result = eventService.modifyEvent(eventId, modifyEventRequest);
-        // Return the response with the result
         ModifyEventResponseDTO response = new ModifyEventResponseDTO();
         response.setMessage(result);
         if (result.contains("success")) {

@@ -1,10 +1,8 @@
 package com.Hr_event_Management.hr_event_management.model;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -64,4 +62,5 @@ public class Event {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Invite> invites;
+
 }

@@ -16,7 +16,6 @@ public class AdminEventProposalDaoImpl implements AdminEventProposalDao {
 
     private final EntityManager entityManager;
 
-    @Autowired
     public AdminEventProposalDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }

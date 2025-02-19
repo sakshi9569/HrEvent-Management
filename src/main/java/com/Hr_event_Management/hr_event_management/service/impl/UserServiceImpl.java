@@ -22,8 +22,6 @@ public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
     private JwtUtil jwtUtil;
-
-    @Autowired
     public UserServiceImpl(UserDao userDao, JwtUtil jwtUtil) {
         this.userDao = userDao;
         this.jwtUtil = jwtUtil;

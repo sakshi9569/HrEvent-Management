@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,8 +22,6 @@ public class InviteServiceImpl implements InviteService {
 
     private final InviteDao inviteDao;
     private final UserDao userDao;
-
-    @Autowired
     public InviteServiceImpl(InviteDao inviteDao, UserDao userDao) {
         this.inviteDao = inviteDao;
         this.userDao = userDao;
@@ -28,13 +29,18 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     public List<InviteResponseDTO> getInvitesForUser(Long userId) {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
 
         List<Invite> invites = inviteDao.findByUserId(userId).stream()
-                .filter(invite -> invite.getStatus() == InvitationStatus.ACCEPTED)  // Filter only accepted invites
-                .filter(invite -> invite.getEvent().getTime().after(currentTimestamp))  // Filter future events
+                .filter(invite -> invite.getStatus() == InvitationStatus.ACCEPTED)
+                .filter(invite -> {
+                    LocalDate eventDate = invite.getEvent().getDate().toLocalDateTime().toLocalDate();
+                    LocalTime eventTime = invite.getEvent().getTime().toLocalDateTime().toLocalTime();
+                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+                })
                 .collect(Collectors.toList());
-
         return invites.stream()
                 .map(invite -> new InviteResponseDTO(
                         invite.getEvent().getId().toString(),
@@ -47,14 +53,20 @@ public class InviteServiceImpl implements InviteService {
     }
 
 
+
     @Override
     public List<PendingInviteResponseDTO> getPendingInvites(Long userId) {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
 
         List<Invite> invites = inviteDao.findPendingByUserId(userId).stream()
-                .filter(invite -> invite.getEvent().getTime().after(currentTimestamp)) // Filter future events
+                .filter(invite -> {
+                    LocalDate eventDate = invite.getEvent().getDate().toLocalDateTime().toLocalDate();
+                    LocalTime eventTime = invite.getEvent().getTime().toLocalDateTime().toLocalTime();
+                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+                })
                 .collect(Collectors.toList());
-
         return invites.stream()
                 .map(invite -> new PendingInviteResponseDTO(
                         invite.getEvent().getId().toString(),
@@ -66,6 +78,8 @@ public class InviteServiceImpl implements InviteService {
                 ))
                 .collect(Collectors.toList());
     }
+
+
 
     @Override
     public String respondToInvite(Long userId, Long eventId, InviteActionRequestDTO inviteActionRequestDTO) {

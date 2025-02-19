@@ -1,5 +1,4 @@
 package com.Hr_event_Management.hr_event_management.service.impl;
-
 import com.Hr_event_Management.hr_event_management.dao.EventProposalDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
 import com.Hr_event_Management.hr_event_management.dto.EventProposalRequestDTO;
@@ -8,10 +7,12 @@ import com.Hr_event_Management.hr_event_management.model.ProposedEvent;
 import com.Hr_event_Management.hr_event_management.model.User;
 import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
 import com.Hr_event_Management.hr_event_management.service.EventProposalService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,6 @@ public class EventProposalServiceImpl implements EventProposalService {
 
     private final EventProposalDao eventProposalDao;
     private final UserDao userDao;
-
-    @Autowired
     public EventProposalServiceImpl(EventProposalDao eventProposalDao, UserDao userDao) {
         this.eventProposalDao = eventProposalDao;
         this.userDao = userDao;
@@ -62,7 +61,20 @@ public class EventProposalServiceImpl implements EventProposalService {
 
     @Override
     public List<EventProposalResponseDTO> getProposedEvents(Long id) {
-        List<ProposedEvent> proposedEventsInDb = eventProposalDao.findByUserId(id);
+        // Get the current date and time
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+
+        List<ProposedEvent> proposedEventsInDb = eventProposalDao.findByUserId(id).stream()
+                .filter(event -> {
+                    LocalDate eventDate = event.getEventDate().toLocalDateTime().toLocalDate();
+                    LocalTime eventTime = event.getEventTime().toLocalDateTime().toLocalTime();
+                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+
+                    // Include today's events if the time is in the future
+                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+                })
+                .collect(Collectors.toList());
 
         return proposedEventsInDb.stream()
                 .map(event -> new EventProposalResponseDTO(
@@ -78,4 +90,5 @@ public class EventProposalServiceImpl implements EventProposalService {
                 ))
                 .collect(Collectors.toList());
     }
+
 }

@@ -8,10 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface AdminEventProposalDao {
-
     Optional<ProposedEvent> findByProposalId(Long proposalId);
-
     ProposedEvent save(ProposedEvent proposedEvent);
-
     List<ProposedEvent> findAll();
 }

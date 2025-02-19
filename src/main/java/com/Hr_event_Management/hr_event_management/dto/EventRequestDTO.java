@@ -5,12 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-// TODO - add validation. Read about @Valid
 public class EventRequestDTO {
     private String firstName;
     private String lastName;
@@ -18,7 +16,7 @@ public class EventRequestDTO {
     private Timestamp time;
     private Timestamp date;
     private String location;
-    private String status;
+    private EventStatus status;
     private Long createdById;
     private List<String> invitedUserIds;
 }

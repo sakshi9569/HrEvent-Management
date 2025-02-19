@@ -18,7 +18,7 @@ public class EventResponseDTO {
     private Timestamp time;
     private Timestamp date;
     private String location;
-    private String status;  // If you're using EventStatus enum
+    private EventStatus status;
     private Long createdById;
     private String message;
 }

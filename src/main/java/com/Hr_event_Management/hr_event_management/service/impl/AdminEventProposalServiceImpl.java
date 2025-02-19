@@ -1,5 +1,4 @@
 package com.Hr_event_Management.hr_event_management.service.impl;
-
 import com.Hr_event_Management.hr_event_management.Enums.EventStatus;
 import com.Hr_event_Management.hr_event_management.Enums.ProposalStatus;
 import com.Hr_event_Management.hr_event_management.dao.AdminEventProposalDao;
@@ -11,10 +10,10 @@ import com.Hr_event_Management.hr_event_management.dto.EventProposalResponseDTO;
 import com.Hr_event_Management.hr_event_management.model.Event;
 import com.Hr_event_Management.hr_event_management.model.ProposedEvent;
 import com.Hr_event_Management.hr_event_management.service.AdminEventProposalService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +23,11 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
     private final AdminEventProposalDao adminEventProposalDao;
     private final EventDao eventDao;
     private final EventProposalDao eventProposalDao;
-
-    @Autowired
     public AdminEventProposalServiceImpl(AdminEventProposalDao adminEventProposalDao, EventDao eventDao, EventProposalDao eventProposalDao) {
         this.adminEventProposalDao = adminEventProposalDao;
         this.eventDao = eventDao;
         this.eventProposalDao = eventProposalDao;
     }
-
     @Override
     public AdminEventActionResponseDTO takeAction(Long proposalId, AdminEventActionRequestDTO adminEventActionRequestDTO) {
         ProposedEvent proposedEvent = eventProposalDao.getById(proposalId);
@@ -61,12 +57,16 @@ public class AdminEventProposalServiceImpl implements AdminEventProposalService 
 
     @Override
     public List<EventProposalResponseDTO> getAll() {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
         List<ProposedEvent> proposedEventList = eventProposalDao.findAll().stream()
-                .filter(event -> event.getEventTime().after(currentTimestamp)) // Filter future events
+                .filter(event -> {
+                    LocalDate eventDate = event.getEventDate().toLocalDateTime().toLocalDate();
+                    LocalTime eventTime = event.getEventTime().toLocalDateTime().toLocalTime();
+                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+                })
                 .collect(Collectors.toList());
-
         return proposedEventList.stream().map(event -> new EventProposalResponseDTO(
                 event.getId(),
                 event.getEventName(),

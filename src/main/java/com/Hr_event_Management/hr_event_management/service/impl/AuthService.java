@@ -14,15 +14,13 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserDao userDao;
-
     private BCrypt passwordEncoder;
-
     private final JwtUtil jwtUtil;
-
     public AuthService(JwtUtil jwtUtil, UserDao userDao) {
         this.jwtUtil = jwtUtil;
         this.userDao = userDao;
     }
+
     public AuthResponseDTO signup(SignupRequest signupRequestDTO) {
         Optional<User> existingUser = userDao.findByEmail(signupRequestDTO.getEmail());
 
