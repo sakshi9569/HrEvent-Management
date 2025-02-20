@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import  { Component } from "react";
 import { withRouter } from "../../../utils/withRouter.jsx";
 import toast from "react-hot-toast";
 import { signupUser } from "../../../api/auth";
@@ -49,10 +49,8 @@ class SignupContainer extends Component {
   }
 }
 
-// Export component wrapped with `withRouter`
 export default withRouter(SignupContainer);
 
-// Functional Wrapper for `useForm()`
 const SignupFormWrapper = ({ onSubmit, loader }) => {
   const {
     register,

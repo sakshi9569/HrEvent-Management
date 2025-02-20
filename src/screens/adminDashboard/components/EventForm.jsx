@@ -141,10 +141,8 @@ const EventForm = ({
             }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
             inputProps={{
-              min: getCurrentDateTime(), 
             }}
           />
-
           
           <TextField
             fullWidth
@@ -159,7 +157,7 @@ const EventForm = ({
             }
             sx={{ mb: 2, backgroundColor: "#A7B49E", borderRadius: 1 }}
             inputProps={{
-              min: getCurrentDate(), // Disable past dates
+              min: getCurrentDate(), 
             }}
           />
           <TextField
