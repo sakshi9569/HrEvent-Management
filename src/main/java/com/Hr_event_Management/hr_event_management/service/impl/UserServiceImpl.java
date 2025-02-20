@@ -1,5 +1,4 @@
 package com.Hr_event_Management.hr_event_management.service.impl;
-
 import ch.qos.logback.core.util.StringUtil;
 import com.Hr_event_Management.hr_event_management.Enums.Role;
 import com.Hr_event_Management.hr_event_management.dto.AuthResponseDTO;
@@ -10,10 +9,8 @@ import com.Hr_event_Management.hr_event_management.dao.UserDao;
 import com.Hr_event_Management.hr_event_management.service.UserService;
 import com.Hr_event_Management.hr_event_management.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.util.Optional;
 
 @Service

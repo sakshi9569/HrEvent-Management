@@ -1,15 +1,11 @@
 package com.Hr_event_Management.hr_event_management.service.impl;
-
 import com.Hr_event_Management.hr_event_management.Enums.InvitationStatus;
 import com.Hr_event_Management.hr_event_management.dao.InviteDao;
 import com.Hr_event_Management.hr_event_management.dao.UserDao;
 import com.Hr_event_Management.hr_event_management.dto.*;
 import com.Hr_event_Management.hr_event_management.model.Invite;
 import com.Hr_event_Management.hr_event_management.service.InviteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

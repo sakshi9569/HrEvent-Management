@@ -173,12 +173,12 @@ public class EventServiceImpl implements EventService {
         LocalDate today = now.toLocalDate();
         List<Event> events = eventDao.findAll()
                 .stream()
-//                .filter(event -> {
-//                    LocalDate eventDate = event.getDate().toLocalDateTime().toLocalDate();
-//                    LocalTime eventTime = event.getTime().toLocalDateTime().toLocalTime();
-//                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
-//                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
-//                })
+                .filter(event -> {
+                    LocalDate eventDate = event.getDate();
+                    LocalTime eventTime = event.getTime();
+                    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
+                    return eventDate.isAfter(today) || (eventDate.isEqual(today) && eventDateTime.isAfter(now));
+                })
                 .collect(Collectors.toList());
         return events.stream()
                 .map(event -> {
@@ -198,17 +198,15 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
     public List<String> getInviteesByEventId(Long eventId) {
         List<Long> userIds = inviteDao.findUserIdsByEventId(eventId);
         return userIds.stream()
+
                 .map(userId -> userDao.findById(userId)
                         .map(User::getEmail)
                         .orElse(null))
                 .filter(email -> email != null)
                 .collect(Collectors.toList());
     }
-
 }
